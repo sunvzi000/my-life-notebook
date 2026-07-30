@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="version" content="20260730-2122-v5">
+<meta name="version" content="20260730-2135-v6">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -374,6 +374,77 @@ function copyXHS(elId){
   });
 }
 
+// ====== 宝宝成长笔记 ======
+function getBabyNotes(){
+  try {
+    let raw = localStorage.getItem('baby_notes_v1');
+    if(!raw){
+      // 初始化默认数据
+      let defaults = [
+        {date:'7/30',text:'游泳课最后一天！游完跟我说"妈妈我今天游了1000米"。我说我不信，25×20明明是500米。他说不是，是游了20圈。我在群里问老师，老师说泳池25米，一圈50米，20圈真的是1000米。我去跟朋友炫耀——他才6岁，比我还能游！🏊',type:'运动',ts:1},
+        {date:'7/29',text:'7:20起床，还很困。早餐吃糯米饭半碗+豆腐脑，8:25到校（稍迟）。',type:'日常',ts:2},
+        {date:'7/28',text:'早上5个小笼包+豆腐脑+脆角',type:'日常',ts:3},
+        {date:'7/28',text:'图书馆写作业，思维作业错2题（粗心）',type:'学业',ts:4},
+        {date:'7/28',text:'第3天不想游泳，请假去上社区课',type:'情绪',ts:5},
+        {date:'7/28',text:'KFC圣代，约定一周最多2次冰淇淋',type:'日常',ts:6},
+        {date:'7/28',text:'爸爸洗澡+监督作业+iPad10分钟+读2页书',type:'日常',ts:7},
+      ];
+      localStorage.setItem('baby_notes_v1', JSON.stringify(defaults));
+      return defaults;
+    }
+    return JSON.parse(raw);
+  } catch(e){ return []; }
+}
+function saveBabyNotes(notes){
+  localStorage.setItem('baby_notes_v1', JSON.stringify(notes));
+}
+function addBabyNote(){
+  let textEl = document.getElementById('new-baby-note');
+  let typeEl = document.getElementById('baby-note-type');
+  if(!textEl || !textEl.value.trim()) return;
+  let notes = getBabyNotes();
+  let d = new Date();
+  let dateStr = `${d.getMonth()+1}/${d.getDate()}`;
+  notes.unshift({
+    date: dateStr,
+    text: textEl.value.trim(),
+    type: typeEl ? typeEl.value : '趣事',
+    ts: Date.now()
+  });
+  saveBabyNotes(notes);
+  textEl.value = '';
+  renderBabyNotes();
+}
+function deleteBabyNote(ts){
+  if(!confirm('删除这条记录？')) return;
+  let notes = getBabyNotes();
+  notes = notes.filter(n => n.ts !== ts);
+  saveBabyNotes(notes);
+  renderBabyNotes();
+}
+function renderBabyNotes(){
+  let container = document.getElementById('baby-notes-list');
+  if(!container) return;
+  let notes = getBabyNotes();
+  if(notes.length === 0){
+    container.innerHTML = '<div class="card"><p style="color:var(--muted);font-size:.82rem;text-align:center;">📝 还没有记录<br><span style="font-size:.72rem;">在上面输入宝宝的趣事吧～</span></p></div>';
+    return;
+  }
+  let typeIcons = {'趣事':'😆','成长':'🌱','学业':'📚','运动':'🏊','感动':'💕','其他':'📌'};
+  let html = '';
+  notes.forEach(n => {
+    html += `<div class="card" style="padding:12px 16px;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+        <span style="font-size:.75rem;color:var(--muted);">${n.date}</span>
+        <span class="tag tag-blue" style="font-size:.65rem;">${typeIcons[n.type]||'📌'} ${n.type}</span>
+      </div>
+      <p style="font-size:.85rem;line-height:1.7;">${n.text}</p>
+      <button onclick="deleteBabyNote(${n.ts})" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:.7rem;padding:2px 0;opacity:.4;">🗑️ 删除</button>
+    </div>`;
+  });
+  container.innerHTML = html;
+}
+
 function renderPet(){
   loadPetState();
   let moodText = '';
@@ -434,16 +505,24 @@ P['baby-schedule'] = `
 P['baby-growth'] = `
 <div class="header"><h1>📝 成长记录</h1></div>
 <div class="card">
-  <table>
-    <tr><th>日期</th><th>记录</th><th>类型</th></tr>
-    <tr><td>7/28</td><td>早上5个小笼包+豆腐脑+脆角</td><td>饮食</td></tr>
-    <tr><td>7/28</td><td>图书馆写作业，思维作业错2题（粗心）</td><td>学业</td></tr>
-    <tr><td>7/28</td><td>第3天不想游泳，请假去上社区课</td><td>情绪</td></tr>
-    <tr><td>7/28</td><td>KFC圣代，约定一周最多2次冰淇淋</td><td>规则</td></tr>
-    <tr><td>7/28</td><td>爸爸洗澡+监督作业+iPad10分钟+读2页书</td><td>日常</td></tr>
-    <tr><td>7/29</td><td>7:20起床，还很困；早餐吃糯米饭半碗+豆腐脑；8:25到校（稍迟）</td><td>日常</td></tr>
-  </table>
+  <p style="font-size:.78rem;color:var(--muted);">记录宝宝有趣的事、第一次、进步瞬间。不用每天写，有值得记的再记。</p>
 </div>
+<div class="card">
+  <div class="card-title"><span class="ico">✏️</span>快速记录</div>
+  <textarea id="new-baby-note" placeholder="今天宝宝做了什么有趣的事？（如：游了1000米，自己算的25m×20圈=500m，问老师发现一圈是50m所以真的是1000米！）" style="width:100%;border:1px solid var(--border);border-radius:8px;padding:8px;font-size:.82rem;height:60px;font-family:inherit;"></textarea>
+  <div style="display:flex;gap:6px;margin-top:6px;">
+    <select id="baby-note-type" style="border:1px solid var(--border);border-radius:8px;padding:6px;font-size:.78rem;background:#fff;">
+      <option value="趣事">😆 趣事</option>
+      <option value="成长">🌱 成长</option>
+      <option value="学业">📚 学业</option>
+      <option value="运动">🏊 运动</option>
+      <option value="感动">💕 感动</option>
+      <option value="其他">📌 其他</option>
+    </select>
+    <button onclick="addBabyNote()" style="flex:1;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:6px;font-size:.82rem;cursor:pointer;">💾 保存</button>
+  </div>
+</div>
+<div id="baby-notes-list"></div>
 `;
 
 P['baby-health'] = `
@@ -2170,6 +2249,7 @@ function go(page){
   if(page === 'sop') setTimeout(renderAllSOPs, 50);
   if(page === 'projects') setTimeout(renderProjects, 50);
   if(page === 'baby-star') setTimeout(renderPet, 50);
+  if(page === 'baby-growth') setTimeout(renderBabyNotes, 50);
   if(page === 'hobby-xhs') setTimeout(renderXHSContent, 50);
   
   window.scrollTo(0,0);
