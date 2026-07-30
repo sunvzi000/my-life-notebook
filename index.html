@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="version" content="20260730-2135-v6">
+<meta name="version" content="20260730-2158-v7">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -440,6 +440,77 @@ function renderBabyNotes(){
       </div>
       <p style="font-size:.85rem;line-height:1.7;">${n.text}</p>
       <button onclick="deleteBabyNote(${n.ts})" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:.7rem;padding:2px 0;opacity:.4;">🗑️ 删除</button>
+    </div>`;
+  });
+  container.innerHTML = html;
+}
+
+// ====== 知识迭代 ======
+function getKnowledge(){
+  try {
+    let raw = localStorage.getItem('knowledge_v1');
+    if(!raw){
+      let defaults = [
+        {date:'7/28',text:'白云山熊果苷乳霜(蓝)=早，烟酰胺凝胶(红)=晚',cat:'护肤',ts:1},
+        {date:'7/28',text:'熊果苷白天用必须防晒',cat:'护肤',ts:2},
+        {date:'7/28',text:'扎头发：分区扎+发抓辅助',cat:'生活',ts:3},
+        {date:'7/28',text:'钩针伤手：设30分钟上限+拉伸',cat:'健康',ts:4},
+        {date:'7/29',text:'个体户≠法人企业：无限责任 vs 有限责任',cat:'工作',ts:5},
+        {date:'7/29',text:'时间书APP：小屏时间记录软件',cat:'工具',ts:6},
+        {date:'7/29',text:'红果/番茄小说依赖：上厕所改看备忘录，卸载无用APP',cat:'习惯',ts:7},
+        {date:'7/30',text:'睡好觉=重要项目：补觉3h+拔罐推拿后精气神恢复',cat:'健康',ts:8},
+        {date:'7/30',text:'麻辣烫吃撑：下次不加满份油条或只加半条',cat:'饮食',ts:9},
+      ];
+      localStorage.setItem('knowledge_v1', JSON.stringify(defaults));
+      return defaults;
+    }
+    return JSON.parse(raw);
+  } catch(e){ return []; }
+}
+function saveKnowledge(list){
+  localStorage.setItem('knowledge_v1', JSON.stringify(list));
+}
+function addKnowledge(){
+  let textEl = document.getElementById('new-knowledge');
+  let catEl = document.getElementById('knowledge-cat');
+  if(!textEl || !textEl.value.trim()) return;
+  let list = getKnowledge();
+  let d = new Date();
+  list.unshift({
+    date: `${d.getMonth()+1}/${d.getDate()}`,
+    text: textEl.value.trim(),
+    cat: catEl ? catEl.value : '其他',
+    ts: Date.now()
+  });
+  saveKnowledge(list);
+  textEl.value = '';
+  renderKnowledge();
+}
+function deleteKnowledge(ts){
+  if(!confirm('删除这条知识？')) return;
+  let list = getKnowledge().filter(k => k.ts !== ts);
+  saveKnowledge(list);
+  renderKnowledge();
+}
+function renderKnowledge(){
+  let container = document.getElementById('knowledge-list');
+  if(!container) return;
+  let list = getKnowledge();
+  if(list.length === 0){
+    container.innerHTML = '<div class="card"><p style="color:var(--muted);font-size:.82rem;text-align:center;">📝 还没有知识记录<br><span style="font-size:.72rem;">学到什么就记什么～</span></p></div>';
+    return;
+  }
+  let catIcons = {'工作':'💼','护肤':'🧴','健康':'💪','生活':'🏠','工具':'🛠️','习惯':'🔄','饮食':'🍜','其他':'📌'};
+  // 按日期分组
+  let html = '';
+  list.forEach(k => {
+    html += `<div class="card" style="padding:12px 16px;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+        <span style="font-size:.75rem;color:var(--muted);">${k.date}</span>
+        <span class="tag tag-blue" style="font-size:.65rem;">${catIcons[k.cat]||'📌'} ${k.cat}</span>
+      </div>
+      <p style="font-size:.85rem;line-height:1.7;">${k.text}</p>
+      <button onclick="deleteKnowledge(${k.ts})" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:.7rem;padding:2px 0;opacity:.4;">🗑️ 删除</button>
     </div>`;
   });
   container.innerHTML = html;
@@ -1960,19 +2031,26 @@ P.social = `
 P.knowledge = `
 <div class="header"><h1>📚 知识迭代</h1></div>
 <div class="card">
-  <table>
-    <tr><th>日期</th><th>知识点</th><th>分类</th></tr>
-    <tr><td>7/28</td><td>白云山熊果苷乳霜(蓝)=早，烟酰胺凝胶(红)=晚</td><td>护肤</td></tr>
-    <tr><td>7/28</td><td>熊果苷白天用必须防晒</td><td>护肤</td></tr>
-    <tr><td>7/28</td><td>扎头发：分区扎+发抓辅助</td><td>生活</td></tr>
-    <tr><td>7/28</td><td>钩针伤手：设30分钟上限+拉伸</td><td>健康</td></tr>
-    <tr><td>7/29</td><td>个体户≠法人企业：无限责任 vs 有限责任</td><td>工作</td></tr>
-    <tr><td>7/29</td><td>时间书APP：小屏时间记录软件</td><td>工具</td></tr>
-    <tr><td>7/29</td><td>红果/番茄小说依赖：上厕所改看备忘录，卸载无用APP</td><td>习惯</td></tr>
-    <tr><td>7/30</td><td>睡好觉=重要项目：补觉3h+拔罐推拿后精气神恢复</td><td>健康</td></tr>
-    <tr><td>7/30</td><td>麻辣烫吃撑：下次不加满份油条或只加半条</td><td>饮食</td></tr>
-  </table>
+  <p style="font-size:.78rem;color:var(--muted);">学到的任何东西都可以记这里。先捕获，不急着分类。日后我来帮你整理。</p>
 </div>
+<div class="card">
+  <div class="card-title"><span class="ico">✏️</span>快速记录</div>
+  <textarea id="new-knowledge" placeholder="今天学到了什么？（如：个体户≠法人——无限责任 vs 有限责任）" style="width:100%;border:1px solid var(--border);border-radius:8px;padding:8px;font-size:.82rem;height:56px;font-family:inherit;"></textarea>
+  <div style="display:flex;gap:6px;margin-top:6px;">
+    <select id="knowledge-cat" style="border:1px solid var(--border);border-radius:8px;padding:6px;font-size:.78rem;background:#fff;">
+      <option value="工作">💼 工作</option>
+      <option value="护肤">🧴 护肤</option>
+      <option value="健康">💪 健康</option>
+      <option value="生活">🏠 生活</option>
+      <option value="工具">🛠️ 工具</option>
+      <option value="习惯">🔄 习惯</option>
+      <option value="饮食">🍜 饮食</option>
+      <option value="其他">📌 其他</option>
+    </select>
+    <button onclick="addKnowledge()" style="flex:1;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:6px;font-size:.82rem;cursor:pointer;">💾 保存</button>
+  </div>
+</div>
+<div id="knowledge-list"></div>
 <div class="card">
   <h3>我认同的道理</h3>
   <ul><li>低精力不是懒 · 完成比完美重要 · 休息是任务</li></ul>
@@ -2250,6 +2328,7 @@ function go(page){
   if(page === 'projects') setTimeout(renderProjects, 50);
   if(page === 'baby-star') setTimeout(renderPet, 50);
   if(page === 'baby-growth') setTimeout(renderBabyNotes, 50);
+  if(page === 'knowledge') setTimeout(renderKnowledge, 50);
   if(page === 'hobby-xhs') setTimeout(renderXHSContent, 50);
   
   window.scrollTo(0,0);
