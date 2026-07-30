@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="version" content="20260730-2158-v7">
+<meta name="version" content="20260730-2215-v8">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -460,11 +460,17 @@ function getKnowledge(){
         {date:'7/29',text:'红果/番茄小说依赖：上厕所改看备忘录，卸载无用APP',cat:'习惯',ts:7},
         {date:'7/30',text:'睡好觉=重要项目：补觉3h+拔罐推拿后精气神恢复',cat:'健康',ts:8},
         {date:'7/30',text:'麻辣烫吃撑：下次不加满份油条或只加半条',cat:'饮食',ts:9},
+        {date:'7/30',text:'厚涂椰子油护肤：洗澡时厚涂全身，洗完澡再洗掉（小红书学的）。不每天做，偷懒时跳过也OK',cat:'护肤',ts:10},
       ];
       localStorage.setItem('knowledge_v1', JSON.stringify(defaults));
       return defaults;
     }
-    return JSON.parse(raw);
+    let list = JSON.parse(raw);
+    if(!list.some(k => k.text.includes('椰子油'))){
+      list.unshift({date:'7/30',text:'厚涂椰子油护肤：洗澡时厚涂全身，洗完澡再洗掉（小红书学的）。不每天做，偷懒时跳过也OK',cat:'护肤',ts:Date.now()});
+      saveKnowledge(list);
+    }
+    return list;
   } catch(e){ return []; }
 }
 function saveKnowledge(list){
@@ -1796,10 +1802,61 @@ function toggleBuiltinSOP(){
 // 动态SOP（用户自己创建的）
 const sopIcons = ['🍳','🧹','🚗','💼','🌙','📝','🛒','💪','📚','🎨','💊','✈️','🐾','📱','🧶','📦','🏠'];
 
+function defaultDynamicSOPs(){
+  return {
+    'sop_morning_move': {
+      name: '早上床上拉伸',
+      icon: '💪',
+      items: [
+        {text:'猫趴式（猫牛式）3分钟', tag:'⭐'},
+        {text:'人面狮身式 2分钟', tag:'⭐'},
+        {text:'下犬式 1分钟', tag:'⭐'},
+        {text:'天鹅式拉伸-左 1分钟', tag:'⭐'},
+        {text:'天鹅式拉伸-右 1分钟', tag:'⭐'},
+        {text:'平板支撑 1分钟', tag:'⭐'},
+      ]
+    },
+    'sop_office': {
+      name: '到办公室安顿SOP',
+      icon: '💼',
+      items: [
+        {text:'出门前：从冰箱拿冻了半天的矿泉水瓶（或常温水+塞茶包）', tag:'⭐'},
+        {text:'到办公室先不坐，去茶水间/饮水机倒一杯热水', tag:'⭐'},
+        {text:'从茶叶罐挑一个快过期的，抓一点放进热水里', tag:'⭐'},
+        {text:'回到座位，把包放到椅子/旁边固定位置', tag:'⭐'},
+        {text:'外套挂到椅背或衣架', tag:'⭐'},
+        {text:'手机连上充电线', tag:'⭐'},
+        {text:'把桌面上所有东西（文件/杯子/杂物）全部挪到旁边', tag:'⭐'},
+        {text:'抽一张纸巾，桌面从左到右擦一遍，边角也擦', tag:'⭐'},
+        {text:'擦完把纸巾丢进垃圾桶', tag:'⭐'},
+        {text:'东西按"常用在上、不常用在下"放回', tag:'⭐'},
+        {text:'把昨天留下的杯子洗干净/归位', tag:'⭐'},
+        {text:'坐下，喝一口茶', tag:'⭐'},
+        {text:'有早饭→先吃（小笼包/面包）；没早饭→拿出毛线开始织', tag:'⭐'},
+        {text:'织10-15分钟或吃完早饭，再开电脑/叫号系统开始工作', tag:'🔶'},
+      ]
+    }
+  };
+}
+
 function getDynamicSOPs(){
   try {
     let raw = localStorage.getItem('all_sops_v2');
-    return raw ? JSON.parse(raw) : {};
+    let seeded = localStorage.getItem('sop_v2_seeded');
+    if(!raw){
+      let d = defaultDynamicSOPs();
+      localStorage.setItem('all_sops_v2', JSON.stringify(d));
+      localStorage.setItem('sop_v2_seeded','1');
+      return d;
+    }
+    let parsed = JSON.parse(raw);
+    if(!seeded){
+      let merged = Object.assign({}, defaultDynamicSOPs(), parsed);
+      localStorage.setItem('all_sops_v2', JSON.stringify(merged));
+      localStorage.setItem('sop_v2_seeded','1');
+      return merged;
+    }
+    return parsed;
   } catch(e){ return {}; }
 }
 function saveDynamicSOPs(sops){
@@ -2140,7 +2197,7 @@ const dailyRecords = {
       {text:'穿塑腿袜 🧦',done:false,archived:false},
     ],
     sleep: {mom:'7/29 00:20→7/30 11:30（含请假补觉3h）✅终于睡好了',baby:'和妈妈一起睡沙发'},
-    food: '晚上：体育馆麻辣烫（吃撑了，下次不加满份油条，或只加半条）',
+    food: '早餐：薄皮小笼包4个+阳面头1碗；午餐：西饼1个+洋面头1碗；晚餐：麻辣烫1碗（运动：无）',
     rambles: [
       {time:'昨晚',text:'沙发到了！摊开睡在沙发上，和宝宝一起'},
       {time:'早上',text:'送宝宝去学校后请假回家'},
