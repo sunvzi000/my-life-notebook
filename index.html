@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="version" content="20260729-2015-v3">
+<meta name="version" content="20260730-2119-v4">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -1970,7 +1970,7 @@ const dailyRecords = {
       {text:'早上送宝宝去学校',done:true},
       {text:'请假回家补觉（睡到11:30）',done:true},
       {text:'下午拔罐+刮痧推拿',done:true},
-      {text:'晚上织毛衣+看短视频',done:true},
+      {text:'晚上织毛衣（月神小吊带后片）',done:true},
     ],
     habits: [
       {text:'喝水+补剂+补药',done:false,archived:false},
@@ -2192,30 +2192,28 @@ function renderHome(){
   document.getElementById('home-greeting').textContent = greeting;
   
   // 渲染今日核心任务
-  let today = '2026-07-29';
+  let today = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
   loadTaskStates(today);
   let r = dailyRecords[today];
+  let el = document.getElementById('home-todos');
   if(r){
-    let html = '';
     let coreUndone = r.core.filter(t => !t.done);
-    let coreDone = r.core.filter(t => t.done);
-    coreUndone.forEach(t => {
-      let idx = r.core.indexOf(t);
-      html += `<div class="todo-item"><input type="checkbox" onchange="toggleCoreTodo(${idx})"><span>${t.text}</span></div>`;
-    });
-    if(coreDone.length > 0){
-      html += '<div style="margin-top:6px;padding-top:6px;border-top:1px dashed var(--border);"><p style="font-size:.7rem;color:var(--muted);margin-bottom:2px;">✅ 已完成</p>';
-      coreDone.forEach(t => {
+    if(coreUndone.length > 0){
+      let html = '';
+      coreUndone.forEach(t => {
         let idx = r.core.indexOf(t);
-        html += `<div class="todo-item done"><input type="checkbox" checked onchange="toggleCoreTodo(${idx})"><span>${t.text}</span></div>`;
+        html += `<div class="todo-item"><input type="checkbox" onchange="toggleCoreTodo(${idx})"><span>${t.text}</span></div>`;
       });
-      html += '</div>';
+      el.innerHTML = html;
+    } else {
+      el.innerHTML = '<p style="color:var(--muted);font-size:.82rem;text-align:center;padding:8px 0;">🎉 今天核心任务全部完成</p>';
     }
-    document.getElementById('home-todos').innerHTML = html;
     let totalCore = r.core.length;
-    let doneCore = coreDone.length;
+    let doneCore = r.core.filter(t => t.done).length;
     document.getElementById('task-count').textContent = doneCore+'/'+totalCore;
     document.getElementById('task-progress').style.width = (doneCore/totalCore*100)+'%';
+  } else {
+    el.innerHTML = '<p style="color:var(--muted);font-size:.82rem;text-align:center;padding:8px 0;">📝 今天还没有核心任务<br><span style="font-size:.72rem;">跟我说"帮我安排今天的任务"</span></p>';
   }
   
   // 渲染首页工作待办
