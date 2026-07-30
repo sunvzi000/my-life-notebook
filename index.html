@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="version" content="20260730-2119-v4">
+<meta name="version" content="20260730-2122-v5">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -1949,12 +1949,13 @@ const dailyRecords = {
       {text:'午睡20分钟',done:false},
     ],
     habits: [
-      {text:'喝水+补剂+补药',done:false,archived:false},
-      {text:'穿塑腿袜',done:false,archived:false},
-      {text:'滚泡沫轴放松',done:false,archived:false},
-      {text:'戴眼罩+固定作息',done:false,archived:false},
-      {text:'记录饮食与运动数据（时间书APP）',done:false,archived:false},
-      {text:'下午2点后不碰咖啡因',done:false,archived:false},
+      {text:'下午2点后不碰咖啡因 ☕',done:false,archived:false},
+      {text:'戴眼罩+22:30前躺下 🌙',done:false,archived:false},
+      {text:'喝水+补剂+补药 💊',done:false,archived:false},
+      {text:'滚泡沫轴5分钟 🦵',done:false,archived:false},
+      {text:'钩针/棒针不超过30分钟 ✋',done:false,archived:false},
+      {text:'记录饮食（时间书APP）📱',done:false,archived:false},
+      {text:'穿塑腿袜 🧦',done:false,archived:false},
     ],
     sleep: {mom:'待记录',baby:'待记录'},
     food: '待记录',
@@ -1973,12 +1974,13 @@ const dailyRecords = {
       {text:'晚上织毛衣（月神小吊带后片）',done:true},
     ],
     habits: [
-      {text:'喝水+补剂+补药',done:false,archived:false},
-      {text:'穿塑腿袜',done:false,archived:false},
-      {text:'滚泡沫轴放松',done:false,archived:false},
-      {text:'戴眼罩+固定作息',done:false,archived:false},
-      {text:'记录饮食与运动数据（时间书APP）',done:false,archived:false},
-      {text:'下午2点后不碰咖啡因',done:true,archived:false},
+      {text:'下午2点后不碰咖啡因 ☕',done:true,archived:false},
+      {text:'戴眼罩+22:30前躺下 🌙',done:false,archived:false},
+      {text:'喝水+补剂+补药 💊',done:false,archived:false},
+      {text:'滚泡沫轴5分钟 🦵',done:false,archived:false},
+      {text:'钩针/棒针不超过30分钟 ✋',done:false,archived:false},
+      {text:'记录饮食（时间书APP）📱',done:false,archived:false},
+      {text:'穿塑腿袜 🧦',done:false,archived:false},
     ],
     sleep: {mom:'7/29 00:20→7/30 11:30（含请假补觉3h）✅终于睡好了',baby:'和妈妈一起睡沙发'},
     food: '晚上：体育馆麻辣烫（吃撑了，下次不加满份油条，或只加半条）',
@@ -2004,15 +2006,13 @@ const dailyRecords = {
       {text:'清理办公室：定时15分钟→5分钟整理',done:false},
     ],
     habits: [
-      {text:'喝水+补剂+补药',done:false,archived:false},
-      {text:'穿塑腿袜',done:false,archived:false},
-      {text:'滚泡沫轴放松',done:false,archived:false},
-      {text:'戴眼罩+固定作息',done:false,archived:false},
-      {text:'慢速跑步锻炼',done:false,archived:false},
-      {text:'便签消耗管理（5张/天）',done:false,archived:false},
-      {text:'记录突发想法',done:false,archived:false},
-      {text:'记录饮食与运动数据（时间书APP）',done:false,archived:false},
-      {text:'下午2点后不碰咖啡因',done:false,archived:false},
+      {text:'下午2点后不碰咖啡因 ☕',done:false,archived:false},
+      {text:'戴眼罩+22:30前躺下 🌙',done:false,archived:false},
+      {text:'喝水+补剂+补药 💊',done:false,archived:false},
+      {text:'滚泡沫轴5分钟 🦵',done:false,archived:false},
+      {text:'钩针/棒针不超过30分钟 ✋',done:false,archived:false},
+      {text:'记录饮食（时间书APP）📱',done:false,archived:false},
+      {text:'穿塑腿袜 🧦',done:false,archived:false},
     ],
     sleep: {mom:'00:20→06:00 5h40m ❌差（多梦疲惫）',baby:'22:30→07:20 8h50m（中午学校睡1.5h）'},
     food: '早餐：糯米饭半碗+无糖豆浆；午餐：十足开花肠+白象老母鸡汤泡面；宝宝：糯米饭半碗+豆腐脑',
@@ -2220,6 +2220,8 @@ function renderHome(){
   renderHomeWorkTodos();
   // 渲染首页生活待办
   renderHomeLifeTodos();
+  // 渲染首页习惯打卡
+  renderHomeHabits();
   // 渲染宝宝今日日程
   renderBabyToday();
   // 渲染经期提醒
@@ -2278,6 +2280,64 @@ function toggleWorkTodoFromHome(key, idx){
   list[idx].done = !list[idx].done;
   saveTodoStates(key, list);
   renderHome();
+}
+
+// ====== 首页习惯打卡 ======
+function getTodayHabits(){
+  let d = new Date();
+  let today = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  let r = dailyRecords[today];
+  if(r && r.habits) return {date:today, habits:r.habits, record:r};
+  return {date:today, habits:[], record:null};
+}
+
+function renderHomeHabits(){
+  let el = document.getElementById('home-habits');
+  let countEl = document.getElementById('habit-count');
+  if(!el) return;
+  
+  let {date, habits, record} = getTodayHabits();
+  loadTaskStates(date);
+  
+  // 过滤掉已归档的
+  let active = habits.filter(h => !h.archived);
+  
+  if(active.length === 0){
+    el.innerHTML = '<p style="color:var(--muted);font-size:.82rem;text-align:center;padding:8px 0;">📝 还没有习惯<br><span style="font-size:.72rem;">跟我说"帮我添加习惯"</span></p>';
+    if(countEl) countEl.textContent = '';
+    return;
+  }
+  
+  let done = active.filter(h => h.done).length;
+  if(countEl) countEl.textContent = done + '/' + active.length;
+  
+  let html = '';
+  active.forEach((h, i) => {
+    let realIdx = habits.indexOf(h);
+    html += `<div class="todo-item${h.done?' done':''}" style="padding:6px 0;display:flex;align-items:center;gap:8px;">
+      <input type="checkbox" ${h.done?'checked':''} style="flex-shrink:0;" onchange="toggleHabit(${realIdx})">
+      <span style="flex:1;font-size:.84rem;${h.done?'color:var(--muted);':''}">${h.text}</span>
+      <button onclick="archiveHabit(${realIdx})" title="删除此习惯" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:.9rem;padding:2px 4px;flex-shrink:0;opacity:.5;">✕</button>
+    </div>`;
+  });
+  el.innerHTML = html;
+}
+
+function toggleHabit(i){
+  let {date, habits} = getTodayHabits();
+  if(!habits[i]) return;
+  habits[i].done = !habits[i].done;
+  saveTaskStates(date);
+  renderHomeHabits();
+}
+
+function archiveHabit(i){
+  let {date, habits} = getTodayHabits();
+  if(!habits[i]) return;
+  if(!confirm('删除习惯「' + habits[i].text + '」？')) return;
+  habits[i].archived = true;
+  saveTaskStates(date);
+  renderHomeHabits();
 }
 
 // ====== 宝宝今日日程 ======
