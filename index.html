@@ -2,154 +2,390 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="version" content="20260730-2221-v9">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="version" content="20260731-0700-v10-ui-redesign">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="我的生活手帐">
-<title>🌸 我的生活手帐</title>
+<meta name="apple-mobile-web-app-title" content="生活手帐">
+<meta name="theme-color" content="#faf9f7">
+<title>🌿 生活手帐</title>
 <style>
+/* ====== 设计系统 v2.0 ====== */
 :root{
-  --bg:#faf8f5;--card:#fff;--text:#333;--muted:#999;--accent:#e8a87c;
-  --accent2:#c38d9e;--green:#85b79d;--blue:#7ea8c9;--yellow:#e8d5a3;
-  --border:#f0ebe5;--shadow:0 2px 12px rgba(232,168,124,.08);
-  --radius:16px;
+  /* 配色 - 柔和温暖，不刺眼 */
+  --bg: #faf9f7;
+  --bg-warm: #f5f0ea;
+  --card: #ffffff;
+  --text: #3a3632;
+  --text-secondary: #6b6560;
+  --muted: #a09890;
+  --accent: #e89878;
+  --accent-light: #fef0ec;
+  --accent2: #c9919a;
+  --green: #7db88a;
+  --green-light: #edf7ef;
+  --blue: #7aa8c8;
+  --blue-light: #eef4f9;
+  --yellow: #e5c07a;
+  --yellow-light: #fdf6e8;
+  --red: #e07070;
+  --red-light: #fceeee;
+  --border: #ede8e3;
+  --shadow-sm: 0 1px 3px rgba(58,54,50,.06);
+  --shadow-md: 0 4px 16px rgba(58,54,50,.08);
+  --shadow-lg: 0 8px 30px rgba(58,54,50,.10);
+  --radius-sm: 12px;
+  --radius: 18px;
+  --radius-lg: 24px;
+  --nav-height: 68px;
 }
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);line-height:1.7;max-width:600px;margin:0 auto;padding:0 0 80px;}
 
-/* 顶部标题区 */
-.header{padding:24px 16px 8px;text-align:center;}
-.header h1{font-size:1.4rem;font-weight:700;}
-.header .date{font-size:.8rem;color:var(--muted);margin-top:4px;}
-.header .greeting{font-size:.85rem;color:var(--accent);margin-top:6px;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html{font-size:16px;-webkit-text-size-adjust:100%;}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.6;
+  max-width:600px;
+  margin:0 auto;
+  padding:0 0 calc(var(--nav-height) + env(safe-area-inset-bottom));
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
 
-/* 卡片 */
-.card{background:var(--card);border-radius:var(--radius);padding:16px;margin:0 16px 14px;box-shadow:var(--shadow);border:1px solid var(--border);}
-.card-title{font-size:.95rem;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
-.card-title .ico{font-size:1.1rem;}
+/* ====== 状态栏（首页顶部） ====== */
+.status-bar{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  padding:28px 20px 24px;
+  border-radius:0 0 var(--radius-lg) var(--radius-lg);
+  color:#fff;
+  position:relative;
+  overflow:hidden;
+}
+.status-bar::before{
+  content:'';
+  position:absolute;top:-30px;right:-30px;width:120px;height:120px;
+  background:rgba(255,255,255,.08);border-radius:50%;
+}
+.status-bar::after{
+  content:'';
+  position:absolute;bottom:-20px;left:-10px;width:80px;height:80px;
+  background:rgba(255,255,255,.06);border-radius:50%;
+}
+.status-bar .sb-date{font-size:.82rem;opacity:.85;margin-bottom:4px;}
+.status-bar .sb-greeting{font-size:1.25rem;font-weight:700;letter-spacing:.5px;}
+.status-bar .sb-energy{
+  display:inline-flex;align-items:center;gap:6px;
+  margin-top:8px;font-size:.8rem;background:rgba(255,255,255,.18);
+  padding:4px 12px;border-radius:20px;width:fit-content;
+}
+.status-bar .sb-dot{width:8px;height:8px;border-radius:50%;background:#7db88a;}
 
-/* 首页模块卡片网格 */
-.module-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:0 16px;}
-.mod-card{background:var(--card);border-radius:var(--radius);padding:18px 14px;text-align:center;box-shadow:var(--shadow);border:1px solid var(--border);cursor:pointer;transition:.2s;}
-.mod-card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(232,168,124,.15);}
-.mod-card .mod-ico{font-size:2rem;display:block;margin-bottom:8px;}
-.mod-card .mod-name{font-size:.9rem;font-weight:600;}
-.mod-card .mod-desc{font-size:.72rem;color:var(--muted);margin-top:4px;}
+/* ====== 页面标题（子页面） ====== */
+.page-header{
+  padding:24px 20px 16px;
+  display:flex;align-items:center;gap:10px;
+}
+.page-header h1{font-size:1.35rem;font-weight:700;color:var(--text);}
+.page-header .ph-icon{font-size:1.4rem;}
 
-/* 子页面入口按钮 */
-.sub-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px;}
-.sub-btn{background:var(--bg);border-radius:12px;padding:14px 8px;text-align:center;cursor:pointer;border:1px solid var(--border);transition:.2s;}
-.sub-btn:hover{background:#fff;border-color:var(--accent);}
-.sub-btn .sub-ico{font-size:1.5rem;display:block;margin-bottom:4px;}
-.sub-btn .sub-name{font-size:.78rem;color:#555;}
+/* ====== 卡片系统 ====== */
+.card{
+  background:var(--card);
+  border-radius:var(--radius);
+  padding:18px 18px;
+  margin:0 16px 14px;
+  box-shadow:var(--shadow-sm);
+  border:1px solid var(--border);
+  transition:box-shadow .2s;
+}
+.card:active{box-shadow:var(--shadow-md);}
+.card-title{
+  font-size:.92rem;font-weight:700;
+  margin-bottom:14px;display:flex;align-items:center;gap:8px;
+  color:var(--text);
+}
+.card-title .ico{font-size:1.15rem;flex-shrink:0;}
+.card-title .badge{
+  margin-left:auto;font-size:.7rem;font-weight:600;
+  padding:3px 10px;border-radius:10px;background:var(--bg-warm);color:var(--muted);
+}
 
-/* 信息行 */
-.info-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:.85rem;}
+/* ====== 首页模块网格 ====== */
+.module-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:0 16px;
+}
+.mod-card{
+  background:var(--card);border-radius:var(--radius);
+  padding:20px 14px;text-align:center;
+  box-shadow:var(--shadow-sm);border:1px solid var(--border);
+  cursor:pointer;transition:all .2s ease;
+  position:relative;overflow:hidden;
+}
+.mod-card::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));opacity:0;
+  transition:opacity .2s;
+}
+.mod-card:active{transform:scale(.97);box-shadow:var(--shadow-md);}
+.mod-card:active::after{opacity:1;}
+.mod-card .mod-ico{font-size:2.2rem;display:block;margin-bottom:8px;}
+.mod-card .mod-name{font-size:.88rem;font-weight:600;color:var(--text);}
+
+/* ====== 子页面入口按钮 ====== */
+.sub-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px;
+}
+.sub-btn{
+  background:var(--bg);border-radius:var(--radius-sm);
+  padding:16px 8px;text-align:center;
+  cursor:pointer;border:1px solid var(--border);
+  transition:all .15s;
+}
+.sub-btn:active{background:var(--accent-light);border-color:var(--accent);transform:scale(.96);}
+.sub-btn .sub-ico{font-size:1.6rem;display:block;margin-bottom:5px;}
+.sub-btn .sub-name{font-size:.76rem;color:var(--text-secondary);font-weight:500;}
+
+/* ====== 信息行 ====== */
+.info-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:10px 0;border-bottom:1px solid var(--border);
+  font-size:.86rem;
+}
 .info-row:last-child{border-bottom:none;}
-.info-row .label{color:var(--muted);}
-.info-row .value{font-weight:500;}
+.info-row .label{color:var(--muted);font-weight:400;}
+.info-row .value{font-weight:600;color:var(--text);}
 
-/* 表格 */
-table{width:100%;border-collapse:collapse;margin:8px 0;font-size:.82rem;}
-th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--border);}
-th{color:var(--muted);font-weight:normal;font-size:.75rem;}
+/* ====== 表格 ====== */
+table{width:100%;border-collapse:collapse;margin:8px 0;font-size:.83rem;}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--border);}
+th{color:var(--muted);font-weight:500;font-size:.74rem;text-transform:uppercase;letter-spacing:.5px;}
 
-/* 标签 */
-.tag{display:inline-block;padding:2px 10px;border-radius:12px;font-size:.72rem;}
-.tag-red{background:#fce4ec;color:#c62828;}
-.tag-green{background:#e8f5e9;color:#2e7d32;}
-.tag-yellow{background:#fff3e0;color:#e65100;}
-.tag-blue{background:#e3f2fd;color:#1565c0;}
+/* ====== 标签 ====== */
+.tag{display:inline-block;padding:3px 11px;border-radius:20px;font-size:.72rem;font-weight:500;}
+.tag-red{background:var(--red-light);color:var(--red);}
+.tag-green{background:var(--green-light);color:#4a8a5a;}
+.tag-yellow{background:var(--yellow-light);color:#b08830;}
+.tag-blue{background:var(--blue-light);color:#4a7ca0;}
+.tag-muted{background:#f0eeea;color:var(--muted);}
 
-/* 引用 */
-blockquote{padding:12px 16px;background:#fff8e1;border-left:3px solid var(--yellow);border-radius:0 12px 12px 0;font-size:.82rem;color:#888;margin:10px 0;}
+/* ====== 引用/提示框 ====== */
+blockquote{
+  padding:14px 16px;background:var(--yellow-light);
+  border-left:4px solid var(--yellow);
+  border-radius:0 var(--radius-sm) var(--radius-sm) 0;
+  font-size:.83rem;color:var(--text-secondary);margin:12px 0;line-height:1.7;
+}
+blockquote.accent{
+  background:var(--accent-light);border-left-color:var(--accent);
+  color:var(--text-secondary);
+}
 
-/* 返回按钮 */
-.back{display:inline-flex;align-items:center;gap:4px;color:var(--accent);cursor:pointer;font-size:.85rem;padding:8px 0;margin-bottom:8px;}
-.back:hover{color:var(--accent2);}
+/* ====== 返回按钮 ====== */
+.back{
+  display:inline-flex;align-items:center;gap:6px;
+  color:var(--accent);cursor:pointer;font-size:.86rem;
+  padding:10px 4px;font-weight:500;
+}
+.back:active{opacity:.7;}
 
-/* 待办 */
-.todo-item{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--border);font-size:.88rem;}
+/* ====== 待办项（核心交互组件）====== */
+.todo-item{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 4px;border-bottom:1px solid var(--border);
+  font-size:.88rem;transition:opacity .2s;
+}
 .todo-item:last-child{border-bottom:none;}
-.todo-item input{width:18px;height:18px;accent-color:var(--accent);}
-.todo-item.done{text-decoration:line-through;color:var(--muted);}
+.todo-item.done{opacity:.45;}
+.todo-item.done span{text-decoration:line-through;color:var(--muted);}
+.todo-item input[type=checkbox]{
+  width:22px;height:22px;min-width:22px;
+  accent-color:var(--accent);cursor:pointer;
+  border-radius:6px;
+}
 
-/* 底部导航 */
-.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:600px;background:var(--card);border-top:1px solid var(--border);display:flex;justify-content:space-around;padding:8px 0;z-index:100;}
-.nav-btn{border:none;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--muted);font-size:.72rem;padding:4px 12px;transition:.2s;}
-.nav-btn .nav-ico{font-size:1.3rem;}
-.nav-btn.active{color:var(--accent);font-weight:600;}
+/* ====== 底部导航栏 ====== */
+.nav{
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:600px;
+  background:rgba(255,255,255,.92);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-top:1px solid var(--border);
+  display:flex;justify-content:space-around;align-items:center;
+  padding:6px 0 calc(6px + env(safe-area-inset-bottom));
+  z-index:100;
+}
+.nav-btn{
+  border:none;background:none;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  color:var(--muted);font-size:.68rem;padding:6px 10px;
+  transition:all .2s;position:relative;
+}
+.nav-btn .nav-ico{font-size:1.4rem;transition:transform .2s;}
+.nav-btn.active{color:var(--accent);}
+.nav-btn.active .nav-ico{transform:scale(1.1);}
 
-/* 页面 */
+/* ====== 页面切换 ====== */
 .page{display:none;}
-.page.active{display:block;}
+.page.active{display:block;animation:fadeIn .2s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
 
-/* 进度条 */
-.progress{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:8px;}
-.progress .fill{height:100%;background:var(--accent);transition:.3s;border-radius:3px;}
+/* ====== 进度条 ====== */
+.progress{
+  height:7px;background:var(--border);border-radius:4px;
+  overflow:hidden;margin-top:10px;
+}
+.progress .fill{
+  height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));
+  border-radius:4px;transition:width .4s cubic-bezier(.4,0,.2,1);
+}
 
-/* 日期卡片 */
-.day-card{background:var(--card);border-radius:var(--radius);padding:14px 16px;margin:0 16px 10px;box-shadow:var(--shadow);border:1px solid var(--border);cursor:pointer;transition:.2s;}
-.day-card:hover{transform:translateY(-1px);}
-.day-card .day-date{font-size:.95rem;font-weight:600;}
+/* ====== 日期卡片 ====== */
+.day-card{
+  background:var(--card);border-radius:var(--radius);
+  padding:16px 18px;margin:0 16px 12px;
+  box-shadow:var(--shadow-sm);border:1px solid var(--border);
+  cursor:pointer;transition:all .2s;
+}
+.day-card:active{transform:scale(.98);box-shadow:var(--shadow-md);}
+.day-card .day-date{font-size:.95rem;font-weight:700;}
 .day-card .day-info{font-size:.78rem;color:var(--muted);margin-top:4px;}
 
-hr{border:none;border-top:1px solid var(--border);margin:16px 0;}
+/* ====== 通用元素 ====== */
+hr{border:none;border-top:1px solid var(--border);margin:18px 0;}
+h2{font-size:1.08rem;margin:22px 16px 12px;color:var(--accent2);font-weight:700;}
+h3{font-size:.94rem;margin:16px 0 8px;color:var(--text);font-weight:600;}
+p{font-size:.86rem;color:var(--text-secondary);line-height:1.7;}
+ul,ol{padding-left:20px;margin:8px 0;font-size:.86rem;color:var(--text-secondary);}
+li{margin-bottom:4px;}
 
-/* 内容区通用 */
-h2{font-size:1.05rem;margin:20px 16px 10px;color:var(--accent2);}
-h3{font-size:.95rem;margin:14px 0 6px;}
-p{font-size:.85rem;color:#555;}
-ul,ol{padding-left:20px;margin:6px 0;font-size:.85rem;color:#555;}
+/* ====== 输入框 & 按钮 ====== */
+input[type=text],input[type=date],textarea,select{
+  width:100%;border:1.5px solid var(--border);border-radius:var(--radius-sm);
+  padding:10px 14px;font-size:.85rem;font-family:inherit;
+  background:var(--card);color:var(--text);
+  transition:border-color .2s;
+}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent);}
+textarea{resize:vertical;min-height:80px;}
+button{
+  cursor:pointer;font-family:inherit;border:none;
+  transition:all .15s;-webkit-tap-highlight-color:transparent;
+}
+button:active{transform:scale(.97);}
+
+/* 主要按钮 */
+.btn-primary{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;border-radius:var(--radius-sm);
+  padding:11px 18px;font-size:.85rem;font-weight:600;
+  box-shadow:0 2px 8px rgba(232,152,120,.3);
+}
+.btn-primary:active{box-shadow:0 1px 4px rgba(232,152,120,.3);}
+
+/* 次要按钮 */
+.btn-secondary{
+  background:var(--bg-warm);color:var(--text);
+  border-radius:var(--radius-sm);padding:10px 16px;font-size:.84rem;font-weight:500;
+}
+
+/* 危险按钮 */
+.btn-danger{
+  background:var(--red-light);color:var(--red);
+  border-radius:var(--radius-sm);padding:10px 14px;font-size:.8rem;
+}
+
+/* ====== 宠物区域特殊样式 ====== */
+.pet-area-bg{
+  background:linear-gradient(145deg,#e8f4fc,#f0e8f8);
+  border-radius:var(--radius-lg);padding:28px 20px;text-align:center;
+  position:relative;overflow:hidden;
+}
+.pet-area-bg::before{
+  content:'';position:absolute;top:-20px;right:-20px;
+  width:100px;height:100px;background:rgba(126,168,200,.12);border-radius:50%;
+}
+
+/* ====== 空状态 ====== */
+.empty-state{
+  text-align:center;padding:32px 20px;color:var(--muted);
+}
+.empty-state .empty-icon{font-size:2.5rem;margin-bottom:10px;opacity:.5;}
+.empty-state p{font-size:.84rem;color:var(--muted);}
+
+/* ====== Toast 提示 ====== */
+.toast{
+  position:fixed;bottom:calc(var(--nav-height) + 20px);
+  left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--text);color:#fff;
+  padding:12px 24px;border-radius:24px;
+  font-size:.84rem;font-weight:500;z-index:999;
+  opacity:0;transition:all .3s;pointer-events:none;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ====== 滚动条美化 ====== */
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+
+/* ====== 安全区域适配 ====== */
+@supports(padding:env(safe-area-inset-bottom)){
+  .nav{padding-bottom:env(safe-area-inset-bottom);}
+}
 </style>
 </head>
 <body>
 
 <div id="app"></div>
 
+<!-- 底部导航 -->
 <nav class="nav">
-  <button class="nav-btn active" onclick="go('home')"><span class="nav-ico">🏠</span>首页</button>
-  <button class="nav-btn" onclick="go('daily')"><span class="nav-ico">📅</span>每日</button>
-  <button class="nav-btn" onclick="go('modules')"><span class="nav-ico">🗂️</span>模块</button>
-  <button class="nav-btn" onclick="go('chat')"><span class="nav-ico">💬</span>对话</button>
-  <button class="nav-btn" onclick="go('me')"><span class="nav-ico">🌿</span>我的</button>
+  <button class="nav-btn active" onclick="go('home')"><span class="nav-ico">🏠</span><span>首页</span></button>
+  <button class="nav-btn" onclick="go('daily')"><span class="nav-ico">📅</span><span>每日</span></button>
+  <button class="nav-btn" onclick="go('modules')"><span class="nav-ico">🗂️</span><span>模块</span></button>
+  <button class="nav-btn" onclick="go('chat')"><span class="nav-ico">✏️</span><span>记事</span></button>
+  <button class="nav-btn" onclick="go('me')"><span class="nav-ico">⚙️</span><span>我的</span></button>
 </nav>
+
+<!-- Toast -->
+<div id="copy-toast" class="toast"></div>
 
 <script>
 // ====== 页面内容数据 ======
 const P = {};
 
-// ========== 首页（今日看板） ==========
+// ========== 首页 ==========
 P.home = `
-<div class="header">
-  <h1>🌸 我的生活手帐</h1>
-  <div class="date" id="home-date"></div>
-  <div class="greeting" id="home-greeting"></div>
+<div class="status-bar">
+  <div class="sb-date" id="home-date"></div>
+  <div class="sb-greeting" id="home-greeting"></div>
+  <div class="sb-energy"><span class="sb-dot"></span><span id="energy-hint">今日状态</span></div>
 </div>
 
+<div style="height:12px;"></div>
+
 <div class="card">
-  <div class="card-title"><span class="ico">✅</span>核心任务 <span style="margin-left:auto;font-size:.75rem;color:var(--muted);" id="task-count"></span></div>
+  <div class="card-title"><span class="ico">✅</span>今日核心任务<span class="badge" id="task-count"></span></div>
   <div id="home-todos"></div>
   <div class="progress"><div class="fill" id="task-progress"></div></div>
 </div>
 
 <div class="card">
-  <div class="card-title"><span class="ico">🔄</span>习惯打卡 <span style="margin-left:auto;font-size:.72rem;color:var(--muted);" id="habit-count"></span></div>
+  <div class="card-title"><span class="ico">🔄</span>习惯打卡<span class="badge" id="habit-count"></span></div>
   <div id="home-habits"></div>
-  <p style="font-size:.68rem;color:var(--muted);margin-top:6px;">💡 习惯可以不做，做了就是加分。长期坚持后跟我说"归档XX习惯"。</p>
+  <p style="font-size:.72rem;color:var(--muted);margin-top:10px;">💡 做了就是加分，不做也没关系</p>
 </div>
 
 <div class="card">
-  <div class="card-title"><span class="ico">💼</span>工作待办 <span style="margin-left:auto;font-size:.72rem;cursor:pointer;color:var(--accent);" onclick="go('work')">查看全部 →</span></div>
+  <div class="card-title"><span class="ico">💼</span>工作待办<span class="badge" style="cursor:pointer;color:var(--accent);" onclick="go('work')">全部 →</span></div>
   <div id="home-work-todos"></div>
 </div>
 
 <div class="card">
-  <div class="card-title"><span class="ico">🏠</span>生活待办 <span style="margin-left:auto;font-size:.72rem;cursor:pointer;color:var(--accent);" onclick="go('work')">查看全部 →</span></div>
+  <div class="card-title"><span class="ico">🏠</span>生活待办<span class="badge" style="cursor:pointer;color:var(--accent);" onclick="go('work')">全部 →</span></div>
   <div id="home-life-todos"></div>
 </div>
 
@@ -169,1264 +405,16 @@ P.home = `
 </div>
 `;
 
-// ========== 宝宝档案 ==========
-P.baby = `
-<div class="header"><h1>👶 小松鼠档案</h1></div>
-<div class="card">
-  <div class="card-title"><span class="ico">📋</span>基本信息</div>
-  <div class="info-row"><span class="label">小名</span><span class="value">小松鼠</span></div>
-  <div class="info-row"><span class="label">出生</span><span class="value">2020年5月</span></div>
-  <div class="info-row"><span class="label">年龄</span><span class="value">6岁 · 下半年上小学 🎒</span></div>
-  <div class="info-row"><span class="label">日常用药</span><span class="value">优甲乐</span></div>
-  <div class="info-row"><span class="label">暑假班</span><span class="value">7/6-8/22（可能延期）</span></div>
-  <div class="info-row"><span class="label">游泳班</span><span class="value">7/16-7/31 18:50-20:10（剩3天）</span></div>
-  <div class="info-row"><span class="label">睡前仪式</span><span class="value">iPad 10分钟→读2页书→约22:30睡</span></div>
-</div>
-<div class="sub-grid">
-  <div class="sub-btn" onclick="go('baby-star')"><span class="sub-ico">⭐</span><span class="sub-name">星星银行</span></div>
-  <div class="sub-btn" onclick="go('baby-sleep')"><span class="sub-ico">💤</span><span class="sub-name">睡眠记录</span></div>
-  <div class="sub-btn" onclick="go('baby-schedule')"><span class="sub-ico">📅</span><span class="sub-name">课程表</span></div>
-  <div class="sub-btn" onclick="go('baby-growth')"><span class="sub-ico">📝</span><span class="sub-name">成长记录</span></div>
-  <div class="sub-btn" onclick="go('baby-health')"><span class="sub-ico">🏥</span><span class="sub-name">健康记录</span></div>
-</div>
-`;
-
-P['baby-star'] = `
-<div class="header"><h1>⭐ 星星银行 · 卡皮巴拉养成</h1></div>
-
-<div class="card" style="text-align:center;background:linear-gradient(135deg,#e3f2fd,#f0f8ff);">
-  <div id="pet-area" style="font-size:5rem;line-height:1.4;">🦫</div>
-  <p id="pet-name" style="font-size:1rem;font-weight:700;color:#4a90d9;">小蓝（卡皮巴拉）</p>
-  <p id="pet-mood" style="font-size:.82rem;color:#7ea8c9;">😀 状态：还不错</p>
-  <p id="pet-level" style="font-size:.72rem;color:var(--muted);">Level 1 · 喂养进度：0/10⭐</p>
-</div>
-
-<div class="card" style="text-align:center;">
-  <p style="font-size:.82rem;color:var(--muted);">星星余额</p>
-  <p style="font-size:2rem;font-weight:700;color:#c62828;margin:4px 0;">-52 ⭐</p>
-  <p style="font-size:.75rem;color:var(--muted);">负债中 · 每天赚的星优先还债 · 汇率1元=2星</p>
-</div>
-
-<div class="card">
-  <div class="card-title"><span class="ico">🍎</span>给小蓝喂食</div>
-  <p style="font-size:.78rem;color:var(--muted);margin-bottom:8px;">用星星给小蓝买食物，不同食物加不同心情值：</p>
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">
-    <button class="pet-food-btn" onclick="feedPet('apple')" style="background:#fff5f5;border:1px solid var(--border);border-radius:10px;padding:10px 4px;cursor:pointer;text-align:center;">
-      <div style="font-size:1.4rem;">🍎</div>
-      <div style="font-size:.72rem;">苹果</div>
-      <div style="font-size:.68rem;color:var(--accent);">-2⭐</div>
-    </button>
-    <button class="pet-food-btn" onclick="feedPet('cake')" style="background:#fff5f5;border:1px solid var(--border);border-radius:10px;padding:10px 4px;cursor:pointer;text-align:center;">
-      <div style="font-size:1.4rem;">🍰</div>
-      <div style="font-size:.72rem;">蛋糕</div>
-      <div style="font-size:.68rem;color:var(--accent);">-5⭐</div>
-    </button>
-    <button class="pet-food-btn" onclick="feedPet('bath')" style="background:#f0f8ff;border:1px solid var(--border);border-radius:10px;padding:10px 4px;cursor:pointer;text-align:center;">
-      <div style="font-size:1.4rem;">🛁</div>
-      <div style="font-size:.72rem;">泡澡</div>
-      <div style="font-size:.68rem;color:var(--blue);">-3⭐</div>
-    </button>
-  </div>
-  <p id="feed-msg" style="font-size:.75rem;color:var(--muted);margin-top:8px;text-align:center;"></p>
-</div>
-
-<div class="card">
-  <div class="card-title"><span class="ico">📊</span>小蓝的状态</div>
-  <div class="info-row"><span class="label">心情值</span><span class="value" id="pet-happiness">50/100</span></div>
-  <div class="progress" style="margin:4px 0;"><div class="fill" id="pet-happiness-bar" style="width:50%;background:var(--blue);"></div></div>
-  <div class="info-row"><span class="label">等级</span><span class="value" id="pet-lv">Lv.1</span></div>
-  <div class="info-row"><span class="label">累计喂食</span><span class="value" id="pet-fed">0 次</span></div>
-</div>
-
-<div class="card">
-  <div class="card-title"><span class="ico">📈</span>星星明细</div>
-  <table>
-    <tr><th>日期</th><th>事项</th><th>变动</th><th>余额</th></tr>
-    <tr><td>7/8</td><td>初始+200，兑换大枪-300，打扫+5，自理+5，刷牙-2，数独+2，竖式+2，逻辑+1，练字+3，iPad-2</td><td>-86</td><td>-86</td></tr>
-    <tr><td>7/9</td><td>洗澡+2，刷牙+2，9:30前睡+2</td><td>+6</td><td>-80</td></tr>
-    <tr><td>7/10</td><td>写拼音+5，数学逻辑+2</td><td>+7</td><td>-73</td></tr>
-    <tr><td>7/11</td><td>练字+2，拼音+5，吃饭+2</td><td>+9</td><td>-64</td></tr>
-    <tr><td>7/15</td><td>作业全对+10，9:30前睡+2</td><td>+12</td><td>-52</td></tr>
-    <tr><td>7/16-28</td><td>无新增</td><td>0</td><td>-52</td></tr>
-  </table>
-</div>
-
-<div class="card">
-  <div class="card-title"><span class="ico">⭐</span>奖励规则</div>
-  <table>
-    <tr><th>类别</th><th>项目</th><th>奖励</th><th>封顶</th></tr>
-    <tr><td>生活</td><td>自己洗澡/认真刷牙</td><td>+2</td><td>—</td></tr>
-    <tr><td>生活</td><td>自理全套</td><td>+5</td><td>日1次</td></tr>
-    <tr><td>生活</td><td>9:30前睡/9:00前睡</td><td>+2/+3</td><td>—</td></tr>
-    <tr><td>学业</td><td>数独/竖式/练字/拼音等</td><td>+1~10</td><td>日+10</td></tr>
-    <tr><td>运动</td><td>跳绳100个/每+50个+1</td><td>+2起</td><td>日+5</td></tr>
-    <tr><td>抢答</td><td>古诗/单词/认字/RAZ</td><td>+1~10</td><td>各有限额</td></tr>
-  </table>
-</div>
-
-<div class="card">
-  <div class="card-title"><span class="ico">❌</span>罚款与兑换</div>
-  <table>
-    <tr><th>项目</th><th>消耗</th></tr>
-    <tr><td>没认真刷牙</td><td>-2</td></tr>
-    <tr><td>iPad多看视频</td><td>-2</td></tr>
-    <tr><td>实物礼物</td><td>1元=2星</td></tr>
-    <tr><td>加游戏时间10分钟</td><td>-5星（日限1次）</td></tr>
-    <tr><td>加睡前故事1本</td><td>-2星（日限1次）</td></tr>
-  </table>
-  <blockquote>📌 余额为负时，每天赚的星星优先还债。🔔 WorkBuddy每晚睡前提醒统计。</blockquote>
-</div>
-`;
-
-// 宠物系统
-const petState = {
-  balance: -52,
-  happiness: 50,
-  level: 1,
-  fedCount: 0,
-  progress: 0, // 当前等级进度 0-10
-};
-
-function loadPetState(){
-  try {
-    let saved = JSON.parse(localStorage.getItem('pet_state'));
-    if(saved) Object.assign(petState, saved);
-  } catch(e){}
-}
-function savePetState(){
-  localStorage.setItem('pet_state', JSON.stringify(petState));
-}
-
-function feedPet(food){
-  loadPetState();
-  let costs = {apple:2, cake:5, bath:3};
-  let happiness = {apple:5, cake:15, bath:8};
-  let names = {apple:'🍎苹果', cake:'🍰蛋糕', bath:'🛁泡澡'};
-  let cost = costs[food];
-  
-  if(petState.balance < 0){
-    document.getElementById('feed-msg').innerHTML = '⚠️ 星星负债中（'+petState.balance+'⭐），先还债才能喂小蓝哦！';
-    return;
-  }
-  if(petState.balance < cost){
-    document.getElementById('feed-msg').innerHTML = '⚠️ 星星不够！需要'+cost+'⭐，当前只有'+petState.balance+'⭐';
-    return;
-  }
-  
-  petState.balance -= cost;
-  petState.happiness = Math.min(100, petState.happiness + happiness[food]);
-  petState.fedCount++;
-  petState.progress++;
-  
-  // 升级
-  if(petState.progress >= 10){
-    petState.level++;
-    petState.progress = 0;
-    document.getElementById('feed-msg').innerHTML = '🎉 小蓝升级了！现在是 Lv.'+petState.level+'！';
-  } else {
-    document.getElementById('feed-msg').innerHTML = names[food]+' 喂食成功！小蓝好开心~ (+'+happiness[food]+'心情)';
-  }
-  
-  savePetState();
-  renderPet();
-}
-
-function renderXHSContent(){
-  let el = document.getElementById('xhs-text-yueshen');
-  if(!el) return;
-  let d = new Date();
-  let dateStr = `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`;
-  el.textContent = `🌟 月神小吊带 · 编织日记
-
-📅 ${dateStr}
-
-进度更新：
-✅ 前片 — 完成
-🧵 后片（后背片）— 进行中 🔥
-⏳ 连接前后片
-⏳ 身体部分
-⏳ 底边
-⏳ 领边
-⏳ 吊带
-
-目前完成了 1/7，正在努力织后片～
-
-每完成一个部分就来打卡！
-等我做完一定要拍上身照 📸
-
-#手工编织 #钩针 #月神小吊带 #手作日常 #编织打卡 #毛线 #手工diy`;
-}
-
-function copyXHS(elId){
-  let el = document.getElementById(elId);
-  if(!el) return;
-  navigator.clipboard.writeText(el.textContent).then(() => {
-    alert('✅ 已复制到剪贴板！去小红书粘贴吧～');
-  }).catch(() => {
-    // Fallback
-    let ta = document.createElement('textarea');
-    ta.value = el.textContent;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    alert('✅ 已复制到剪贴板！去小红书粘贴吧～');
-  });
-}
-
-// ====== 宝宝成长笔记 ======
-function getBabyNotes(){
-  try {
-    let raw = localStorage.getItem('baby_notes_v1');
-    if(!raw){
-      // 初始化默认数据
-      let defaults = [
-        {date:'7/30',text:'游泳课最后一天！游完跟我说"妈妈我今天游了1000米"。我说我不信，25×20明明是500米。他说不是，是游了20圈。我在群里问老师，老师说泳池25米，一圈50米，20圈真的是1000米。我去跟朋友炫耀——他才6岁，比我还能游！🏊',type:'运动',ts:1},
-        {date:'7/29',text:'7:20起床，还很困。早餐吃糯米饭半碗+豆腐脑，8:25到校（稍迟）。',type:'日常',ts:2},
-        {date:'7/28',text:'早上5个小笼包+豆腐脑+脆角',type:'日常',ts:3},
-        {date:'7/28',text:'图书馆写作业，思维作业错2题（粗心）',type:'学业',ts:4},
-        {date:'7/28',text:'第3天不想游泳，请假去上社区课',type:'情绪',ts:5},
-        {date:'7/28',text:'KFC圣代，约定一周最多2次冰淇淋',type:'日常',ts:6},
-        {date:'7/28',text:'爸爸洗澡+监督作业+iPad10分钟+读2页书',type:'日常',ts:7},
-      ];
-      localStorage.setItem('baby_notes_v1', JSON.stringify(defaults));
-      return defaults;
-    }
-    return JSON.parse(raw);
-  } catch(e){ return []; }
-}
-function saveBabyNotes(notes){
-  localStorage.setItem('baby_notes_v1', JSON.stringify(notes));
-}
-function addBabyNote(){
-  let textEl = document.getElementById('new-baby-note');
-  let typeEl = document.getElementById('baby-note-type');
-  if(!textEl || !textEl.value.trim()) return;
-  let notes = getBabyNotes();
-  let d = new Date();
-  let dateStr = `${d.getMonth()+1}/${d.getDate()}`;
-  notes.unshift({
-    date: dateStr,
-    text: textEl.value.trim(),
-    type: typeEl ? typeEl.value : '趣事',
-    ts: Date.now()
-  });
-  saveBabyNotes(notes);
-  textEl.value = '';
-  renderBabyNotes();
-}
-function deleteBabyNote(ts){
-  if(!confirm('删除这条记录？')) return;
-  let notes = getBabyNotes();
-  notes = notes.filter(n => n.ts !== ts);
-  saveBabyNotes(notes);
-  renderBabyNotes();
-}
-function renderBabyNotes(){
-  let container = document.getElementById('baby-notes-list');
-  if(!container) return;
-  let notes = getBabyNotes();
-  if(notes.length === 0){
-    container.innerHTML = '<div class="card"><p style="color:var(--muted);font-size:.82rem;text-align:center;">📝 还没有记录<br><span style="font-size:.72rem;">在上面输入宝宝的趣事吧～</span></p></div>';
-    return;
-  }
-  let typeIcons = {'趣事':'😆','成长':'🌱','学业':'📚','运动':'🏊','感动':'💕','其他':'📌'};
-  let html = '';
-  notes.forEach(n => {
-    html += `<div class="card" style="padding:12px 16px;">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
-        <span style="font-size:.75rem;color:var(--muted);">${n.date}</span>
-        <span class="tag tag-blue" style="font-size:.65rem;">${typeIcons[n.type]||'📌'} ${n.type}</span>
-      </div>
-      <p style="font-size:.85rem;line-height:1.7;">${n.text}</p>
-      <button onclick="deleteBabyNote(${n.ts})" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:.7rem;padding:2px 0;opacity:.4;">🗑️ 删除</button>
-    </div>`;
-  });
-  container.innerHTML = html;
-}
-
-// ====== 知识迭代 ======
-function getKnowledge(){
-  try {
-    let raw = localStorage.getItem('knowledge_v1');
-    if(!raw){
-      let defaults = [
-        {date:'7/28',text:'白云山熊果苷乳霜(蓝)=早，烟酰胺凝胶(红)=晚',cat:'护肤',ts:1},
-        {date:'7/28',text:'熊果苷白天用必须防晒',cat:'护肤',ts:2},
-        {date:'7/28',text:'扎头发：分区扎+发抓辅助',cat:'生活',ts:3},
-        {date:'7/28',text:'钩针伤手：设30分钟上限+拉伸',cat:'健康',ts:4},
-        {date:'7/29',text:'个体户≠法人企业：无限责任 vs 有限责任',cat:'工作',ts:5},
-        {date:'7/29',text:'时间书APP：小屏时间记录软件',cat:'工具',ts:6},
-        {date:'7/29',text:'红果/番茄小说依赖：上厕所改看备忘录，卸载无用APP',cat:'习惯',ts:7},
-        {date:'7/30',text:'睡好觉=重要项目：补觉3h+拔罐推拿后精气神恢复',cat:'健康',ts:8},
-        {date:'7/30',text:'麻辣烫吃撑：下次不加满份油条或只加半条',cat:'饮食',ts:9},
-        {date:'7/30',text:'厚涂椰子油护肤：洗澡时厚涂全身，洗完澡再洗掉（小红书学的）。不每天做，偷懒时跳过也OK',cat:'护肤',ts:10},
-      ];
-      localStorage.setItem('knowledge_v1', JSON.stringify(defaults));
-      return defaults;
-    }
-    let list = JSON.parse(raw);
-    if(!list.some(k => k.text.includes('椰子油'))){
-      list.unshift({date:'7/30',text:'厚涂椰子油护肤：洗澡时厚涂全身，洗完澡再洗掉（小红书学的）。不每天做，偷懒时跳过也OK',cat:'护肤',ts:Date.now()});
-      saveKnowledge(list);
-    }
-    return list;
-  } catch(e){ return []; }
-}
-function saveKnowledge(list){
-  localStorage.setItem('knowledge_v1', JSON.stringify(list));
-}
-function addKnowledge(){
-  let textEl = document.getElementById('new-knowledge');
-  let catEl = document.getElementById('knowledge-cat');
-  if(!textEl || !textEl.value.trim()) return;
-  let list = getKnowledge();
-  let d = new Date();
-  list.unshift({
-    date: `${d.getMonth()+1}/${d.getDate()}`,
-    text: textEl.value.trim(),
-    cat: catEl ? catEl.value : '其他',
-    ts: Date.now()
-  });
-  saveKnowledge(list);
-  textEl.value = '';
-  renderKnowledge();
-}
-function deleteKnowledge(ts){
-  if(!confirm('删除这条知识？')) return;
-  let list = getKnowledge().filter(k => k.ts !== ts);
-  saveKnowledge(list);
-  renderKnowledge();
-}
-function renderKnowledge(){
-  let container = document.getElementById('knowledge-list');
-  if(!container) return;
-  let list = getKnowledge();
-  if(list.length === 0){
-    container.innerHTML = '<div class="card"><p style="color:var(--muted);font-size:.82rem;text-align:center;">📝 还没有知识记录<br><span style="font-size:.72rem;">学到什么就记什么～</span></p></div>';
-    return;
-  }
-  let catIcons = {'工作':'💼','护肤':'🧴','健康':'💪','生活':'🏠','工具':'🛠️','习惯':'🔄','饮食':'🍜','其他':'📌'};
-  // 按日期分组
-  let html = '';
-  list.forEach(k => {
-    html += `<div class="card" style="padding:12px 16px;">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
-        <span style="font-size:.75rem;color:var(--muted);">${k.date}</span>
-        <span class="tag tag-blue" style="font-size:.65rem;">${catIcons[k.cat]||'📌'} ${k.cat}</span>
-      </div>
-      <p style="font-size:.85rem;line-height:1.7;">${k.text}</p>
-      <button onclick="deleteKnowledge(${k.ts})" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:.7rem;padding:2px 0;opacity:.4;">🗑️ 删除</button>
-    </div>`;
-  });
-  container.innerHTML = html;
-}
-
-function renderPet(){
-  loadPetState();
-  let moodText = '';
-  let moodEmoji = '';
-  if(petState.happiness >= 80){moodText='超级开心';moodEmoji='🥰';}
-  else if(petState.happiness >= 60){moodText='很开心';moodEmoji='😊';}
-  else if(petState.happiness >= 40){moodText='还不错';moodEmoji='😀';}
-  else if(petState.happiness >= 20){moodText='有点饿';moodEmoji='😐';}
-  else {moodText='快饿扁了';moodEmoji='😢';}
-  
-  let el;
-  el = document.getElementById('pet-mood'); if(el) el.textContent = moodEmoji+' 状态：'+moodText;
-  el = document.getElementById('pet-happiness'); if(el) el.textContent = petState.happiness+'/100';
-  el = document.getElementById('pet-happiness-bar'); if(el) el.style.width = petState.happiness+'%';
-  el = document.getElementById('pet-lv'); if(el) el.textContent = 'Lv.'+petState.level;
-  el = document.getElementById('pet-fed'); if(el) el.textContent = petState.fedCount+' 次';
-  el = document.getElementById('pet-level'); if(el) el.textContent = 'Level '+petState.level+' · 喂养进度：'+petState.progress+'/10⭐';
-}
-
-P['baby-sleep'] = `
-<div class="header"><h1>💤 宝宝睡眠记录</h1></div>
-<div class="card">
-  <table>
-    <tr><th>日期</th><th>入睡</th><th>起床</th><th>时长</th><th>备注</th></tr>
-    <tr><td>7/28→7/29</td><td>22:30</td><td>07:20</td><td>8h50m</td><td>起床还很困，中午学校睡1.5h</td></tr>
-    <tr><td>7/29→7/30</td><td>21:30</td><td>06:00</td><td>8h30m</td><td>9:30入睡，6点就醒了</td></tr>
-  </table>
-</div>
-<div class="card">
-  <div class="card-title"><span class="ico">🌙</span>睡前仪式</div>
-  <ol>
-    <li>iPad看豆包游戏视频 10分钟</li>
-    <li>读2页书（当前：宇宙天体，文字多只读2页）</li>
-    <li>约22:30睡觉</li>
-  </ol>
-</div>
-`;
-
-P['baby-schedule'] = `
-<div class="header"><h1>📅 每周课程表</h1></div>
-<div class="card">
-  <table>
-    <tr><th>时间</th><th>周一</th><th>周二</th><th>周三</th><th>周四</th><th>周五</th><th>周六</th><th>周日</th></tr>
-    <tr><td>早上</td><td>暑假班</td><td>暑假班</td><td>暑假班</td><td>暑假班</td><td>暑假班</td><td>—</td><td>—</td></tr>
-    <tr><td>18:30-19:30</td><td>—</td><td><b>写字课</b></td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-    <tr><td>18:30-20:00</td><td><b>画画课</b></td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-    <tr><td>18:50-20:10</td><td>游泳</td><td>游泳</td><td>游泳</td><td>游泳</td><td>游泳</td><td>游泳</td><td>游泳</td></tr>
-    <tr><td>19:30-20:30</td><td>—</td><td><b>街舞课</b></td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-  </table>
-  <blockquote>
-  ⚠️ 游泳班7/31结束（剩3天）<br>
-  ⚠️ 画画课最近因跟游泳冲突请假，下周恢复<br>
-  ⚠️ 周二晚上写字课+街舞课连着，时间紧凑
-  </blockquote>
-</div>
-`;
-
-P['baby-growth'] = `
-<div class="header"><h1>📝 成长记录</h1></div>
-<div class="card">
-  <p style="font-size:.78rem;color:var(--muted);">记录宝宝有趣的事、第一次、进步瞬间。不用每天写，有值得记的再记。</p>
-</div>
-<div class="card">
-  <div class="card-title"><span class="ico">✏️</span>快速记录</div>
-  <textarea id="new-baby-note" placeholder="今天宝宝做了什么有趣的事？（如：游了1000米，自己算的25m×20圈=500m，问老师发现一圈是50m所以真的是1000米！）" style="width:100%;border:1px solid var(--border);border-radius:8px;padding:8px;font-size:.82rem;height:60px;font-family:inherit;"></textarea>
-  <div style="display:flex;gap:6px;margin-top:6px;">
-    <select id="baby-note-type" style="border:1px solid var(--border);border-radius:8px;padding:6px;font-size:.78rem;background:#fff;">
-      <option value="趣事">😆 趣事</option>
-      <option value="成长">🌱 成长</option>
-      <option value="学业">📚 学业</option>
-      <option value="运动">🏊 运动</option>
-      <option value="感动">💕 感动</option>
-      <option value="其他">📌 其他</option>
-    </select>
-    <button onclick="addBabyNote()" style="flex:1;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:6px;font-size:.82rem;cursor:pointer;">💾 保存</button>
-  </div>
-</div>
-<div id="baby-notes-list"></div>
-`;
-
-P['baby-health'] = `
-<div class="header"><h1>🏥 宝宝健康记录</h1></div>
-<div class="card">
-  <div class="info-row"><span class="label">日常用药</span><span class="value">优甲乐（每天早上）</span></div>
-  <div class="info-row"><span class="label">过敏情况</span><span class="value">待记录</span></div>
-  <div class="info-row"><span class="label">身高体重</span><span class="value">待更新</span></div>
-  <div class="info-row"><span class="label">疫苗接种</span><span class="value">待记录</span></div>
-</div>
-<div class="card">
-  <div class="card-title"><span class="ico">🏊</span>游泳班</div>
-  <div class="info-row"><span class="label">时间</span><span class="value">7/16-7/31 每晚18:50-20:10</span></div>
-  <div class="info-row"><span class="label">已游</span><span class="value">11天，剩3天</span></div>
-  <div class="info-row"><span class="label">去年经验</span><span class="value">上过两期，妈妈陪游，确实累</span></div>
-</div>
-`;
-
-// ========== 工作手帐 ==========
-P.work = `
-<div class="header"><h1>💼 工作手帐</h1></div>
-<div class="card">
-  <div class="card-title"><span class="ico">📋</span>身份</div>
-  <p>交通运输管理局 · 窗口服务人员（AB岗）<br>负责：窗口辅助办件、企业经营许可证、维修备案（主要是企业的件）<br>排班：周一三五上午 · 周二四下午</p>
-</div>
-<div class="card">
-  <div class="card-title"><span class="ico">⏳</span>工作待办</div>
-  <div id="work-todo-list"></div>
-</div>
-<div class="card">
-  <div class="card-title"><span class="ico">🏠</span>生活待办</div>
-  <div id="life-todo-list"></div>
-</div>
-<div class="sub-grid">
-  <div class="sub-btn" onclick="go('work-record')"><span class="sub-ico">📝</span><span class="sub-name">今日记录</span></div>
-  <div class="sub-btn" onclick="go('work-knowledge')"><span class="sub-ico">📚</span><span class="sub-name">业务知识</span></div>
-  <div class="sub-btn" onclick="go('work-social')"><span class="sub-ico">🤝</span><span class="sub-name">职场人际</span></div>
-</div>
-`;
-
-P['work-record'] = `
-<div class="header"><h1>📝 7/29 工作记录</h1></div>
-<div class="card">
-  <h3>1. 个体户办理普通货运许可</h3>
-  <p><b>背景：</b>早上一个个体户到窗口申请普通货运企业许可。</p>
-  <p><b>问题：</b>个体户与法人企业不同，个体户难以管理，可能需要联系执法队协同。</p>
-  <p><b>学习收获：个体户 vs 法人企业核心区别</b></p>
-  <ul>
-    <li><b>法人企业（如有限公司）：</b>独立法人，独立财产。股东仅以出资额为限承担<b>有限责任</b>。组织架构完善，财产与个人分开。</li>
-    <li><b>个体工商户：</b>不属于法人，本质是自然人经商。经营者对债务承担<b>无限责任</b>。组织简单，财产与个人/家庭财产难以分割。</li>
-  </ul>
-  <blockquote>简单说：开公司亏完注册资本为止；个体户需对全部债务负责到底。</blockquote>
-</div>
-<div class="card">
-  <h3>2. 日常工作</h3>
-  <p>堆积件已完成 <b>2/3</b> ✅，剩1/3等下午同事或明天下午完成。</p>
-  <p>8月承诺件登记表格→台账格式 ✅ <b>已完成</b></p>
-  <p>货运站场材料清单增加人员清单 ✅ <b>已完成</b></p>
-  <p>今天上午AB岗坐窗口，下午不坐。效率较低——心里在想着完善系统。</p>
-</div>
-<div class="card">
-  <h3>3. 潘含霄帮忙</h3>
-  <p>222路公交线路已发给潘含霄，等回复确认。</p>
-</div>
-`;
-
-P['work-knowledge'] = `
-<div class="header"><h1>📚 业务知识库</h1></div>
-<div class="card">
-  <h3>维修备案</h3>
-  <p><b>核心原则：备案不管人，执法管人。</b></p>
-  <ul>
-    <li>安全上岗证<b>不是备案必交材料</b>——可承诺180天内考出</li>
-    <li>备案时不需要提交安全上岗证原件</li>
-    <li>首次备案用"180天承诺"，增项时按理已考出</li>
-    <li>过期了不卡备案→写情况说明+继续教育+执法队监管</li>
-  </ul>
-  <table>
-    <tr><th>情形</th><th>处理</th></tr>
-    <tr><td>增加新维修类型</td><td>按材料清单正常收件</td></tr>
-    <tr><td>负责人上岗证过期</td><td>不卡；情况说明+继续教育+执法队监管</td></tr>
-    <tr><td>负责人有变更</td><td>需提交新负责人材料</td></tr>
-  </table>
-  <blockquote>注意：安全管理人员上岗证 ≠ 负责人安全上岗证，两个岗位分开管理。</blockquote>
-</div>
-<div class="card">
-  <h3>企业类型基础</h3>
-  <table>
-    <tr><th>类型</th><th>法律地位</th><th>责任</th><th>管理难度</th></tr>
-    <tr><td>法人企业（有限公司）</td><td>独立法人</td><td>股东有限责任（出资额）</td><td>相对规范</td></tr>
-    <tr><td>个体工商户</td><td>自然人经商</td><td>经营者无限责任</td><td><span class="tag tag-red">难管理</span></td></tr>
-  </table>
-  <blockquote>个体户财产与个人难以分割，可能需要联系执法队协同管理。2026/7/29 学习。</blockquote>
-</div>
-<div class="card">
-  <h3>驾培备案</h3>
-  <table>
-    <tr><th>项目</th><th>状态</th></tr>
-    <tr><td>教练员职业技能等级评定是否在备案材料里收</td><td><span class="tag tag-yellow">待确认</span></td></tr>
-  </table>
-</div>
-<div class="card">
-  <h3>货运站场</h3>
-  <ul><li>材料清单需增加人员清单（待补充具体要求）</li></ul>
-</div>
-<div class="card">
-  <h3>💡 职场心得</h3>
-  <blockquote>
-  窗口核心：不是"判断行不行"，是"按材料清单收件，特殊情况写说明"。<br><br>
-  拿不准的：①不瞎说②查文件③确认再回复<br>
-  材料有瑕疵：①写情况说明留痕②要求整改③执法队监管
-  </blockquote>
-</div>
-`;
-
-P['work-social'] = `
-<div class="header"><h1>🤝 职场人际</h1></div>
-<div class="card">
-  <table>
-    <tr><th>人物</th><th>关系</th><th>互动</th></tr>
-    <tr><td>戴荣荣</td><td>瑞安业务对接</td><td>7/28来电咨询驾培新规</td></tr>
-    <tr><td>徐科</td><td>同事/上级</td><td>7/28讨论大兴维修企业，方案获认可</td></tr>
-    <tr><td>潘含霄</td><td>同事</td><td>7/28带dirty给她（春妹¥12.5）；7/29帮查222路公交线路</td></tr>
-  </table>
-</div>
-`;
-
-// ========== 健康管理 ==========
-P.health = `
-<div class="header"><h1>💊 健康管理</h1></div>
-<div class="card">
-  <div class="card-title"><span class="ico">😴</span>睡眠概览</div>
-  <div class="info-row"><span class="label">入睡时间</span><span class="value">约22:30</span></div>
-  <div class="info-row"><span class="label">半夜醒来</span><span class="value">凌晨2-3点（频繁）</span></div>
-  <div class="info-row"><span class="label">咖啡因</span><span class="value"><span class="tag tag-red">敏感</span> 下午2点后不喝</span></div>
-  <div class="info-row"><span class="label">睡前习惯</span><span class="value">听小说定时10分钟（睡眠耳机）</span></div>
-</div>
-<div class="card">
-  <div class="card-title"><span class="ico">🧴</span>护肤概览</div>
-  <table>
-    <tr><th>产品</th><th>时间</th><th>注意</th></tr>
-    <tr><td>佰草集新7白美白面膜</td><td>按需</td><td>—</td></tr>
-    <tr><td>白云山熊果苷乳霜(蓝)</td><td>早上</td><td><span class="tag tag-red">白天必须防晒</span></td></tr>
-    <tr><td>白云山烟酰胺凝胶(红)</td><td>晚上</td><td>—</td></tr>
-  </table>
-</div>
-<div class="sub-grid">
-  <div class="sub-btn" onclick="go('health-sleep')"><span class="sub-ico">💤</span><span class="sub-name">睡眠记录</span></div>
-  <div class="sub-btn" onclick="go('health-skincare')"><span class="sub-ico">🧴</span><span class="sub-name">护肤指南</span></div>
-  <div class="sub-btn" onclick="go('health-med')"><span class="sub-ico">💊</span><span class="sub-name">用药记录</span></div>
-</div>
-`;
-
-P['health-sleep'] = `
-<div class="header"><h1>💤 睡眠记录</h1></div>
-<div class="card">
-  <div class="card-title"><span class="ico">👩</span>妈妈睡眠</div>
-  <table>
-    <tr><th>日期</th><th>入睡</th><th>起床</th><th>时长</th><th>质量</th></tr>
-    <tr><td>7/28午睡</td><td>15:46</td><td>16:10</td><td>20分</td><td>—</td></tr>
-    <tr><td>7/28→29</td><td>00:20</td><td>06:00</td><td>5h40m</td><td><span class="tag tag-red">❌差</span></td></tr>
-  </table>
-  <blockquote>7/28→29：多梦、疲惫、6点醒后没再睡着。原因：咖啡因+熬夜到12:20。</blockquote>
-</div>
-<div class="card">
-  <div class="card-title"><span class="ico">👶</span>宝宝睡眠</div>
-  <table>
-    <tr><th>日期</th><th>入睡</th><th>起床</th><th>时长</th><th>备注</th></tr>
-    <tr><td>7/28→29</td><td>00:20</td><td>06:00</td><td>5h40m</td><td>❌多梦疲惫</td></tr>
-    <tr><td>7/29→30</td><td>晚上</td><td>11:30</td><td>含补觉3h</td><td>✅终于睡好了，睡在沙发上</td></tr>
-  </table>
-</div>
-<div class="card">
-  <h3>🌙 睡眠改善策略</h3>
-  <ol>
-    <li>下午2点后不碰咖啡因</li>
-    <li>醒了不刷手机，做手工/看纸质书</li>
-    <li>戴眼罩隔绝干扰</li>
-    <li>避免听小说（容易兴奋难入睡）</li>
-    <li>自我催眠辅助入睡</li>
-    <li>设定固定睡觉和起床时间</li>
-    <li>早上固定时间起床</li>
-  </ol>
-  <blockquote style="margin-top:8px;border-left:3px solid var(--accent);"><b>📌 睡好觉 = 重要项目</b><br>7/30感悟：太久没睡过好觉了。补觉3小时+拔罐推拿后精气神恢复很多。沙发摊开睡 surprisingly 舒服。后续持续关注睡眠质量。</blockquote>
-</div>
-<div class="card">
-  <h3>💆 身体恢复记录</h3>
-  <table>
-    <tr><th>日期</th><th>项目</th><th>感受</th><th>计划</th></tr>
-    <tr><td>7/30</td><td>拔罐+刮痧推拿</td><td>✅很舒服，精气神好了很多</td><td>至少做一个疗程</td></tr>
-  </table>
-</div>
-`;
-
-P['health-skincare'] = `
-<div class="header"><h1>🧴 护肤指南</h1></div>
-<div class="card">
-  <h3>面膜使用指南</h3>
-  <table>
-    <tr><th>类型</th><th>频率</th><th>注意</th></tr>
-    <tr><td>补水</td><td>可天天</td><td>最安全</td></tr>
-    <tr><td>美白</td><td>每周2-3次</td><td><span class="tag tag-red">白天用必须防晒</span>建议晚上</td></tr>
-    <tr><td>清洁</td><td>每周1-2次</td><td>做完必须补水</td></tr>
-  </table>
-</div>
-<div class="card">
-  <h3>季节护肤重点</h3>
-  <table>
-    <tr><th>季节</th><th>重点</th></tr>
-    <tr><td>春</td><td>防敏、保湿</td></tr>
-    <tr><td>夏</td><td><b>防晒比美白重要</b>，早上不适合美白</td></tr>
-    <tr><td>秋</td><td>保湿、修护</td></tr>
-    <tr><td>冬</td><td>滋润、防干</td></tr>
-  </table>
-</div>
-<div class="card">
-  <h3>🛋️ 沙发旁简易护肤</h3>
-  <p>在沙发旁边放一套基础化妆品，晚上简单护肤。</p>
-  <h3>步骤</h3>
-  <ol>
-    <li>卸妆/洗脸（如果没化妆就清水洗）</li>
-    <li>涂白云山熊果苷乳霜（蓝/早）或烟酰胺凝胶（红/晚）</li>
-    <li>涂护手霜（PULJIM茶染茉莉）</li>
-    <li>涂润唇膏</li>
-  </ol>
-  <blockquote>不需要全套，简单4步就好。重点是"方便"——放在沙发旁边，不用走到卫生间。</blockquote>
-</div>
-`;
-
-P['health-med'] = `
-<div class="header"><h1>💊 用药记录</h1></div>
-<div class="card">
-  <div class="info-row"><span class="label">禁忌</span><span class="value">咖啡因（影响睡眠）、酒精（与多种药物冲突）</span></div>
-</div>
-<div class="card">
-  <h3>常见药物冲突</h3>
-  <table>
-    <tr><th>组合</th><th>风险</th></tr>
-    <tr><td>对乙酰氨基酚+同类感冒药</td><td>伤肝，日总量<2g</td></tr>
-    <tr><td>布洛芬+阿司匹林</td><td>伤胃出血</td></tr>
-    <tr><td>头孢+酒精</td><td><span class="tag tag-red">可能致命</span></td></tr>
-    <tr><td>氯雷他定+西替利嗪</td><td>不要叠加</td></tr>
-  </table>
-  <blockquote>⚠️ 仅供参考，具体遵医嘱。</blockquote>
-</div>
-`;
-
-// ========== 物品管理 ==========
-P.items = `
-<div class="header"><h1>📦 物品管理中心</h1></div>
-
-<div class="card">
-  <div class="card-title"><span class="ico">⚠️</span>需要关注</div>
-  <div id="items-alert"></div>
-</div>
-
-<div class="card">
-  <div class="card-title"><span class="ico">📊</span>物品分类总览</div>
-  <table>
-    <tr><th>类别</th><th>数量</th><th>状态</th></tr>
-    <tr><td>👗 衣服</td><td>250+</td><td>已扔23件 · 22类</td></tr>
-    <tr><td>💍 饰品</td><td>待清点</td><td><span class="tag tag-yellow">需整理</span></td></tr>
-    <tr><td>🍵 茶叶/养生品</td><td>2款</td><td>2026/9/8到期</td></tr>
-    <tr><td>💄 化妆品/护肤品</td><td>6款</td><td><span class="tag tag-green">使用中</span></td></tr>
-    <tr><td>🧶 毛线</td><td>待清点</td><td>化纤线正在消耗中（魔毯）</td></tr>
-    <tr><td>📒 手帐本子/便签</td><td>待清点</td><td><span class="tag tag-yellow">积压需消耗</span></td></tr>
-    <tr><td>📸 照片</td><td>待整理</td><td><span class="tag tag-red">积压</span>（含宝宝照片）</td></tr>
-  </table>
-</div>
-
-<div class="sub-grid">
-  <div class="sub-btn" onclick="go('items-wardrobe')"><span class="sub-ico">👗</span><span class="sub-name">衣物</span></div>
-  <div class="sub-btn" onclick="go('items-jewelry')"><span class="sub-ico">💍</span><span class="sub-name">饰品</span></div>
-  <div class="sub-btn" onclick="go('items-consume')"><span class="sub-ico">🍵</span><span class="sub-name">消耗品</span></div>
-  <div class="sub-btn" onclick="go('items-photo')"><span class="sub-ico">📸</span><span class="sub-name">照片</span></div>
-  <div class="sub-btn" onclick="go('items-money')"><span class="sub-ico">💰</span><span class="sub-name">记账</span></div>
-  <div class="sub-btn" onclick="go('items-baby-log')"><span class="sub-ico">📝</span><span class="sub-name">宝宝日志</span></div>
-</div>
-
-<div class="card">
-  <div class="card-title"><span class="ico">💳</span>卡类余额</div>
-  <div class="info-row"><span class="label">春妹咖啡馆</span><span class="value">¥21.5</span></div>
-  <div class="info-row"><span class="label">理县农产品卡</span><span class="value"><span class="tag tag-yellow">未充值</span></span></div>
-  <div class="info-row"><span class="label">余利宝还款</span><span class="value"><span class="tag tag-red">金额不够</span></span></div>
-</div>
-`;
-
-P['items-wardrobe'] = `
-<div class="header"><h1>👗 衣物清单</h1></div>
-<div class="card">
-  <h3>B系列 · 贴身打底（21件）</h3>
-  <table>
-    <tr><th>编号</th><th>名称</th></tr>
-    <tr><td>B-L01</td><td>黑色半高领德绒长袖打底</td></tr>
-    <tr><td>B-L02</td><td>灰色半高领罗纹厚打底（可单穿）</td></tr>
-    <tr><td>B-L03</td><td>深驼色高领厚实打底</td></tr>
-    <tr><td>B-L04</td><td>黑色圆领修身打底（美利奴羊毛）</td></tr>
-    <tr><td>B-L05</td><td>白色圆领修身打底（美利奴羊毛）</td></tr>
-    <tr><td>B-L06~L10</td><td>黑色宽松/浅驼/交叉领/白色薄款×2</td></tr>
-    <tr><td>B-S01~S03</td><td>深棕/咖色/黑色莫代尔短袖</td></tr>
-    <tr><td>B-N01~N08</td><td>猫人牌无袖加薄绒×4+肤色/黑色肌底衣×4</td></tr>
-  </table>
-</div>
-<div class="card">
-  <h3>C系列 · 冬季厚外套（18件）</h3>
-  <table>
-    <tr><th>编号</th><th>名称</th></tr>
-    <tr><td>C-01</td><td>牛仔毛领厚外套</td></tr>
-    <tr><td>C-02</td><td>白色宽大呢绒大衣（533大衣）</td></tr>
-    <tr><td>C-03~C-06</td><td>灰色/天蓝/米色牛角扣/紫色格纹呢绒大衣</td></tr>
-    <tr><td>C-07~C-09</td><td>两面穿/紫调格纹/米色短外套</td></tr>
-    <tr><td>C-10~C-11</td><td>灰色/白色羽绒马甲</td></tr>
-    <tr><td>C-12~C-16</td><td>粉色毛呢/黑色/绿色/米黄/棕色羽绒服</td></tr>
-    <tr><td>C-17~C-18</td><td>红色/深驼色厚卫衣外套</td></tr>
-  </table>
-</div>
-<div class="card">
-  <h3>其他系列摘要</h3>
-  <table>
-    <tr><th>系列</th><th>数量</th><th>说明</th></tr>
-    <tr><td>SC春秋薄外套</td><td>5</td><td>藏蓝格子/中国风/黑色/黄色条纹/米白</td></tr>
-    <tr><td>SW冬季厚毛衣</td><td>9</td><td>姜黄/深灰/白色/粉色/暗红/蓝色/粉色开衫/深绿</td></tr>
-    <tr><td>AT秋季上衣</td><td>21</td><td>详见wardrobe.md</td></tr>
-    <tr><td>SK半裙</td><td>30</td><td>详见wardrobe.md</td></tr>
-    <tr><td>DR连衣裙</td><td>29</td><td>详见wardrobe.md</td></tr>
-    <tr><td>ST套装</td><td>12</td><td>学院风/运动/毛衣套装等</td></tr>
-    <tr><td>H手工自制</td><td>3</td><td>紫色毛衣/可可背心/惠尔顿背心</td></tr>
-    <tr><td>P睡衣</td><td>18</td><td>法兰绒/莫代尔/棉麻等</td></tr>
-    <tr><td>鞋子</td><td>18</td><td>详见wardrobe.md</td></tr>
-    <tr><td>丝袜</td><td>22</td><td>超厚~超薄全规格</td></tr>
-  </table>
-  <blockquote>完整明细见 docs/items/wardrobe.md。跟我说"扔了XXX"或"买了XXX"我帮你更新。</blockquote>
-</div>
-<div class="card">
-  <h3>满意搭配库（9套）</h3>
-  <table>
-    <tr><th>编号</th><th>搭配</th></tr>
-    <tr><td>#001</td><td>黑色拉链长袖+黑紫拼色瑜伽裤+粉紫内衣</td></tr>
-    <tr><td>#002</td><td>深棕色短款运动上衣+浅驼色瑜伽裤</td></tr>
-    <tr><td>#003</td><td>浅蓝色螺纹背心+深蓝色提臀瑜伽裤</td></tr>
-    <tr><td>#004</td><td>奶白色运动上衣+灰色条纹瑜伽裤</td></tr>
-    <tr><td>#005</td><td>灰色半高领拉链运动上衣</td></tr>
-    <tr><td>#006</td><td>米色欧根纱开衫+肉色背心+米色马甲+黑色长裙</td></tr>
-    <tr><td>#007</td><td>灰色薄毛衣+灰色运动风长裙+藏蓝格子外套</td></tr>
-    <tr><td>#008</td><td>黑色丝绒大V领蕾丝边上衣+黑色大波点半裙</td></tr>
-    <tr><td>#009</td><td>米白色薄西装+天蓝色背心+浅驼色鱼尾裙</td></tr>
-  </table>
-</div>
-`;
-
-P['items-shopping'] = `
-<div class="header"><h1>🛒 购物决策</h1></div>
-<div class="card">
-  <h3>买东西前5问</h3>
-  <ol>
-    <li><b>我现在需要它吗？</b>（不是"以后可能需要"）</li>
-    <li><b>家里有类似的东西吗？</b></li>
-    <li><b>它放哪里？</b>（没有确定位置别买）</li>
-    <li><b>我会用它超过10次吗？</b></li>
-    <li><b>3天后我还想要吗？</b>（加购物车等3天）</li>
-  </ol>
-  <blockquote>2个以上"否"就别买。忍住了记金额到消费反思。</blockquote>
-</div>
-<div class="card">
-  <h3>购物触发点</h3>
-  <ul>
-    <li>无聊刷手机时</li>
-    <li>心情不好时</li>
-    <li>看到博主推荐时</li>
-    <li>觉得"犒劳自己"时</li>
-    <li><span class="tag tag-red">凌晨睡不着时（最危险）</span></li>
-  </ul>
-</div>
-`;
-
-P['items-discard'] = `
-<div class="header"><h1>🗑️ 断舍离</h1></div>
-<div class="card">
-  <h3>15分钟断舍离法</h3>
-  <ol>
-    <li>选一个巴掌大的区域</li>
-    <li>设15分钟闹钟</li>
-    <li>扔垃圾→挑不要的→摆整齐</li>
-    <li>闹钟响了就停，即使没弄完</li>
-  </ol>
-  <blockquote>每天15分钟，一个月就是7.5小时。比一次3小时然后躺平有效得多。</blockquote>
-</div>
-<div class="card">
-  <h3>已扔掉（23件）</h3>
-  <table>
-    <tr><th>序号</th><th>描述</th></tr>
-    <tr><td>1-5</td><td>米色大衣、粉色起球长裙、粉色短袖长裙、加绒紧身裤、玫红羽绒服</td></tr>
-    <tr><td>6-10</td><td>灰色粗毛线毛衣、白色羽绒卫衣、黑色莫代尔打底×2、棕色厚丝袜</td></tr>
-    <tr><td>11-15</td><td>肉色护膝、厚小腿袜6双、粉色运动袜、黑色摇粒绒外套、围巾2条</td></tr>
-    <tr><td>16-20</td><td>灰色莫代尔T恤、中国风防晒外套、粉色开衫、灰色睡衣上衣、紫色卡通睡衣</td></tr>
-    <tr><td>21-23</td><td>粉色加绒运动上衣、勃肯棉拖鞋、浅蓝色牛仔裤（暂留）</td></tr>
-  </table>
-</div>
-`;
-
-// ========== 饰品管理 ==========
-P['items-jewelry'] = `
-<div class="header"><h1>💍 饰品清单</h1></div>
-<div class="card">
-  <div class="card-title"><span class="ico">📋</span>饰品库存</div>
-  <table>
-    <tr><th>类别</th><th>数量</th><th>状态</th></tr>
-    <tr><td>项链</td><td>待清点</td><td><span class="tag tag-yellow">需整理</span></td></tr>
-    <tr><td>手链</td><td>待清点</td><td><span class="tag tag-yellow">需整理</span></td></tr>
-    <tr><td>耳环</td><td>待清点</td><td><span class="tag tag-yellow">需整理</span></td></tr>
-    <tr><td>发夹/抓夹</td><td>待清点</td><td><span class="tag tag-yellow">需整理</span></td></tr>
-  </table>
-</div>
-<div class="card">
-  <h3>💡 整理建议</h3>
-  <ol>
-    <li>按类别分开存放（项链挂起来，耳环用小盒子）</li>
-    <li>抓夹/发夹集中放一个收纳盒</li>
-    <li>常用的放在外面，不常用的收起来</li>
-    <li>每次出门前看一眼——"今天戴哪件？"</li>
-  </ol>
-  <blockquote>你喜欢买饰品说明你注重细节和美。整理不是剥夺快乐，是让每件都能被看见和使用。</blockquote>
-</div>
-`;
-
-// ========== 消耗品管理 ==========
-P['items-consume'] = `
-<div class="header"><h1>🍵 消耗品管理</h1></div>
-
-<div class="card">
-  <div class="card-title"><span class="ico">⚠️</span>临期提醒</div>
-  <p>黄芪桂圆枸杞茶 → <b style="color:var(--accent);">2026年9月8日到期</b>（剩41天）</p>
-  <p>山楂茯苓陈皮茶 → <b style="color:var(--accent);">2026年9月8日到期</b>（剩41天）</p>
-</div>
-
-<div class="card">
-  <div class="card-title"><span class="ico">🍵</span>茶叶/养生品</div>
-  <table>
-    <tr><th>产品</th><th>配料</th><th>功效</th><th>生产</th><th>到期</th></tr>
-    <tr><td>黄芪桂圆枸杞茶</td><td>黄芪、桂圆、枸杞、党参、麦冬、大枣、红糖</td><td>补气养血、改善气血不足</td><td>2025/3/8</td><td><b>2026/9/8</b></td></tr>
-    <tr><td>山楂茯苓陈皮茶</td><td>山楂、黄芪、陈皮、茯苓</td><td>促消化、祛湿、解腻</td><td>2025/3/8</td><td><b>2026/9/8</b></td></tr>
-  </table>
-  <blockquote>两款茶都是2026年9月8日到期，建议轮流喝，争取到期前消耗完。黄芪桂圆适合经期后补气血；山楂陈皮适合吃油腻后解腻。</blockquote>
-</div>
-
-<div class="card">
-  <div class="card-title"><span class="ico">💄</span>护肤品/保健品</div>
-  <table>
-    <tr><th>产品</th><th>规格</th><th>到期</th><th>用法</th></tr>
-    <tr><td>佰草集新7白美白面膜</td><td>—</td><td>—</td><td>使用中</td></tr>
-    <tr><td>白云山熊果苷乳霜（蓝）</td><td>—</td><td>—</td><td>早上用</td></tr>
-    <tr><td>白云山烟酰胺凝胶（红）</td><td>—</td><td>—</td><td>晚上用</td></tr>
-    <tr><td>PULJIM茶染茉莉护手霜</td><td>55g</td><td><b>2029/1/14</b></td><td>开盖12月用完</td></tr>
-    <tr><td>樱桃红变色润唇膏（玫瑰）</td><td>3.5g</td><td><b>2027/5/10</b></td><td>素颜提色/夜间修护</td></tr>
-    <tr><td>HMOT护甲指缘油</td><td>10ml</td><td>—</td><td>办公室用</td></tr>
-    <tr><td>NYO3越橘叶黄素护眼胶囊</td><td>60粒</td><td>—</td><td>每日2粒随晚餐，可吃30天</td></tr>
-    <tr><td>FLASH MOMENT迷你口红</td><td>4色</td><td>—</td><td>奶茶色/豆沙粉/杏色/深酱紫</td></tr>
-  </table>
-</div>
-
-<div class="card">
-  <div class="card-title"><span class="ico">📒</span>手帐/便签/文具</div>
-  <p>之前玩手帐，有很多<b>本子和便签纸</b>需要消耗。</p>
-  <ul>
-    <li>便签纸：办公室每日消耗5张，家里也可以随手用</li>
-    <li>本子：做工作笔记、宝宝日志、随手记想法</li>
-  </ul>
-  <blockquote>不买新的，先把已有的用完。</blockquote>
-</div>
-
-<div class="card">
-  <div class="card-title"><span class="ico">🧶</span>毛线库存</div>
-  <p>买了太多化纤线，正在用"魔毯"消耗。用完再买新的。</p>
-</div>
-`;
-
-// ========== 照片整理 ==========
-P['items-photo'] = `
-<div class="header"><h1>📸 照片整理</h1></div>
-<div class="card">
-  <div class="card-title"><span class="ico">📋</span>照片整理计划</div>
-  <p>积压了大量照片需要整理，特别是<b>宝宝的照片</b>。以前做过相册但太麻烦停了。</p>
-  <h3>轻量方案（低精力友好）</h3>
-  <ol>
-    <li><b>不要做实体相册</b>——太费时，你会放弃的</li>
-    <li>每周挑<b>1张</b>宝宝最可爱的照片，存到一个专门文件夹</li>
-    <li>年底把这52张照片做成一本<b>年度相册书</b>（网上有很多一键生成的服务）</li>
-    <li>其他照片不用删，存在手机里就行</li>
-  </ol>
-  <blockquote>不是所有照片都要整理。每周只挑1张最好的，一年52张，足够做一本美美的相册了。</blockquote>
-</div>
-`;
-
-// ========== 记账 ==========
-P['items-money'] = `
-<div class="header"><h1>💰 记账</h1></div>
-<div class="card">
-  <div class="card-title"><span class="ico">📊</span>记账重启计划</div>
-  <p>你已经<b>快半年没记账了</b>。但不要有负罪感——记账是工具，不是负担。</p>
-  <h3>低精力记账法</h3>
-  <ol>
-    <li>每天只记<b>3笔</b>：最大开销、最意外开销、奶茶/咖啡</li>
-    <li>其他小额不记也没关系</li>
-    <li>每周日晚上花5分钟，用计算器加一下本周总支出</li>
-    <li>月底看一眼：钱主要花在哪了？</li>
-  </ol>
-  <blockquote>记账不是为了约束你，是为了让你看见自己的消费模式。半年没记也没关系，从今天开始记3笔就好。</blockquote>
-</div>
-`;
-
-// ========== 宝宝日志 ==========
-P['items-baby-log'] = `
-<div class="header"><h1>📝 宝宝日志</h1></div>
-<div class="card">
-  <div class="card-title"><span class="ico">📖</span>重启宝宝日志</div>
-  <p>你以前有写宝宝日志的习惯，<b>现在已经很久没写了</b>。</p>
-  <h3>超简单重启法</h3>
-  <ol>
-    <li>不用每天写——每周写<b>1次</b>就好</li>
-    <li>只记3句话：<b>今天最开心的事 / 说了什么有趣的话 / 学了什么新东西</b></li>
-    <li>可以在看板的"宝宝档案→成长记录"里直接记录</li>
-    <li>或者跟我说"宝宝日志：XXX"，我帮你记</li>
-  </ol>
-  <blockquote>不用写得像作文。三句话就够了。重要的是坚持，不是完美。</blockquote>
-</div>
-`;
-
-// ========== 手工爱好 ==========
-P.hobby = `
-<div class="header"><h1>🧶 手工爱好</h1></div>
-<div class="card" style="text-align:center;">
-  <p style="font-size:.82rem;color:var(--muted);">已完成作品</p>
-  <p style="font-size:1.8rem;font-weight:700;color:var(--accent);">3 件</p>
-  <p style="font-size:.78rem;color:var(--muted);">钩针 + 棒针 · 从去年开始</p>
-</div>
-<div class="sub-grid">
-  <div class="sub-btn" onclick="go('hobby-done')"><span class="sub-ico">✅</span><span class="sub-name">已完成</span></div>
-  <div class="sub-btn" onclick="go('hobby-wip')"><span class="sub-ico">🧵</span><span class="sub-name">进行中</span></div>
-  <div class="sub-btn" onclick="go('hobby-want')"><span class="sub-ico">📋</span><span class="sub-name">想做</span></div>
-  <div class="sub-btn" onclick="go('hobby-health')"><span class="sub-ico">✋</span><span class="sub-name">手部健康</span></div>
-  <div class="sub-btn" onclick="go('hobby-xhs')"><span class="sub-ico">📱</span><span class="sub-name">小红书文案</span></div>
-</div>
-<div class="card">
-  <blockquote>手工是你的疗愈方式，也是失眠夜的出口。继续钩毯子织毛衣，但保护好自己的手。</blockquote>
-</div>
-`;
-
-P['hobby-done'] = `
-<div class="header"><h1>✅ 已完成作品</h1></div>
-<div class="card">
-  <table>
-    <tr><th>序号</th><th>作品</th><th>类型</th><th>线材</th><th>编号</th></tr>
-    <tr><td>1</td><td>紫色八股羊毛拼色套头毛衣</td><td>棒针/钩针</td><td>羊毛</td><td>H-01</td></tr>
-    <tr><td>2</td><td>天蓝色两股马海毛短款可可背心</td><td>钩针</td><td>马海毛</td><td>H-02</td></tr>
-    <tr><td>3</td><td>惠尔顿背心（缎染油画风灰色螺纹边）</td><td>钩针</td><td>—</td><td>H-03</td></tr>
-  </table>
-  <blockquote>还有更多成品待补充，跟我说我帮你加。</blockquote>
-</div>
-`;
-
-P['hobby-wip'] = `
-<div class="header"><h1>🧵 进行中</h1></div>
-
-<!-- 月神小吊带 -->
-<div class="card">
-  <div class="card-title"><span class="ico">🌟</span>月神小吊带</div>
-  <div class="progress" style="margin:6px 0 8px;"><div class="fill" style="width:25%;"></div></div>
-  <p style="font-size:.75rem;color:var(--muted);margin-bottom:8px;">1/4 部分完成 · 25%</p>
-  
-  <table style="margin-bottom:10px;">
-    <tr><th>部位</th><th>状态</th><th>备注</th></tr>
-    <tr><td>前片</td><td><span class="tag tag-green">✅ 完成</span></td><td>—</td></tr>
-    <tr><td>后片（后背片）</td><td><span class="tag tag-yellow">🧵 进行中</span></td><td>刚刚开始</td></tr>
-    <tr><td>连接前后片</td><td><span style="color:var(--muted);">⏳ 待做</span></td><td>—</td></tr>
-    <tr><td>身体</td><td><span style="color:var(--muted);">⏳ 待做</span></td><td>—</td></tr>
-    <tr><td>底边</td><td><span style="color:var(--muted);">⏳ 待做</span></td><td>—</td></tr>
-    <tr><td>领边</td><td><span style="color:var(--muted);">⏳ 待做</span></td><td>—</td></tr>
-    <tr><td>吊带</td><td><span style="color:var(--muted);">⏳ 待做</span></td><td>最后一步</td></tr>
-  </table>
-  <blockquote>还有6个部分待完成。每完成一个来更新进度～完成后可以发小红书分享！</blockquote>
-  <button onclick="go('hobby-xhs')" style="width:100%;background:var(--accent2);color:#fff;border:none;border-radius:8px;padding:8px;font-size:.82rem;cursor:pointer;">📱 生成小红书分享文案</button>
-</div>
-
-<!-- 魔毯 -->
-<div class="card">
-  <div class="card-title"><span class="ico">🧶</span>魔毯</div>
-  <table>
-    <tr><td>进度</td><td>40圈</td></tr>
-    <tr><td>线材</td><td>化纤线（消耗旧线）</td></tr>
-    <tr><td>感受</td><td>踩起来柔软</td></tr>
-  </table>
-</div>
-
-<!-- 樱花小包 -->
-<div class="card">
-  <div class="card-title"><span class="ico">🌸</span>樱花小包</div>
-  <table>
-    <tr><td>进度</td><td>一半</td></tr>
-    <tr><td>备注</td><td>需钩一片+缝合，有点没耐心</td></tr>
-  </table>
-</div>
-`;
-
-P['hobby-want'] = `
-<div class="header"><h1>📋 想做的</h1></div>
-<div class="card">
-  <ul><li>祖母格流浪包（木耳边款，收藏在小红书）</li></ul>
-</div>
-<div class="card">
-  <h3>🧶 线材库存</h3>
-  <blockquote>之前买了太多化纤线，正在用魔毯消耗。用完再买新的。</blockquote>
-</div>
-`;
-
-P['hobby-health'] = `
-<div class="header"><h1>✋ 手部健康</h1></div>
-<div class="card">
-  <blockquote><b>之前钩针玩到手抽筋，早上要用手指头掰开才能动——这是重复性劳损。</b></blockquote>
-  <h3>保护规则</h3>
-  <ol>
-    <li>每次钩针不超过30分钟，强制休息</li>
-    <li>休息时做手指拉伸</li>
-    <li>手不舒服立刻停，不要硬撑</li>
-    <li>棒针比钩针对手更友好，可交替进行</li>
-  </ol>
-  <blockquote>手工是疗愈，不是惩罚。手坏了就什么都做不了了。</blockquote>
-</div>
-`;
-
-P['hobby-xhs'] = `
-<div class="header"><h1>📱 小红书分享文案</h1></div>
-<div class="card">
-  <p style="font-size:.78rem;color:var(--muted);">根据你的编织进度自动生成可发小红书的文案。复制后可以直接用～</p>
-</div>
-
-<div class="card">
-  <div class="card-title"><span class="ico">🌟</span>月神小吊带 · 进度文案</div>
-  <div style="background:#f9f9f9;border-radius:8px;padding:12px;font-size:.82rem;line-height:1.8;white-space:pre-wrap;" id="xhs-text-yueshen">正在加载...</div>
-  <div style="display:flex;gap:8px;margin-top:8px;">
-    <button onclick="copyXHS('xhs-text-yueshen')" style="flex:1;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:8px;font-size:.78rem;cursor:pointer;">📋 一键复制</button>
-    <button onclick="go('hobby-wip')" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:.78rem;cursor:pointer;">← 返回</button>
-  </div>
-</div>
-
-<div class="card">
-  <div class="card-title"><span class="ico">💡</span>小红书发帖小贴士</div>
-  <ul style="font-size:.82rem;padding-left:16px;">
-    <li>配图：拍织片平铺照 + 细节特写 + 线材标签</li>
-    <li>标签：#手工编织 #钩针 #吊带 #月神 #手作日常</li>
-    <li>发布时间：晚上8-10点流量较好</li>
-    <li>互动：回复评论增加曝光</li>
-  </ul>
-</div>
-`;
-
-// ========== 饮料记录 ==========
-P.drink = `
-<div class="header"><h1>🥤 饮料记录</h1></div>
-<div class="card" style="text-align:center;">
-  <p style="font-size:.82rem;color:var(--muted);">本月饮料</p>
-  <p style="font-size:1.8rem;font-weight:700;color:var(--accent);">1 杯</p>
-  <p style="font-size:.78rem;color:var(--muted);">7月 · 目标：逐步减少奶茶/咖啡依赖</p>
-</div>
-<div class="card">
-  <div class="card-title"><span class="ico">📋</span>饮料记录</div>
-  <table>
-    <tr><th>日期</th><th>饮料</th><th>类型</th><th>价格</th><th>原因</th></tr>
-    <tr><td>7/29</td><td>李若桃长山核桃白糯米酸奶奶昔</td><td>奶茶/奶昔</td><td>¥19.9</td><td>核桃咬起来很香</td></tr>
-    <tr><td>7/30</td><td>—</td><td>—</td><td>¥0</td><td>✅今天没喝饮料</td></tr>
-  </table>
-</div>
-<div class="card">
-  <div class="card-title"><span class="ico">🎯</span>减瘾策略</div>
-  <ol>
-    <li>每天记录喝的饮料（不带评判，先记录）</li>
-    <li>第一周：不减量，只记录</li>
-    <li>第二周：找替代（花茶/柠檬水/气泡水）</li>
-    <li>每周允许2-3杯奶茶/咖啡（不戒断，只减少）</li>
-    <li>戒的不是饮料，是"顺手点一杯"的习惯</li>
-  </ol>
-  <blockquote>你不是对奶茶上瘾，你是对"每天给自己一个小奖励"上瘾。先理解自己，再慢慢改。</blockquote>
-</div>
-`;
-
-// ========== 周任务系统 ==========
-P.weekly = `
-<div class="header"><h1>📋 周任务</h1></div>
-<div class="card">
-  <div class="card-title"><span class="ico">🎯</span>本周任务（7/29-8/4）</div>
-  <table>
-    <tr><th>任务</th><th>状态</th><th>说明</th></tr>
-    <tr><td><b>学习梳头发</b></td><td><span class="tag tag-yellow">进行中</span></td><td>本周专门学习梳头技巧，让头发不再乱七八糟</td></tr>
-  </table>
-  <blockquote>💡 有些想法可能很久不会实施，但可以把它当成周任务——这周专门学这一件事。不急，但专注。</blockquote>
-</div>
-<div class="card">
-  <div class="card-title"><span class="ico">💇</span>梳头学习计划</div>
-  <h3>基本步骤</h3>
-  <ol>
-    <li>先用宽齿梳把头发梳顺（从发尾开始，慢慢往上）</li>
-    <li>分区：把头发分成上下两部分</li>
-    <li>先扎下面，再扎上面（或用发抓固定）</li>
-    <li>喷一点定型喷雾或用发胶固定碎发</li>
-  </ol>
-  <h3>推荐工具</h3>
-  <ul>
-    <li>宽齿梳/气垫梳（先梳顺）</li>
-    <li>发抓（比橡皮筋更不伤头发）</li>
-    <li>定型喷雾（固定碎发）</li>
-    <li>发圈/电话线发圈（不勒头）</li>
-  </ul>
-  <blockquote>你的头发多且滑，扎不住是正常的。不是你不会，是你的头发太有个性了 😄</blockquote>
-</div>
-<div class="card">
-  <div class="card-title"><span class="ico">📝</span>每日打卡</div>
-  <table>
-    <tr><th>日期</th><th>练习了吗</th><th>感受</th></tr>
-    <tr><td>7/29（周三）</td><td>⬜</td><td>—</td></tr>
-    <tr><td>7/30（周四）</td><td>⬜</td><td>—</td></tr>
-    <tr><td>7/31（周五）</td><td>⬜</td><td>—</td></tr>
-    <tr><td>8/1（周六）</td><td>⬜</td><td>—</td></tr>
-    <tr><td>8/2（周日）</td><td>⬜</td><td>—</td></tr>
-    <tr><td>8/3（周一）</td><td>⬜</td><td>—</td></tr>
-    <tr><td>8/4（周二）</td><td>⬜</td><td>—</td></tr>
-  </table>
-</div>
-`;
-
-// ========== 化妆品消耗清单 ==========
-P.cosmetics = `
-<div class="header"><h1>💄 化妆品消耗清单</h1></div>
-<div class="card">
-  <div class="card-title"><span class="ico">🎯</span>目标</div>
-  <p>把库存化妆品一样一样列出来，然后一样一样用掉。不买新的，先把现有的用完。</p>
-</div>
-<div class="card">
-  <div class="card-title"><span class="ico">📋</span>化妆品库存</div>
-  <table>
-    <tr><th>类别</th><th>产品名</th><th>状态</th></tr>
-    <tr><td>护肤品</td><td>佰草集新7白美白面膜</td><td>使用中</td></tr>
-    <tr><td>护肤品</td><td>白云山熊果苷乳霜（蓝/早）</td><td>使用中</td></tr>
-    <tr><td>护肤品</td><td>白云山烟酰胺凝胶（红/晚）</td><td>使用中</td></tr>
-    <tr><td>—</td><td>告诉我你有什么，我帮你加上</td><td>—</td></tr>
-  </table>
-</div>
-<div class="card">
-  <h3>消耗策略</h3>
-  <ol>
-    <li>先列出所有化妆品</li>
-    <li>按过期时间排序，快过期的先用</li>
-    <li>用完一样再开一样（铁皮计划）</li>
-    <li>忍住不买新的，除非某类真的空了</li>
-  </ol>
-  <blockquote>你不是需要更多化妆品，你是需要把已有的用完。</blockquote>
-</div>
-`;
-
-// ========== 经期管理 ==========
-P.period = `
-<div class="header"><h1>🌸 经期管理</h1></div>
-<div class="card">
-  <div class="info-row"><span class="label">上次开始</span><span class="value" id="period-last-display">2026-07-10</span></div>
-  <div class="info-row"><span class="label">周期</span><span class="value">26天</span></div>
-  <div class="info-row"><span class="label">经期时长</span><span class="value">5-6天</span></div>
-  <div class="info-row"><span class="label">下次预计</span><span class="value" id="period-next-display">2026-08-05（预计）</span></div>
-  <div style="margin-top:10px;">
-    <input type="date" id="period-date-input" style="border:1px solid var(--border);border-radius:8px;padding:8px;font-size:.82rem;width:100%;">
-    <button style="margin-top:8px;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:.82rem;cursor:pointer;width:100%;" onclick="savePeriodDate()">💾 保存上次经期日期</button>
-  </div>
-</div>
-<div class="card">
-  <h3>📅 经期前5天保护方案</h3>
-  <ul>
-    <li>❌ 少冰少辣少咖啡</li>
-    <li>✅ 温水、红枣姜茶、温性食物</li>
-    <li>🌙 早睡30分钟</li>
-    <li>📦 检查卫生巾库存</li>
-    <li>🧘 减少高强度运动→散步/拉伸</li>
-  </ul>
-</div>
-<div class="card">
-  <h3>经期中</h3>
-  <ul><li>保暖第一 · 不剧烈运动 · 痛就吃药（布洛芬饭后）</li></ul>
-</div>
-<div class="card">
-  <h3>经期后（黄金恢复期）</h3>
-  <ul><li>结束后1周护肤效果最好 · 适当增加运动 · 补充蛋白质和铁</li></ul>
-</div>
-`;
-
-// ========== 家务管理 ==========
-P.housework = `
-<div class="header"><h1>🧹 家务管理</h1></div>
-<div class="card">
-  <div class="card-title"><span class="ico">✅</span>每日最低家务线（4项及格）</div>
-  <ol>
-    <li>衣服丢洗衣机</li>
-    <li>餐桌清空（能放碗就行）</li>
-    <li>垃圾袋扎好放门口</li>
-    <li>宝宝玩具归拢到一个区域</li>
-  </ol>
-  <blockquote>完成以上4项=家务及格。多做都是加分。</blockquote>
-</div>
-<div class="card">
-  <h3>⏱️ 任务分级</h3>
-  <table>
-    <tr><th>级别</th><th>时间</th><th>内容</th></tr>
-    <tr><td><span class="tag tag-green">微</span></td><td>5分钟</td><td>桌面归位、丢衣服、倒垃圾、擦桌子</td></tr>
-    <tr><td><span class="tag tag-yellow">小</span></td><td>15分钟</td><td>晾衣服、收拾台面、拖一个房间</td></tr>
-    <tr><td><span class="tag tag-red">中</span></td><td>30分钟</td><td>做饭、大件洗涤、卫生间（一周1-2次）</td></tr>
-  </table>
-</div>
-<div class="card">
-  <blockquote>累了只做最低4项。15分钟闹钟响了就停。不要有负罪感。</blockquote>
-</div>
-`;
-
 // ========== 每日记录 ==========
 P.daily = `
-<div class="header"><h1>📅 每日记录</h1></div>
-<p style="text-align:center;color:var(--muted);font-size:.82rem;padding:0 16px;">点击日期查看当天完整记录</p>
-<div id="daily-list" style="padding:0 16px;"></div>
+<div class="page-header"><span class="ph-icon">📅</span><h1>每日记录</h1></div>
+<p style="text-align:center;color:var(--muted);font-size:.84rem;padding:4px 20px 16px;">点击日期查看当天完整记录</p>
+<div id="daily-list" style="padding:0 12px;"></div>
 `;
 
 // ========== 全部模块 ==========
 P.modules = `
-<div class="header"><h1>🗂️ 全部模块</h1></div>
+<div class="page-header"><span class="ph-icon">🗂️</span><h1>全部模块</h1></div>
 <div class="module-grid">
   <div class="mod-card" onclick="go('baby')"><span class="mod-ico">👶</span><div class="mod-name">宝宝档案</div></div>
   <div class="mod-card" onclick="go('work')"><span class="mod-ico">💼</span><div class="mod-name">工作手帐</div></div>
@@ -1446,633 +434,253 @@ P.modules = `
 
 // ========== 我的 ==========
 P.me = `
-<div class="header"><h1>🌿 我的</h1></div>
+<div class="page-header"><span class="ph-icon">⚙️</span><h1>设置</h1></div>
 <div class="card">
-  <div class="card-title"><span class="ico">⚙️</span>设置</div>
-  <div style="display:flex;flex-direction:column;gap:8px;">
-    <button style="background:var(--accent);color:#fff;border:none;border-radius:10px;padding:12px;font-size:.85rem;cursor:pointer;" onclick="backupData()">💾 导出数据备份</button>
-    <button style="background:#e0e0e0;color:#333;border:none;border-radius:10px;padding:12px;font-size:.85rem;cursor:pointer;" onclick="if(confirm('重置SOP数据？这会清空你添加的SOP并恢复预设。')){localStorage.removeItem('all_sops_v2');localStorage.removeItem('all_sops');alert('已重置，刷新SOP页面即可');}">🔄 重置SOP数据</button>
-    <p style="font-size:.72rem;color:var(--muted);margin-top:4px;">如果SOP页面异常（没有内容、不能创建），点"重置SOP数据"然后刷新页面。</p>
+  <div class="card-title"><span class="ico">💾</span>数据管理</div>
+  <div style="display:flex;flex-direction:column;gap:10px;">
+    <button class="btn-primary" onclick="backupData()">📥 导出数据备份</button>
+    <button class="btn-secondary" onclick="if(confirm('重置所有SOP数据？')){localStorage.removeItem('all_sops_v2');localStorage.removeItem('all_sops');localStorage.removeItem('sop_v2_seeded');alert('已重置');location.reload();}">🔄 重置SOP数据</button>
   </div>
+  <p style="font-size:.72rem;color:var(--muted);margin-top:10px;">如果SOP页面异常，点重置后刷新页面</p>
 </div>
 <div class="sub-grid">
   <div class="sub-btn" onclick="go('self')"><span class="sub-ico">🪞</span><span class="sub-name">自我认知</span></div>
   <div class="sub-btn" onclick="go('diary')"><span class="sub-ico">📖</span><span class="sub-name">年度日记</span></div>
+  <div class="sub-btn" onclick="go('observe')"><span class="sub-ico">👁️</span><span class="sub-name">观察笔记</span></div>
+  <div class="sub-btn" onclick="go('social')"><span class="sub-ico">🤝</span><span class="sub-name">人情世故</span></div>
+  <div class="sub-btn" onclick="go('knowledge')"><span class="sub-ico">📚</span><span class="sub-name">知识迭代</span></div>
 </div>
 `;
 
-// ========== 对话页 ==========
+// ========== 对话/记事本 ==========
 P.chat = `
-<div class="header"><h1>💬 临时记事本</h1></div>
-
+<div class="page-header"><span class="ph-icon">✏️</span><h1>临时记事本</h1></div>
 <div class="card">
-  <div class="card-title"><span class="ico">📝</span>白天随时记 · 晚上发给我</div>
-  <textarea id="notepad" placeholder="想到什么写什么，不用组织语言：&#10;&#10;• 喝了水&#10;• 做了补水面膜&#10;• 宝宝今天在图书馆分享了零食&#10;• 买了一个发夹8块钱&#10;• 工作：确认了驾培新规&#10;• 喝了奶茶（记录饮料）&#10;&#10;晚上点"发给WorkBuddy"→粘贴到对话框→我一次性处理" style="min-height:140px;font-size:.85rem;border:1px solid var(--border);border-radius:14px;padding:14px;background:var(--bg);width:100%;resize:vertical;font-family:inherit;line-height:1.8;"></textarea>
-  <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
-    <button style="flex:1;min-width:80px;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:10px;font-size:.82rem;cursor:pointer;font-weight:600;" onclick="saveNotepad()">💾 保存</button>
-    <button style="flex:1.5;min-width:100px;background:var(--green);color:#fff;border:none;border-radius:10px;padding:10px;font-size:.82rem;cursor:pointer;font-weight:600;" onclick="copyNotepad()">📋 发给WorkBuddy</button>
-    <button style="flex:0.6;min-width:60px;background:#e0e0e0;color:#666;border:none;border-radius:10px;padding:10px;font-size:.82rem;cursor:pointer;" onclick="clearNotepad()">🗑️</button>
+  <div class="card-title"><span class="ico">📝</span>随时记 · 晚上发给我</div>
+  <textarea id="notepad" placeholder="想到什么写什么，不用组织语言：
+
+• 喝了水
+• 做了补水面膜
+• 宝宝今天在图书馆分享了零食
+• 买了一个发夹8块钱
+• 工作：确认了驾培新规
+• 喝了奶茶（记录饮料）
+
+晚上点「复制」→粘贴到对话框→我一次性处理" style="min-height:150px;font-size:.86rem;border:1.5px solid var(--border);border-radius:var(--radius);padding:14px;background:var(--bg);width:100%;resize:vertical;font-family:inherit;line-height:1.8;"></textarea>
+  <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
+    <button class="btn-secondary" style="flex:1;min-width:70px;" onclick="saveNotepad()">💾 保存</button>
+    <button class="btn-primary" style="flex:1.5;min-width:110px;" onclick="copyNotepad()">📋 复制发送</button>
+    <button class="btn-danger" style="flex:0.5;min-width:50px;" onclick="clearNotepad()">🗑️</button>
   </div>
   <p id="notepad-status" style="font-size:.72rem;color:var(--muted);margin-top:8px;text-align:center;"></p>
 </div>
-
 <div class="card">
   <div class="card-title"><span class="ico">⚡</span>快捷输入</div>
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">
-    <div class="sub-btn" onclick="appendNotepad('喝了水\\n')" style="padding:10px 6px;"><span class="sub-ico">💧</span><span class="sub-name">喝了水</span></div>
-    <div class="sub-btn" onclick="appendNotepad('做了面膜\\n')" style="padding:10px 6px;"><span class="sub-ico">🎭</span><span class="sub-name">面膜</span></div>
-    <div class="sub-btn" onclick="appendNotepad('昨晚X点睡\\n')" style="padding:10px 6px;"><span class="sub-ico">💤</span><span class="sub-name">睡眠</span></div>
-    <div class="sub-btn" onclick="appendNotepad('喝了奶茶/咖啡\\n')" style="padding:10px 6px;"><span class="sub-ico">🥤</span><span class="sub-name">饮料</span></div>
-    <div class="sub-btn" onclick="appendNotepad('宝宝今天')" style="padding:10px 6px;"><span class="sub-ico">👶</span><span class="sub-name">宝宝</span></div>
-    <div class="sub-btn" onclick="appendNotepad('买了')" style="padding:10px 6px;"><span class="sub-ico">💸</span><span class="sub-name">消费</span></div>
-    <div class="sub-btn" onclick="appendNotepad('忍住没买')" style="padding:10px 6px;"><span class="sub-ico">✋</span><span class="sub-name">忍住了</span></div>
-    <div class="sub-btn" onclick="appendNotepad('工作：')" style="padding:10px 6px;"><span class="sub-ico">💼</span><span class="sub-name">工作</span></div>
-    <div class="sub-btn" onclick="appendNotepad('心情：')" style="padding:10px 6px;"><span class="sub-ico">💭</span><span class="sub-name">心情</span></div>
-    <div class="sub-btn" onclick="appendNotepad('钩针：')" style="padding:10px 6px;"><span class="sub-ico">🧶</span><span class="sub-name">手工</span></div>
-    <div class="sub-btn" onclick="appendNotepad('梳头练习：')" style="padding:10px 6px;"><span class="sub-ico">💇</span><span class="sub-name">梳头</span></div>
-    <div class="sub-btn" onclick="appendNotepad('滚了泡沫轴\\n')" style="padding:10px 6px;"><span class="sub-ico">🦵</span><span class="sub-name">泡沫轴</span></div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+    <div class="sub-btn" onclick="appendNotepad('喝了水\n')" style="padding:12px 6px;"><span class="sub-ico">💧</span><span class="sub-name">喝水</span></div>
+    <div class="sub-btn" onclick="appendNotepad('做了面膜\n')" style="padding:12px 6px;"><span class="sub-ico">🎭</span><span class="sub-name">面膜</span></div>
+    <div class="sub-btn" onclick="appendNotepad('昨晚X点睡\n')" style="padding:12px 6px;"><span class="sub-ico">💤</span><span class="sub-name">睡眠</span></div>
+    <div class="sub-btn" onclick="appendNotepad('喝了奶茶/咖啡\n')" style="padding:12px 6px;"><span class="sub-ico">🥤</span><span class="sub-name">饮料</span></div>
+    <div class="sub-btn" onclick="appendNotepad('宝宝今天')" style="padding:12px 6px;"><span class="sub-ico">👶</span><span class="sub-name">宝宝</span></div>
+    <div class="sub-btn" onclick="appendNotepad('买了')" style="padding:12px 6px;"><span class="sub-ico">💸</span><span class="sub-name">消费</span></div>
+    <div class="sub-btn" onclick="appendNotepad('忍住没买')" style="padding:12px 6px;"><span class="sub-ico">✋</span><span class="sub-name">忍住</span></div>
+    <div class="sub-btn" onclick="appendNotepad('工作：')" style="padding:12px 6px;"><span class="sub-ico">💼</span><span class="sub-name">工作</span></div>
+    <div class="sub-btn" onclick="appendNotepad('心情：')" style="padding:12px 6px;"><span class="sub-ico">💭</span><span class="sub-name">心情</span></div>
+    <div class="sub-btn" onclick="appendNotepad('钩针：')" style="padding:12px 6px;"><span class="sub-ico">🧶</span><span class="sub-name">手工</span></div>
+    <div class="sub-btn" onclick="appendNotepad('梳头练习：')" style="padding:12px 6px;"><span class="sub-ico">💇</span><span class="sub-name">梳头</span></div>
+    <div class="sub-btn" onclick="appendNotepad('滚了泡沫轴\n')" style="padding:12px 6px;"><span class="sub-ico">🦵</span><span class="sub-name">泡沫轴</span></div>
   </div>
 </div>
-
-<div id="copy-toast" style="position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;padding:10px 20px;border-radius:20px;font-size:.85rem;display:none;z-index:200;"></div>
 `;
 
-function getNotepad(){ return localStorage.getItem('my_notepad')||''; }
-function setNotepad(v){ localStorage.setItem('my_notepad',v); }
-function renderNotepad(){
-  let ta=document.getElementById('notepad');
-  if(ta) ta.value=getNotepad();
-  let s=document.getElementById('notepad-status');
-  if(s){ let t=getNotepad(); s.textContent=t?'已保存 '+t.length+' 字':''; }
-}
-function saveNotepad(){
-  let ta=document.getElementById('notepad');
-  if(!ta) return;
-  setNotepad(ta.value);
-  let s=document.getElementById('notepad-status');
-  if(s) s.textContent='已保存 '+ta.value.length+' 字 · '+new Date().toTimeString().slice(0,5);
-}
-function appendNotepad(text){
-  let ta=document.getElementById('notepad');
-  if(!ta) return;
-  ta.value+=text;
-  ta.focus();
-  ta.scrollTop=ta.scrollHeight;
-  saveNotepad();
-}
-function copyNotepad(){
-  let text=getNotepad();
-  if(!text){ showToast('记事本是空的'); return; }
-  let full='请帮我记录以下今天的内容：\n\n'+text;
-  if(navigator.clipboard){
-    navigator.clipboard.writeText(full).then(()=>showToast('已复制！粘贴到对话框发给我')).catch(()=>fallbackCopy(full));
-  } else { fallbackCopy(full); }
-}
-function clearNotepad(){
-  if(!confirm('确定清空记事本吗？')) return;
-  localStorage.removeItem('my_notepad');
-  renderNotepad();
-  showToast('已清空');
-}
-function fallbackCopy(text){
-  let ta=document.createElement('textarea');
-  ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
-  document.body.appendChild(ta); ta.select();
-  try{ document.execCommand('copy'); showToast('已复制！粘贴到对话框发给我'); }catch(e){}
-  document.body.removeChild(ta);
-}
-function showToast(msg){
-  let t=document.getElementById('copy-toast');
-  if(t){ t.textContent=msg; t.style.display='block'; setTimeout(()=>{t.style.display='none';},2000); }
-}
-
-// ========== 项目推进系统 ==========
-P.projects = `
-<div class="header"><h1>🎯 项目推进</h1></div>
+// ========== 宝宝档案 ==========
+P.baby = `
+<div class="page-header"><span class="ph-icon">👶</span><h1>小松鼠档案</h1></div>
 <div class="card">
-  <p style="font-size:.78rem;color:var(--muted);">你想做的事，我帮你拆成步骤，一步一步推进。每完成一步打勾，我帮你推进下一步。</p>
+  <div class="info-row"><span class="label">小名</span><span class="value">小松鼠 🐿️</span></div>
+  <div class="info-row"><span class="label">出生</span><span class="value">2020年5月</span></div>
+  <div class="info-row"><span class="label">年龄</span><span class="value">6岁 · 秋季上小学 🎒</span></div>
+  <div class="info-row"><span class="label">日常用药</span><span class="value">优甲乐 ☀️早上</span></div>
+  <div class="info-row"><span class="label">暑假班</span><span class="value">7/6-8/22</span></div>
+  <div class="info-row"><span class="label">游泳班</span><span class="value">7/16-7/31 最后一天！</span></div>
+  <div class="info-row"><span class="label">睡前仪式</span><span class="value">iPad→读书→约22:30睡 💤</span></div>
 </div>
-
-<div class="card">
-  <div class="card-title"><span class="ico">➕</span>新建项目</div>
-  <input type="text" id="new-project-name" placeholder="你想做什么？（如：做一个疗程拔罐）" style="width:100%;border:1px solid var(--border);border-radius:8px;padding:8px;font-size:.82rem;margin-bottom:6px;">
-  <button style="width:100%;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:8px;font-size:.82rem;cursor:pointer;" onclick="addProject()">➕ 创建项目</button>
+<div class="sub-grid">
+  <div class="sub-btn" onclick="go('baby-star')"><span class="sub-ico">⭐</span><span class="sub-name">星星银行</span></div>
+  <div class="sub-btn" onclick="go('baby-sleep')"><span class="sub-ico">💤</span><span class="sub-name">睡眠记录</span></div>
+  <div class="sub-btn" onclick="go('baby-schedule')"><span class="sub-ico">📅</span><span class="sub-name">课程表</span></div>
+  <div class="sub-btn" onclick="go('baby-growth')"><span class="sub-ico">📝</span><span class="sub-name">成长记录</span></div>
+  <div class="sub-btn" onclick="go('baby-health')"><span class="sub-ico">🏥</span><span class="sub-name">健康记录</span></div>
 </div>
-
-<div id="project-list"></div>
 `;
 
-const defaultProjects = {
-  guasha: {
-    name: '拔罐刮痧疗程',
-    icon: '💆',
-    status: '进行中',
-    steps: [
-      {text:'第一次拔罐+刮痧（7/30已完成）', done:true},
-      {text:'第二次拔罐+刮痧（预计8/9前后，隔10天）', done:false},
-      {text:'第三次拔罐+刮痧（预计8/19前后）', done:false},
-      {text:'第四次拔罐+刮痧（预计8/29前后）', done:false},
-      {text:'第五次拔罐+刮痧（预计9/8前后）', done:false},
-      {text:'疗程总结：记录感受变化和身体改善', done:false},
-    ],
-    nextAction: '下次拔罐约8/9（10天间隔），提前1-2天预约。',
-    note: '7/30第一次，感觉很舒服，精气神恢复很多。10天一次，一个疗程约5次。',
-  },
-  sleep: {
-    name: '睡好觉项目',
-    icon: '🌙',
-    status: '进行中',
-    steps: [
-      {text:'记录睡眠数据3天找规律', done:false},
-      {text:'确定固定睡觉时间', done:false},
-      {text:'确定固定起床时间', done:false},
-      {text:'睡前环境优化（眼罩/沙发/温度）', done:false},
-      {text:'连续3天达标', done:false},
-      {text:'连续7天达标', done:false},
-    ],
-    nextAction: '先记录3天睡眠数据，看看到底几点睡几点醒，找规律。',
-    note: '7/30感悟：太久没睡好觉了。补觉3h后状态恢复很多。沙发摊开睡surprisingly舒服。',
-  },
-  sofaSkincare: {
-    name: '沙发旁护肤站',
-    icon: '🧴',
-    status: '进行中',
-    steps: [
-      {text:'整理出沙发旁的小空间', done:false},
-      {text:'放基础护肤品（乳霜+护手霜+润唇膏）', done:false},
-      {text:'连续3天晚上在沙发旁护肤', done:false},
-      {text:'养成习惯（连续7天）', done:false},
-    ],
-    nextAction: '今晚在沙发旁找一个位置，把基础护肤品放过去。',
-    note: '晚上简单护肤，不用走到卫生间，降低门槛。',
-  },
-};
-
-function getAllProjects(){
-  try {
-    let raw = localStorage.getItem('projects_v1');
-    if(!raw){
-      localStorage.setItem('projects_v1', JSON.stringify(defaultProjects));
-      return JSON.parse(JSON.stringify(defaultProjects));
-    }
-    return JSON.parse(raw);
-  } catch(e){
-    localStorage.setItem('projects_v1', JSON.stringify(defaultProjects));
-    return JSON.parse(JSON.stringify(defaultProjects));
-  }
-}
-function saveProjects(projects){
-  localStorage.setItem('projects_v1', JSON.stringify(projects));
-}
-
-function renderProjects(){
-  let container = document.getElementById('project-list');
-  if(!container) return;
-  let projects = getAllProjects();
-  let html = '';
-  
-  Object.keys(projects).forEach(key => {
-    let p = projects[key];
-    let done = p.steps.filter(s => s.done).length;
-    let total = p.steps.length;
-    let pct = Math.round(done/total*100);
-    let nextStep = p.steps.find(s => !s.done);
-    
-    html += `<div class="card">
-      <div class="card-title">
-        <span class="ico">${p.icon}</span>${p.name}
-        <span class="tag ${p.status==='进行中'?'tag-yellow':'tag-green'}" style="font-size:.65rem;margin-left:auto;">${p.status}</span>
-      </div>
-      <div class="progress" style="margin:6px 0 8px;"><div class="fill" style="width:${pct}%;"></div></div>
-      <p style="font-size:.75rem;color:var(--muted);margin-bottom:8px;">${done}/${total} 步完成 · ${pct}%</p>
-      
-      ${nextStep ? `<div style="background:#fff8e1;border-radius:8px;padding:8px 10px;margin-bottom:8px;">
-        <p style="font-size:.72rem;color:var(--accent);font-weight:600;">📌 下一步</p>
-        <p style="font-size:.82rem;">${nextStep.text}</p>
-        ${p.nextAction ? `<p style="font-size:.75rem;color:var(--muted);margin-top:4px;">💡 ${p.nextAction}</p>` : ''}
-      </div>` : '<p style="color:var(--green);font-size:.82rem;">🎉 全部完成！</p>'}
-      
-      <div style="margin-top:8px;">`;
-    
-    p.steps.forEach((s, i) => {
-      html += `<div class="todo-item${s.done?' done':''}" style="padding:4px 0;display:flex;align-items:center;gap:6px;">
-        <input type="checkbox" ${s.done?'checked':''} style="flex-shrink:0;" onchange="toggleProjectStep('${key}',${i})">
-        <span style="font-size:.8rem;${s.done?'color:var(--muted);':''}">${s.text}</span>
-      </div>`;
-    });
-    
-    html += `</div>
-      ${p.note ? `<blockquote style="font-size:.75rem;margin-top:8px;">${p.note}</blockquote>` : ''}
-      <div style="display:flex;gap:6px;margin-top:8px;">
-        <input type="text" id="add-proj-step-${key}" placeholder="添加步骤..." style="flex:1;border:1px solid var(--border);border-radius:8px;padding:6px 8px;font-size:.78rem;">
-        <button style="background:var(--green);color:#fff;border:none;border-radius:8px;padding:6px 10px;font-size:.75rem;cursor:pointer;" onclick="addProjectStep('${key}')">➕</button>
-        <button style="background:#e0e0e0;color:#c00;border:none;border-radius:8px;padding:6px 10px;font-size:.75rem;cursor:pointer;" onclick="deleteProject('${key}')">🗑️</button>
-      </div>
-    </div>`;
-  });
-  
-  container.innerHTML = html;
-}
-
-function toggleProjectStep(key, idx){
-  let projects = getAllProjects();
-  if(!projects[key]) return;
-  projects[key].steps[idx].done = !projects[key].steps[idx].done;
-  saveProjects(projects);
-  renderProjects();
-}
-
-function addProject(){
-  let nameEl = document.getElementById('new-project-name');
-  if(!nameEl || !nameEl.value.trim()){ alert('请输入项目名称'); return; }
-  let projects = getAllProjects();
-  let key = 'proj_' + Date.now();
-  let icons = ['🎯','💪','📚','🎨','🧶','💰','🌙','💆','🛒','📝'];
-  projects[key] = {
-    name: nameEl.value.trim(),
-    icon: icons[Math.floor(Math.random()*icons.length)],
-    status: '进行中',
-    steps: [],
-    nextAction: '',
-    note: '',
-  };
-  saveProjects(projects);
-  nameEl.value = '';
-  renderProjects();
-}
-
-function addProjectStep(key){
-  let input = document.getElementById('add-proj-step-'+key);
-  if(!input || !input.value.trim()) return;
-  let projects = getAllProjects();
-  if(!projects[key]) return;
-  projects[key].steps.push({text:input.value.trim(), done:false});
-  saveProjects(projects);
-  input.value = '';
-  renderProjects();
-}
-
-function deleteProject(key){
-  if(!confirm('删除这个项目？')) return;
-  let projects = getAllProjects();
-  delete projects[key];
-  saveProjects(projects);
-  renderProjects();
-}
-
-// ========== SOP 流程 ==========
-P.sop = `
-<div class="header"><h1>📋 SOP 流程清单</h1></div>
-<div class="card">
-  <p style="font-size:.78rem;color:var(--muted);">每个步骤可标注 ⭐必做 / 🔶偶尔（点标签切换）</p>
-  <p style="font-size:.72rem;color:var(--muted);margin-top:4px;">标题点击展开/收起 · 勾选后点"重置"恢复</p>
+// ========== 星星银行/卡皮巴拉 ==========
+P['baby-star'] = `
+<div class="page-header"><span class="ph-icon">⭐</span><h1>卡皮巴拉养成</h1></div>
+<div class="pet-area-bg">
+  <div id="pet-area" style="font-size:5.5rem;line-height:1.4;">🦫</div>
+  <p id="pet-name" style="font-size:1.05rem;font-weight:700;color:#4a90d9;margin-top:4px;">小蓝（卡皮巴拉）</p>
+  <p id="pet-mood" style="font-size:.84rem;color:#7ea8c9;">😊 状态还不错</p>
+  <p id="pet-level" style="font-size:.75rem;color:var(--muted);margin-top:4px;">Level 1 · 喂养进度 0/10⭐</p>
 </div>
-
-<div class="card">
-  <div class="card-title"><span class="ico">➕</span>新建SOP</div>
-  <input type="text" id="new-sop-name" placeholder="SOP名称" style="width:100%;border:1px solid var(--border);border-radius:8px;padding:8px;font-size:.82rem;margin-bottom:6px;">
-  <button style="width:100%;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:8px;font-size:.82rem;cursor:pointer;" onclick="addNewSOP()">➕ 创建</button>
+<div class="card" style="text-align:center;">
+  <p style="font-size:.82rem;color:var(--muted);">星星余额</p>
+  <p style="font-size:2.2rem;font-weight:700;color:var(--accent2);margin:6px 0;">-52 ⭐</p>
+  <p style="font-size:.76rem;color:var(--muted);">负债中 · 汇率 1元=2星</p>
 </div>
-
-<!-- 游泳SOP硬编码，始终显示 -->
 <div class="card">
-  <div class="card-title" style="cursor:pointer;" onclick="toggleBuiltinSOP()">
-    <span class="ico">🏊</span>宝宝游泳流程
-    <span id="swim-arrow" style="margin-left:auto;font-size:.9rem;color:var(--muted);">▾</span>
-  </div>
-  <div id="swim-body">
-    <div id="sop-builtin-swim"></div>
-    <button style="width:100%;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:6px;font-size:.78rem;cursor:pointer;margin-top:8px;" onclick="resetSOP('builtin-swim')">🔄 重置勾选</button>
+  <div class="card-title"><span class="ico">🍎</span>给小蓝喂食</div>
+  <p style="font-size:.78rem;color:var(--muted);margin-bottom:10px;">用星星换食物，不同食物加不同心情：</p>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+    <button class="sub-btn" style="background:#fff5f5;" onclick="feedPet('apple')"><span class="sub-ico">🍎</span><span class="sub-name">苹果<br><small style="color:var(--accent);">-2⭐</small></span></button>
+    <button class="sub-btn" style="background:#fff5f5;" onclick="feedPet('cake')"><span class="sub-ico">🍰</span><span class="sub-name">蛋糕<br><small style="color:var(--accent);">-5⭐</small></span></button>
+    <button class="sub-btn" style="background:#f0f8ff;" onclick="feedPet('bath')"><span class="sub-ico">🛁</span><span class="sub-name">泡澡<br><small style="color:var(--accent);">-3⭐</small></span></button>
+    <button class="sub-btn" style="background:#fff8e1;" onclick="feedPet('snack')"><span class="sub-ico">🍪</span><span class="sub-name">饼干<br><small style="color:var(--accent);">-1⭐</small></span></button>
+    <button class="sub-btn" style="background:#e8f5e9;" onclick="feedPet('salad')"><span class="sub-ico">🥗</span><span class="sub-name">沙拉<br><small style="color:var(--accent);">-2⭐</small></span></button>
+    <button class="sub-btn" style="background:#fce4ec;" onclick="feedPet('love')"><span class="sub-ico">💝</span><span class="sub-name">拥抱<br><small style="color:var(--accent);">免费</small></span></button>
   </div>
 </div>
-
-<div id="sop-list-container"></div>
+<blockquote class="accent">每天喂一次就好，不要一次全喂完。小蓝吃太多会撑着的～</blockquote>
 `;
 
-// 硬编码游泳SOP（始终显示）
-const builtinSwimItems = [
-  {text:'泳衣（泳裤）',tag:''},{text:'泳帽',tag:''},{text:'泳镜',tag:''},{text:'肥皂（浴液）',tag:''},
-  {text:'毛巾和拖鞋',tag:''},{text:'防起雾喷雾',tag:''},
-  {text:'换洗衣物（上衣、内裤、裤子）',tag:''},{text:'带上拖鞋换鞋子',tag:''},
-  {text:'4:40~5:30 图书馆写作业',tag:'⭐'},{text:'5:30 去吃饭，我回家整理东西并吃一个面包',tag:'⭐'},
-  {text:'6:20 楼下接到宝宝去游泳馆，车里先换好衣服和拖鞋',tag:'⭐'},
-  {text:'6:30 送进游泳馆',tag:'⭐'},{text:'6:30~7:50 我去游泳，宝宝上课',tag:'⭐'},
-  {text:'7:20 必须起来洗澡',tag:'⭐'}
-];
+// ========== 宝宝睡眠 ==========
+P['baby-sleep'] = `
+<div class="page-header"><span class="ph-icon">💤</span><h1>宝宝睡眠记录</h1></div>
+<div class="card">
+  <table>
+    <tr><th>日期</th><th>入睡</th><th>起床</th><th>时长</th></tr>
+    <tr><td>7/29</td><td>~22:30</td><td>07:20</td><td>~9h</td></tr>
+    <tr><td>7/30</td><td>和妈妈一起睡沙发</td><td>-</td><td>-</td></tr>
+  </table>
+</div>
+<blockquote>暑假期间作息可能不太规律，开学前一周开始调整。</blockquote>
+`;
 
-function renderBuiltinSwim(){
-  let el = document.getElementById('sop-builtin-swim');
-  if(!el) return;
-  let states = [];
-  try { states = JSON.parse(localStorage.getItem('sop_states_builtin-swim')||'[]'); } catch(e){}
-  let html = '';
-  builtinSwimItems.forEach((item, i) => {
-    let checked = states[i] || false;
-    let tagHtml = item.tag === '⭐' ? '<span style="font-size:.6rem;background:#e8f5e9;color:#388e3c;padding:1px 5px;border-radius:4px;flex-shrink:0;">⭐必做</span>' : (item.tag === '🔶' ? '<span style="font-size:.6rem;background:#fff3e0;color:#e65100;padding:1px 5px;border-radius:4px;flex-shrink:0;">🔶偶尔</span>' : '');
-    html += `<div class="todo-item${checked?' done':''}" style="padding:4px 0;display:flex;align-items:center;gap:6px;">
-      <input type="checkbox" ${checked?'checked':''} style="flex-shrink:0;" onchange="toggleBuiltinSwim(${i})">
-      ${tagHtml}
-      <span style="flex:1;font-size:.8rem;">${item.text}</span>
-    </div>`;
-  });
-  el.innerHTML = html;
-}
+// ========== 宝宝课程表 ==========
+P['baby-schedule'] = `
+<div class="page-header"><span class="ph-icon">📅</span><h1>课程表</h1></div>
+<div class="card">
+  <h3>暑假班</h3>
+  <table>
+    <tr><th>时间</th><th>内容</th><th>备注</th></tr>
+    <tr><td>周一至周五</td><td>暑假班</td><td>送学</td></tr>
+  </table>
+</div>
+<div class="card">
+  <h3>兴趣班</h3>
+  <table>
+    <tr><th>时间</th><th>项目</th><th>状态</th></tr>
+    <tr><td>每天 18:50-20:10</td><td>🏊 游泳课</td><td><span class="tag tag-yellow">7/31最后一天</span></td></tr>
+    <tr><td>周一 18:30-20:00</td><td>🎨 画画课</td><td><span class="tag tag-muted">游泳冲突请假中</span></td></tr>
+    <tr><td>周二 18:30-19:30</td><td>✏️ 写字课</td><td>正常</td></tr>
+    <tr><td>周二 19:30-20:30</td><td>🕺 街舞课</td><td>正常</td></tr>
+  </table>
+</div>
+<blockquote>8月起游泳结束，画画课恢复。注意周二写字+街舞连着，时间紧凑。</blockquote>
+`;
 
-function toggleBuiltinSwim(idx){
-  let states = [];
-  try { states = JSON.parse(localStorage.getItem('sop_states_builtin-swim')||'[]'); } catch(e){}
-  states[idx] = !states[idx];
-  localStorage.setItem('sop_states_builtin-swim', JSON.stringify(states));
-  renderBuiltinSwim();
-}
+// ========== 宝宝成长记录 ==========
+P['baby-growth'] = `
+<div class="page-header"><span class="ph-icon">📝</span><h1>成长记录</h1></div>
+<div class="card">
+  <p style="font-size:.82rem;color:var(--muted);">记录宝宝的趣事、第一次、进步瞬间。有值得记的再记，不用每天。</p>
+</div>
+<div class="card">
+  <div class="card-title"><span class="ico">✏️</span>快速记录</div>
+  <textarea id="new-baby-note" placeholder="今天宝宝做了什么有趣的事？" style="width:100%;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:10px;font-size:.84rem;height:64px;font-family:inherit;"></textarea>
+  <div style="display:flex;gap:8px;margin-top:8px;">
+    <select id="baby-note-type" style="border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:8px;font-size:.78rem;background:#fff;">
+      <option value="趣事">😆 趣事</option>
+      <option value="成长">🌱 成长</option>
+      <option value="学业">📚 学业</option>
+      <option value="运动">🏊 运动</option>
+      <option value="感动">💕 感动</option>
+      <option value="其他">📌 其他</option>
+    </select>
+    <button class="btn-primary" style="flex:1;" onclick="addBabyNote()">💾 保存</button>
+  </div>
+</div>
+<div id="baby-notes-list"></div>
+`;
 
-function toggleBuiltinSOP(){
-  let body = document.getElementById('swim-body');
-  let arrow = document.getElementById('swim-arrow');
-  if(!body || !arrow) return;
-  if(body.style.display === 'none'){
-    body.style.display = 'block';
-    arrow.textContent = '▾';
-  } else {
-    body.style.display = 'none';
-    arrow.textContent = '▸';
-  }
-}
-
-// 动态SOP（用户自己创建的）
-const sopIcons = ['🍳','🧹','🚗','💼','🌙','📝','🛒','💪','📚','🎨','💊','✈️','🐾','📱','🧶','📦','🏠'];
-
-function defaultDynamicSOPs(){
-  return {
-    'sop_morning_move': {
-      name: '早上床上拉伸',
-      icon: '💪',
-      items: [
-        {text:'猫趴式（猫牛式）3分钟', tag:'⭐'},
-        {text:'人面狮身式 2分钟', tag:'⭐'},
-        {text:'下犬式 1分钟', tag:'⭐'},
-        {text:'天鹅式拉伸-左 1分钟', tag:'⭐'},
-        {text:'天鹅式拉伸-右 1分钟', tag:'⭐'},
-        {text:'平板支撑 1分钟', tag:'⭐'},
-      ]
-    },
-    'sop_office': {
-      name: '到办公室安顿SOP',
-      icon: '💼',
-      items: [
-        {text:'出门前：从冰箱拿冻了半天的矿泉水瓶（或常温水+塞茶包）', tag:'⭐'},
-        {text:'到办公室先不坐，去茶水间/饮水机倒一杯热水', tag:'⭐'},
-        {text:'从茶叶罐挑一个快过期的，抓一点放进热水里', tag:'⭐'},
-        {text:'回到座位，把包放到椅子/旁边固定位置', tag:'⭐'},
-        {text:'外套挂到椅背或衣架', tag:'⭐'},
-        {text:'手机连上充电线', tag:'⭐'},
-        {text:'把桌面上所有东西（文件/杯子/杂物）全部挪到旁边', tag:'⭐'},
-        {text:'抽一张纸巾，桌面从左到右擦一遍，边角也擦', tag:'⭐'},
-        {text:'擦完把纸巾丢进垃圾桶', tag:'⭐'},
-        {text:'东西按"常用在上、不常用在下"放回', tag:'⭐'},
-        {text:'把昨天留下的杯子洗干净/归位', tag:'⭐'},
-        {text:'坐下，喝一口茶', tag:'⭐'},
-        {text:'有早饭→先吃（小笼包/面包）；没早饭→拿出毛线开始织', tag:'⭐'},
-        {text:'织10-15分钟或吃完早饭，再开电脑/叫号系统开始工作', tag:'🔶'},
-      ]
-    }
-  };
-}
-
-function getDynamicSOPs(){
-  try {
-    let raw = localStorage.getItem('all_sops_v2');
-    let seeded = localStorage.getItem('sop_v2_seeded');
-    if(!raw){
-      let d = defaultDynamicSOPs();
-      localStorage.setItem('all_sops_v2', JSON.stringify(d));
-      localStorage.setItem('sop_v2_seeded','1');
-      return d;
-    }
-    let parsed = JSON.parse(raw);
-    if(!seeded){
-      let merged = Object.assign({}, defaultDynamicSOPs(), parsed);
-      localStorage.setItem('all_sops_v2', JSON.stringify(merged));
-      localStorage.setItem('sop_v2_seeded','1');
-      return merged;
-    }
-    return parsed;
-  } catch(e){ return {}; }
-}
-function saveDynamicSOPs(sops){
-  localStorage.setItem('all_sops_v2', JSON.stringify(sops));
-}
-
-function renderAllSOPs(){
-  renderBuiltinSwim();
-  renderDynamicSOPs();
-}
-
-function renderDynamicSOPs(){
-  let container = document.getElementById('sop-list-container');
-  if(!container) return;
-  let sops = getDynamicSOPs();
-  let expanded = {};
-  try { expanded = JSON.parse(localStorage.getItem('sop_expanded')||'{}'); } catch(e){}
-  
-  let html = '';
-  Object.keys(sops).forEach(key => {
-    let sop = sops[key];
-    let isOpen = expanded[key] !== false;
-    html += `<div class="card" style="padding:12px 14px;">
-      <div class="card-title" style="margin-bottom:${isOpen?'10px':'0'};cursor:pointer;" onclick="toggleSOPExpand('${key}')">
-        <span class="ico">${sop.icon}</span>${sop.name}
-        <span style="margin-left:auto;font-size:.9rem;color:var(--muted);">${isOpen?'▾':'▸'}</span>
-      </div>
-      <div style="display:${isOpen?'block':'none'};">
-        <div id="sop-dyn-${key}"></div>
-        <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;">
-          <input type="text" id="add-dyn-step-${key}" placeholder="添加步骤..." style="flex:1;min-width:80px;border:1px solid var(--border);border-radius:8px;padding:6px 8px;font-size:.78rem;">
-          <button style="background:var(--green);color:#fff;border:none;border-radius:8px;padding:6px 10px;font-size:.75rem;cursor:pointer;" onclick="addDynSOPStep('${key}')">➕</button>
-          <button style="background:var(--accent);color:#fff;border:none;border-radius:8px;padding:6px 10px;font-size:.75rem;cursor:pointer;" onclick="resetDynSOP('${key}')">🔄重置</button>
-          <button style="background:#e0e0e0;color:#c00;border:none;border-radius:8px;padding:6px 10px;font-size:.75rem;cursor:pointer;" onclick="deleteDynSOP('${key}')">🗑️</button>
-        </div>
-      </div>
-    </div>`;
-  });
-  container.innerHTML = html;
-  
-  Object.keys(sops).forEach(key => renderDynSOP(key));
-}
-
-function renderDynSOP(key){
-  let el = document.getElementById('sop-dyn-'+key);
-  if(!el) return;
-  let sops = getDynamicSOPs();
-  let sop = sops[key];
-  if(!sop) return;
-  let states = [];
-  try { states = JSON.parse(localStorage.getItem('sop_states_dyn_'+key)||'[]'); } catch(e){}
-  
-  let html = '';
-  sop.items.forEach((item, i) => {
-    let checked = states[i] || false;
-    let tagHtml = '';
-    if(item.tag === '⭐') tagHtml = '<span style="font-size:.6rem;background:#e8f5e9;color:#388e3c;padding:1px 5px;border-radius:4px;flex-shrink:0;cursor:pointer;" onclick="event.stopPropagation();toggleDynTag(\''+key+'\','+i+')">⭐必做</span>';
-    else if(item.tag === '🔶') tagHtml = '<span style="font-size:.6rem;background:#fff3e0;color:#e65100;padding:1px 5px;border-radius:4px;flex-shrink:0;cursor:pointer;" onclick="event.stopPropagation();toggleDynTag(\''+key+'\','+i+')">🔶偶尔</span>';
-    else tagHtml = '<span style="font-size:.6rem;background:#f5f5f5;color:#bbb;padding:1px 5px;border-radius:4px;flex-shrink:0;cursor:pointer;" onclick="event.stopPropagation();toggleDynTag(\''+key+'\','+i+')">标记</span>';
-    
-    html += `<div class="todo-item${checked?' done':''}" style="padding:4px 0;display:flex;align-items:center;gap:6px;">
-      <input type="checkbox" ${checked?'checked':''} style="flex-shrink:0;" onchange="toggleDynSOPItem('${key}',${i})">
-      ${tagHtml}
-      <span style="flex:1;font-size:.8rem;">${item.text}</span>
-      <span style="font-size:.65rem;color:var(--muted);cursor:pointer;flex-shrink:0;" onclick="deleteDynSOPStep('${key}',${i})">✕</span>
-    </div>`;
-  });
-  el.innerHTML = html || '<p style="font-size:.78rem;color:var(--muted);">还没有步骤</p>';
-}
-
-function toggleDynTag(key, idx){
-  let sops = getDynamicSOPs();
-  if(!sops[key] || !sops[key].items[idx]) return;
-  let item = sops[key].items[idx];
-  if(!item.tag || item.tag === '') item.tag = '⭐';
-  else if(item.tag === '⭐') item.tag = '🔶';
-  else item.tag = '';
-  saveDynamicSOPs(sops);
-  renderDynSOP(key);
-}
-
-function toggleDynSOPItem(key, idx){
-  let states = [];
-  try { states = JSON.parse(localStorage.getItem('sop_states_dyn_'+key)||'[]'); } catch(e){}
-  states[idx] = !states[idx];
-  localStorage.setItem('sop_states_dyn_'+key, JSON.stringify(states));
-  renderDynSOP(key);
-}
-
-function resetDynSOP(key){
-  localStorage.removeItem('sop_states_dyn_'+key);
-  renderDynSOP(key);
-}
-
-function addNewSOP(){
-  let nameEl = document.getElementById('new-sop-name');
-  if(!nameEl || !nameEl.value.trim()){ alert('请输入SOP名称'); return; }
-  let name = nameEl.value.trim();
-  let sops = getDynamicSOPs();
-  let key = 'dyn_' + Date.now();
-  let icon = sopIcons[Math.floor(Math.random()*sopIcons.length)];
-  sops[key] = {name:name, icon:icon, items:[]};
-  saveDynamicSOPs(sops);
-  nameEl.value = '';
-  renderDynamicSOPs();
-}
-
-function addDynSOPStep(key){
-  let input = document.getElementById('add-dyn-step-'+key);
-  if(!input || !input.value.trim()) return;
-  let sops = getDynamicSOPs();
-  if(!sops[key]) return;
-  sops[key].items.push({text:input.value.trim(),tag:''});
-  saveDynamicSOPs(sops);
-  input.value = '';
-  renderDynSOP(key);
-}
-
-function deleteDynSOPStep(key, idx){
-  if(!confirm('删除这一步？')) return;
-  let sops = getDynamicSOPs();
-  if(!sops[key]) return;
-  sops[key].items.splice(idx, 1);
-  saveDynamicSOPs(sops);
-  let states = [];
-  try { states = JSON.parse(localStorage.getItem('sop_states_dyn_'+key)||'[]'); } catch(e){}
-  states.splice(idx, 1);
-  localStorage.setItem('sop_states_dyn_'+key, JSON.stringify(states));
-  renderDynSOP(key);
-}
-
-function deleteDynSOP(key){
-  if(!confirm('删除整个SOP？')) return;
-  let sops = getDynamicSOPs();
-  delete sops[key];
-  saveDynamicSOPs(sops);
-  localStorage.removeItem('sop_states_dyn_'+key);
-  renderDynamicSOPs();
-}
-
-function toggleSOPExpand(key){
-  let expanded = {};
-  try { expanded = JSON.parse(localStorage.getItem('sop_expanded')||'{}'); } catch(e){}
-  expanded[key] = !(expanded[key] !== false);
-  localStorage.setItem('sop_expanded', JSON.stringify(expanded));
-  renderDynamicSOPs();
-}
-
-function resetSOP(key){
-  localStorage.removeItem('sop_states_'+key);
-  if(key === 'builtin-swim') renderBuiltinSwim();
-}
-
-function renderAllSOPs(){
-  Object.keys(sopData).forEach(key => renderSOP(key));
-}
-
-// ========== 我的 ==========
-P.me = `
-<div class="header"><h1>🌿 我的</h1></div>
-<div class="module-grid">
-  <div class="mod-card" onclick="go('self')"><span class="mod-ico">🪞</span><div class="mod-name">自我认知</div></div>
-  <div class="mod-card" onclick="go('observe')"><span class="mod-ico">👁️</span><div class="mod-name">WorkBuddy观察</div></div>
-  <div class="mod-card" onclick="go('social')"><span class="mod-ico">🤝</span><div class="mod-name">人情世故</div></div>
-  <div class="mod-card" onclick="go('knowledge')"><span class="mod-ico">📚</span><div class="mod-name">知识迭代</div></div>
-  <div class="mod-card" onclick="go('diary')"><span class="mod-ico">📖</span><div class="mod-name">年度日记</div></div>
+// ========== 宝宝健康 ==========
+P['baby-health'] = `
+<div class="page-header"><span class="ph-icon">🏥</span><h1>宝宝健康记录</h1></div>
+<div class="card">
+  <div class="info-row"><span class="label">日常用药</span><span class="value">优甲乐（每天早上）</span></div>
+  <div class="info-row"><span class="label">过敏情况</span><span class="value">待记录</span></div>
+  <div class="info-row"><span class="label">身高体重</span><span class="value">待更新</span></div>
+  <div class="info-row"><span class="label">疫苗接种</span><span class="value">待记录</span></div>
+</div>
+<div class="card">
+  <div class="card-title"><span class="ico">🏊</span>游泳班</div>
+  <div class="info-row"><span class="label">时间</span><span class="value">7/16-7/31 每天</span></div>
+  <div class="info-row"><span class="label">状态</span><span class="value"><span class="tag tag-yellow">最后一天！</span></span></div>
 </div>
 `;
 
-P.self = `
-<div class="header"><h1>🪞 自我认知</h1></div>
+// ========== 工作手帐 ==========
+P.work = `
+<div class="page-header"><span class="ph-icon">💼</span><h1>工作手帐</h1></div>
 <div class="card">
-  <h3>我知道自己的事</h3>
+  <div class="card-title"><span class="ico">📋</span>工作待办</div>
+  <div id="work-todo-list"></div>
+</div>
+<div class="sub-grid">
+  <div class="sub-btn" onclick="go('work-record')"><span class="sub-ico">📝</span><span class="sub-name">工作记录</span></div>
+  <div class="sub-btn" onclick="go('work-knowledge')"><span class="sub-ico">📚</span><span class="sub-name">业务知识</span></div>
+  <div class="sub-btn" onclick="go('work-social')"><span class="sub-ico">🤝</span><span class="sub-name">人情世故</span></div>
+</div>
+`;
+
+// ========== 工作记录 ==========
+P['work-record'] = `
+<div class="page-header"><span class="ph-icon">📝</span><h1>工作记录</h1></div>
+<div class="card">
+  <table>
+    <tr><th>日期</th><th>内容</th></tr>
+    <tr><td>7/29</td><td>上午AB岗坐窗口；个体户来办货运许可；学了个体户vs法人区别</td></tr>
+    <tr><td>7/30</td><td>请假补觉到11:30；下午拔罐刮痧推拿</td></tr>
+  </table>
+</div>
+`;
+
+// ========== 业务知识库 ==========
+P['work-knowledge'] = `
+<div class="page-header"><span class="ph-icon">📚</span><h1>业务知识库</h1></div>
+<div class="card">
+  <h3>维修备案</h3>
+  <p><b>核心原则：备案不管人，执法管人。</b></p>
   <ul>
-    <li>低精力体质，每天有效输出约2-3小时</li>
-    <li>咖啡因敏感，下午2点后不喝</li>
-    <li>有口误习惯，容易说错店名</li>
-    <li>喜欢钩针编织和手工，但容易伤手</li>
-    <li>头发多且滑，扎头发需要练习（周任务：本周学梳头）</li>
-    <li>有意识的囤积者——买东西多但也在管理</li>
+    <li>安全上岗证<b>不是备案必交材料</b>——可承诺180天内考出</li>
+    <li>备案时不需要提交安全上岗证原件</li>
+    <li>首次备案用"180天承诺"，增项时按理已考出</li>
+    <li>过期了不卡备案→写情况说明+继续教育+执法队监管</li>
   </ul>
 </div>
 <div class="card">
-  <blockquote>你是低精力体质，不是懒。<br>你不需要把所有事都做好。<br>买错东西不等于你很失败。<br>你已经是一个很好的妈妈了。</blockquote>
+  <h3>企业类型基础</h3>
+  <table>
+    <tr><th>类型</th><th>责任</th><th>管理难度</th></tr>
+    <tr><td>法人企业（有限公司）</td><td>有限责任（出资额）</td><td>相对规范</td></tr>
+    <tr><td>个体工商户</td><td><span class="tag tag-red">无限责任</span></td><td><span class="tag tag-red">难管理</span></td></tr>
+  </table>
+  <blockquote>个体户财产与个人难以分割，可能需要联系执法队协同管理。</blockquote>
+</div>
+<div class="card">
+  <h3>驾培备案</h3>
+  <p>教练员职业技能等级评定是否在备案材料里收：<span class="tag tag-yellow">待确认</span></p>
 </div>
 `;
 
-P.observe = `
-<div class="header"><h1>👁️ WorkBuddy观察</h1></div>
-<div class="card">
-  <h3>你的模式</h3>
-  <p><b>1. 有意识的囤积者</b>——买东西多但也在管理分类断舍离，购物冲动来自情绪需求。</p>
-  <p><b>2. 手工双刃剑</b>——钩针让你快乐也伤手，需设30分钟上限。</p>
-  <p><b>3. 早上高效下午耗散</b>——精力曲线符合高-中-低分时段。</p>
-  <p><b>4. 口误习惯</b>——容易说错店名，我会根据上下文纠正。</p>
-  <p><b>5. 熬夜+咖啡因循环</b>——容易因"想弄完"硬撑不睡。</p>
-</div>
-<div class="card">
-  <h3>你可以骄傲的事</h3>
-  <ul>
-    <li>给所有衣服编了号——这是管理能力</li>
-    <li>处理大兴维修企业的事很专业</li>
-    <li>宝宝不想游泳，选择倾听而不是强迫</li>
-    <li>失眠夜做手工而不是刷手机</li>
-  </ul>
-</div>
-`;
-
-P.social = `
-<div class="header"><h1>🤝 人情世故</h1></div>
+// ========== 人情世故 ==========
+P['work-social'] = `
+<div class="page-header"><span class="ph-icon">🤝</span><h1>人情世故</h1></div>
 <div class="card">
   <table>
     <tr><th>日期</th><th>事件</th><th>评价</th></tr>
-    <tr><td>7/28</td><td>给潘含霄带dirty（春妹¥12.5）</td><td><span class="tag tag-green">✅成本低效果好</span></td></tr>
+    <tr><td>7/28</td><td>给潘含霄带dirty（春妹¥12.5）</td><td><span class="tag tag-green">成本低效果好</span></td></tr>
     <tr><td>7/28</td><td>戴荣荣业务咨询</td><td>正常沟通</td></tr>
-    <tr><td>7/28</td><td>徐科业务讨论</td><td>回答有理有据</td></tr>
   </table>
 </div>
 <div class="card">
@@ -2085,16 +693,396 @@ P.social = `
 </div>
 `;
 
-P.knowledge = `
-<div class="header"><h1>📚 知识迭代</h1></div>
+// ========== 健康管理 ==========
+P.health = `
+<div class="page-header"><span class="ph-icon">💊</span><h1>健康管理</h1></div>
 <div class="card">
-  <p style="font-size:.78rem;color:var(--muted);">学到的任何东西都可以记这里。先捕获，不急着分类。日后我来帮你整理。</p>
+  <div class="card-title"><span class="ico">💆</span>拔罐刮痧疗程</div>
+  <div class="info-row"><span class="label">频率</span><span class="value">10天一次</span></div>
+  <div class="info-row"><span class="label">第1次</span><span class="value">7/30 ✅ 完成</span></div>
+  <div class="info-row"><span class="label">第2次</span><span class="value">预计 8/9</span></div>
+  <div class="info-row"><span class="label">疗程目标</span><span class="value">约5次</span></div>
+</div>
+<div class="card">
+  <div class="card-title"><span class="ico">🌙</span>睡眠改善计划</div>
+  <blockquote>7/30感悟：太久没睡好觉了。补觉3h+拔罐推拿后精气神恢复很多。沙发摊开睡surprisingly舒服。</blockquote>
+</div>
+<div class="card">
+  <div class="card-title"><span class="ico">🧴</span>沙发旁护肤站</div>
+  <p>晚上简单护肤，不用走到卫生间，降低门槛。</p>
+</div>
+<div class="sub-grid">
+  <div class="sub-btn" onclick="go('period')"><span class="sub-ico">🌸</span><span class="sub-name">经期管理</span></div>
+</div>
+`;
+
+// ========== 物品管理 ==========
+P.items = `
+<div class="page-header"><span class="ph-icon">📦</span><h1>物品管理</h1></div>
+<div class="module-grid" style="grid-template-columns:repeat(2,1fr);">
+  <div class="mod-card" onclick="go('items-wardrobe')"><span class="mod-ico">👗</span><div class="mod-name">衣柜</div></div>
+  <div class="mod-card" onclick="go('items-consumables')"><span class="mod-ico">🧴</span><div class="mod-name">消耗品</div></div>
+  <div class="mod-card" onclick="go('items-jewelry')"><span class="mod-ico">💍</span><div class="mod-name">首饰</span></div>
+  <div class="mod-card" onclick="go('items-baby-log')"><span class="mod-ico">📝</span><div class="mod-name">宝宝日志</span></div>
+</div>
+<div id="items-alert-container"></div>
+`;
+
+// ========== 衣柜 ==========
+P['items-wardrobe'] = `
+<div class="page-header"><span class="ph-icon">👗</span><h1>衣柜</h1></div>
+<div class="card">
+  <div class="info-row"><span class="label">总数</span><span class="value">250+ 件</span></div>
+  <div class="info-row"><span class="label">状态</span><span class="value"><span class="tag tag-yellow">持续整理中</span></span></div>
+</div>
+<div class="card">
+  <h3>按季节分布</h3>
+  <table>
+    <tr><th>类别</th><th>数量</th><th>备注</th></tr>
+    <tr><td>夏季</td><td>~60件</td><td>当前穿着</td></tr>
+    <tr><td>春秋</td><td>~80件</td><td>过渡期</td></tr>
+    <tr><td>冬季</td><td>~80件</td><td>含厚外套</td></tr>
+    <tr><td>内衣/家居</td><td>~30件</td><td>常穿</td></tr>
+  </table>
+</div>
+`;
+
+// ========== 消耗品 ==========
+P['items-consumables'] = `
+<div class="page-header"><span class="ph-icon">🧴</span><h1>消耗品</h1></div>
+<div class="card">
+  <h3>化妆品</h3>
+  <table>
+    <tr><th>产品</th><th>状态</th></tr>
+    <tr><td>佰草集新7白美白面膜</td><td>使用中</td></tr>
+    <tr><td>白云山熊果苷乳霜（蓝/早）</td><td>使用中</td></tr>
+    <tr><td>白云山烟酰胺凝胶（红/晚）</td><td>使用中</td></tr>
+  </table>
+</div>
+<div class="card">
+  <h3>毛线库存</h3>
+  <table>
+    <tr><th>线材</th><th>状态</th></tr>
+    <tr><td>化纤线</td><td>正在消耗中（魔毯）</td></tr>
+  </table>
+</div>
+`;
+
+// ========== 首饰 ==========
+P['items-jewelry'] = `
+<div class="page-header"><span class="ph-icon">💍</span><h1>首饰</h1></div>
+<div class="card">
+  <p style="text-align:center;color:var(--muted);">待整理</p>
+</div>
+`;
+
+// ========== 手工爱好 ==========
+P.hobby = `
+<div class="page-header"><span class="ph-icon">🧶</span><h1>手工爱好</h1></div>
+<div class="card" style="text-align:center;">
+  <p style="font-size:.82rem;color:var(--muted);">已完成作品</p>
+  <p style="font-size:2rem;font-weight:700;color:var(--accent);">3 件</p>
+  <p style="font-size:.78rem;color:var(--muted);">钩针 + 棒针 · 从去年开始</p>
+</div>
+<div class="sub-grid">
+  <div class="sub-btn" onclick="go('hobby-done')"><span class="sub-ico">✅</span><span class="sub-name">已完成</span></div>
+  <div class="sub-btn" onclick="go('hobby-wip')"><span class="sub-ico">🧵</span><span class="sub-name">进行中</span></div>
+  <div class="sub-btn" onclick="go('hobby-want')"><span class="sub-ico">📋</span><span class="sub-name">想做</span></div>
+  <div class="sub-btn" onclick="go('hobby-health')"><span class="sub-ico">✋</span><span class="sub-name">手部健康</span></div>
+  <div class="sub-btn" onclick="go('hobby-xhs')"><span class="sub-ico">📱</span><span class="sub-name">小红书文案</span></div>
+</div>
+<blockquote class="accent">手工是你的疗愈方式，也是失眠夜的出口。继续钩毯子织毛衣，但保护好自己的手。</blockquote>
+`;
+
+// ========== 已完成作品 ==========
+P['hobby-done'] = `
+<div class="page-header"><span class="ph-icon">✅</span><h1>已完成</h1></div>
+<div class="card">
+  <table>
+    <tr><th>#</th><th>作品</th><th>工具</th><th>线材</th><th>编号</th></tr>
+    <tr><td>1</td><td>紫色八股羊毛拼色套头毛衣</td><td>棒针/钩针</td><td>羊毛</td><td>H-01</td></tr>
+    <tr><td>2</td><td>天蓝色两股马海毛短款可可背心</td><td>钩针</td><td>马海毛</td><td>H-02</td></tr>
+    <tr><td>3</td><td>惠尔顿背心（缎染油画风灰色螺纹边）</td><td>钩针</td><td>—</td><td>H-03</td></tr>
+  </table>
+</div>
+`;
+
+// ========== 进行中 ==========
+P['hobby-wip'] = `
+<div class="page-header"><span class="ph-icon">🧵</span><h1>进行中</h1></div>
+
+<div class="card">
+  <div class="card-title"><span class="ico">🌟</span>月神小吊带</div>
+  <div class="progress" style="margin:8px 0 10px;"><div class="fill" style="width:25%;"></div></div>
+  <p style="font-size:.78rem;color:var(--muted);margin-bottom:12px;">1/4 部分完成 · 25%</p>
+  
+  <table style="margin-bottom:12px;">
+    <tr><th>部位</th><th>状态</th></tr>
+    <tr><td>前片</td><td><span class="tag tag-green">✅ 完成</span></td></tr>
+    <tr><td>后片（后背片）</td><td><span class="tag tag-yellow">🧵 进行中</span></td></tr>
+    <tr><td>连接前后片</td><td><span style="color:var(--muted);">⏳ 待做</span></td></tr>
+    <tr><td>身体</td><td><span style="color:var(--muted);">⏳ 待做</span></td></tr>
+    <tr><td>底边</td><td><span style="color:var(--muted);">⏳ 待做</span></td></tr>
+    <tr><td>领边</td><td><span style="color:var(--muted);">⏳ 待做</span></td></tr>
+    <tr><td>吊带</td><td><span style="color:var(--muted);">⏳ 待做</span></td></tr>
+  </table>
+  <button class="btn-primary" style="width:100%;" onclick="go('hobby-xhs')">📱 生成小红书分享文案</button>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ico">🧶</span>魔毯</div>
+  <table><tr><td>进度</td><td>40圈</td></tr><tr><td>感受</td><td>踩起来柔软</td></tr></table>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ico">🌸</span>樱花小包</div>
+  <table><tr><td>进度</td><td>一半</td></tr><tr><td>备注</td><td>需钩一片+缝合</td></tr></table>
+</div>
+`;
+
+// ========== 小红书文案 ==========
+P['hobby-xhs'] = `
+<div class="page-header"><span class="ph-icon">📱</span><h1>小红书分享文案</h1></div>
+<div class="card">
+  <p style="font-size:.82rem;color:var(--muted);">根据编织进度自动生成可发小红书的文案。复制后可以直接用～</p>
+</div>
+<div class="card">
+  <div class="card-title"><span class="ico">🌟</span>月神小吊带 · 进度文案</div>
+  <div style="background:var(--bg-warm);border-radius:var(--radius-sm);padding:14px;font-size:.84rem;line-height:1.85;white-space:pre-wrap;" id="xhs-text-yueshen">加载中...</div>
+  <div style="display:flex;gap:10px;margin-top:10px;">
+    <button class="btn-primary" style="flex:1;" onclick="copyXHS('xhs-text-yueshen')">📋 一键复制</button>
+    <button class="btn-secondary" onclick="go('hobby-wip')">← 返回</button>
+  </div>
+</div>
+<div class="card">
+  <div class="card-title"><span class="ico">💡</span>发帖小贴士</div>
+  <ul style="font-size:.82rem;">
+    <li>配图：织片平铺照 + 细节特写 + 线材标签</li>
+    <li>标签：#手工编织 #钩针 #吊带 #月神 #手作日常</li>
+    <li>发布时间：晚上8-10点流量较好</li>
+  </ul>
+</div>
+`;
+
+// ========== 想做的 ==========
+P['hobby-want'] = `
+<div class="page-header"><span class="ph-icon">📋</span><h1>想做的</h1></div>
+<div class="card">
+  <ul><li>祖母格流浪包（木耳边款，收藏在小红书）</li></ul>
+</div>
+<div class="card">
+  <h3>线材库存</h3>
+  <blockquote>之前买了太多化纤线，正在用魔毯消耗。用完再买新的。</blockquote>
+</div>
+`;
+
+// ========== 手部健康 ==========
+P['hobby-health'] = `
+<div class="page-header"><span class="ph-icon">✋</span><h1>手部健康</h1></div>
+<div class="card">
+  <blockquote><b>之前钩针玩到手抽筋，早上要用手指头掰开才能动——这是重复性劳损。</b></blockquote>
+  <h3>保护规则</h3>
+  <ol>
+    <li>每次钩针不超过30分钟，强制休息</li>
+    <li>休息时做手指拉伸</li>
+    <li>手不舒服立刻停，不要硬撑</li>
+    <li>棒针比钩针对手更友好，可交替进行</li>
+  </ol>
+  <blockquote class="accent">手工是疗愈，不是惩罚。手坏了就什么都做不了了。</blockquote>
+</div>
+`;
+
+// ========== 饮料记录 ==========
+P.drink = `
+<div class="page-header"><span class="ph-icon">🥤</span><h1>饮料记录</h1></div>
+<div class="card" style="text-align:center;">
+  <p style="font-size:.84rem;color:var(--muted);">本月饮料</p>
+  <p style="font-size:2rem;font-weight:700;color:var(--accent);">1 杯</p>
+  <p style="font-size:.78rem;color:var(--muted);">7月 · 目标：逐步减少奶茶/咖啡依赖</p>
+</div>
+<div class="card">
+  <div class="card-title"><span class="ico">📋</span>饮料记录</div>
+  <table>
+    <tr><th>日期</th><th>饮料</th><th>类型</th><th>价格</th><th>原因</th></tr>
+    <tr><td>7/28</td><td>春妹咖啡馆 dirty×2</td><td>咖啡</td><td>¥25</td><td>一杯自己喝，一杯给同事</td></tr>
+    <tr><td>7/28</td><td>瑞幸果汁奶茶</td><td>奶茶</td><td>—</td><td>喝一半给宝宝</td></tr>
+    <tr><td>7/29</td><td>李若桃长山核桃白糯米酸奶奶昔</td><td>酸奶</td><td>¥19.9</td><td>核桃很香</td></tr>
+  </table>
+</div>
+<blockquote class="accent">戒的不是饮料，是"顺手点一杯"的习惯。想喝的时候等10分钟再说。</blockquote>
+`;
+
+// ========== 周任务 ==========
+P.weekly = `
+<div class="page-header"><span class="ph-icon">📋</span><h1>周任务</h1></div>
+<div class="card">
+  <h3>本周重点</h3>
+  <ul>
+    <li>每天归档1个待归档案卷</li>
+    <li>办公室清理（每天5分钟）</li>
+    <li>本周学梳头</li>
+    <li>理县农产品卡充值</li>
+    <li>化妆品列入消耗清单</li>
+  </ul>
+</div>
+`;
+
+// ========== 化妆品消耗 ==========
+P.cosmetics = `
+<div class="page-header"><span class="ph-icon">💄</span><h1>化妆品消耗</h1></div>
+<div class="card">
+  <h3>铁皮计划</h3>
+  <p>先列出所有化妆品，按过期时间排序，快过期的先用。用完一样再开一样。</p>
+  <table>
+    <tr><th>产品</th><th>状态</th></tr>
+    <tr><td>佰草集新7白美白面膜</td><td>使用中</td></tr>
+    <tr><td>白云山熊果苷乳霜（蓝/早）</td><td>使用中</td></tr>
+    <tr><td>白云山烟酰胺凝胶（红/晚）</td><td>使用中</td></tr>
+  </table>
+</div>
+<blockquote>你不是需要更多化妆品，你是需要把已有的用完。</blockquote>
+`;
+
+// ========== 经期管理 ==========
+P.period = `
+<div class="page-header"><span class="ph-icon">🌸</span><h1>经期管理</h1></div>
+<div class="card">
+  <div class="info-row"><span class="label">上次开始</span><span class="value" id="period-last-display">2026-07-10</span></div>
+  <div class="info-row"><span class="label">周期</span><span class="value">26天</span></div>
+  <div class="info-row"><span class="label">经期时长</span><span class="value">5-6天</span></div>
+  <div class="info-row"><span class="label">下次预计</span><span class="value" id="period-next-display">2026-08-05</span></div>
+  <div style="margin-top:12px;">
+    <input type="date" id="period-date-input" style="border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:10px;font-size:.84rem;width:100%;">
+    <button class="btn-primary" style="width:100%;margin-top:8px;" onclick="savePeriodDate()">💾 保存上次经期日期</button>
+  </div>
+</div>
+<div class="card">
+  <h3>📅 经期前5天保护方案</h3>
+  <ul>
+    <li>❌ 少冰少辣少咖啡</li>
+    <li>✅ 温水、红枣姜茶、温性食物</li>
+    <li>🌙 早睡30分钟</li>
+    <li>📦 检查卫生巾库存</li>
+    <li>🧘 减少高强度运动→散步/拉伸</li>
+  </ul>
+</div>
+`;
+
+// ========== 家务管理 ==========
+P.housework = `
+<div class="page-header"><span class="ph-icon">🧹</span><h1>家务管理</h1></div>
+<div class="card">
+  <div class="card-title"><span class="ico">✅</span>每日最低家务线（4项及格）</div>
+  <ol>
+    <li>衣服丢洗衣机</li>
+    <li>餐桌清空（能放碗就行）</li>
+    <li>垃圾袋扎好放门口</li>
+    <li>宝宝玩具归拢到一个区域</li>
+  </ol>
+  <blockquote>完成以上4项=家务及格。多做都是加分。</blockquote>
+</div>
+`;
+
+// ========== SOP 流程 ==========
+P.sop = `
+<div class="page-header"><span class="ph-icon">📋</span><h1>SOP 流程清单</h1></div>
+<div class="card">
+  <p style="font-size:.82rem;color:var(--muted);">每个步骤可标注 ⭐必做 / 🔶偶尔（点标签切换）</p>
+  <p style="font-size:.74rem;color:var(--muted);margin-top:4px;">标题点击展开/收起 · 勾选后点"重置"恢复</p>
+</div>
+
+<div class="card">
+  <h3>🏊 游泳 SOP（内置）</h3>
+  <div id="builtin-swim-container"></div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ico">➕</span>创建新的 SOP</div>
+  <input type="text" id="new-sop-name" placeholder="输入 SOP 名称（如：到办公室安顿）" style="width:100%;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:10px;font-size:.84rem;margin-bottom:8px;">
+  <button class="btn-primary" style="width:100%;" onclick="addNewSOP()">➕ 创建 SOP</button>
+</div>
+
+<div id="sop-list-container"></div>
+
+<div class="card" style="margin-top:14px;">
+  <button class="btn-secondary" style="width:100%;" onclick="if(confirm('重置SOP数据？')){localStorage.removeItem('all_sops_v2');localStorage.removeItem('all_sops');localStorage.removeItem('sop_v2_seeded');alert('已重置');location.reload();}">🔄 重置所有 SOP 数据</button>
+  <p style="font-size:.7rem;color:var(--muted);margin-top:6px;text-align:center;">如果 SOP 页面异常，点此重置后刷新</p>
+</div>
+`;
+
+// ========== 项目推进 ==========
+P.projects = `
+<div class="page-header"><span class="ph-icon">🎯</span><h1>项目推进</h1></div>
+<div class="card">
+  <p style="font-size:.82rem;color:var(--muted);">你想做的事，拆成步骤一步一步推进。</p>
+</div>
+<div class="card">
+  <div class="card-title"><span class="ico">➕</span>新建项目</div>
+  <input type="text" id="new-project-name" placeholder="你想做什么？" style="width:100%;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:10px;font-size:.84rem;margin-bottom:8px;">
+  <button class="btn-primary" style="width:100%;" onclick="addProject()">➕ 创建项目</button>
+</div>
+<div id="project-list"></div>
+`;
+
+// ========== 自我认知 ==========
+P.self = `
+<div class="page-header"><span class="ph-icon">🪞</span><h1>自我认知</h1></div>
+<div class="card">
+  <h3>我知道自己的事</h3>
+  <ul>
+    <li>低精力体质，每天有效输出约2-3小时</li>
+    <li>咖啡因敏感，下午2点后不喝</li>
+    <li>喜欢钩针编织和手工，但容易伤手</li>
+    <li>头发多且滑，扎头发需要练习</li>
+    <li>有意识的囤积者——买东西多但也在管理</li>
+  </ul>
+</div>
+<blockquote class="accent">你是低精力体质，不是懒。<br>你不需要把所有事都做好。<br>买错东西不等于你很失败。<br>你已经是一个很好的妈妈了。</blockquote>
+`;
+
+// ========== 观察笔记 ==========
+P.observe = `
+<div class="page-header"><span class="ph-icon">👁️</span><h1>WorkBuddy 观察</h1></div>
+<div class="card">
+  <h3>你的模式</h3>
+  <p><b>1. 有意识的囤积者</b>——买东西多但也在管理分类断舍离</p>
+  <p><b>2. 手工双刃剑</b>——钩针让你快乐也伤手，需设30分钟上限</p>
+  <p><b>3. 早上高效下午耗散</b>——精力曲线符合高-中-低分时段</p>
+  <p><b>4. 熬夜+咖啡因循环</b>——容易因"想弄完"硬撑不睡</p>
+</div>
+<div class="card">
+  <h3>你可以骄傲的事</h3>
+  <ul>
+    <li>给所有衣服编了号——这是管理能力</li>
+    <li>处理大兴维修企业的事很专业</li>
+    <li>宝宝不想游泳，选择倾听而不是强迫</li>
+    <li>失眠夜做手工而不是刷手机</li>
+  </ul>
+</div>
+`;
+
+// ========== 人情世故（我的页下级） ==========
+P.social = `
+<div class="page-header"><span class="ph-icon">🤝</span><h1>人情世故</h1></div>
+<div class="card">
+  <table>
+    <tr><th>日期</th><th>事件</th><th>评价</th></tr>
+    <tr><td>7/28</td><td>给潘含霄带 dirty</td><td><span class="tag tag-green">成本低效果好</span></td></tr>
+  </table>
+</div>
+`;
+
+// ========== 知识迭代 ==========
+P.knowledge = `
+<div class="page-header"><span class="ph-icon">📚</span><h1>知识迭代</h1></div>
+<div class="card">
+  <p style="font-size:.82rem;color:var(--muted);">学到的任何东西都可以记这里。先捕获，不急着分类。</p>
 </div>
 <div class="card">
   <div class="card-title"><span class="ico">✏️</span>快速记录</div>
-  <textarea id="new-knowledge" placeholder="今天学到了什么？（如：个体户≠法人——无限责任 vs 有限责任）" style="width:100%;border:1px solid var(--border);border-radius:8px;padding:8px;font-size:.82rem;height:56px;font-family:inherit;"></textarea>
-  <div style="display:flex;gap:6px;margin-top:6px;">
-    <select id="knowledge-cat" style="border:1px solid var(--border);border-radius:8px;padding:6px;font-size:.78rem;background:#fff;">
+  <textarea id="new-knowledge" placeholder="今天学到了什么？" style="width:100%;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:10px;font-size:.84rem;height:60px;font-family:inherit;"></textarea>
+  <div style="display:flex;gap:8px;margin-top:8px;">
+    <select id="knowledge-cat" style="border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:8px;font-size:.78rem;background:#fff;">
       <option value="工作">💼 工作</option>
       <option value="护肤">🧴 护肤</option>
       <option value="健康">💪 健康</option>
@@ -2104,53 +1092,55 @@ P.knowledge = `
       <option value="饮食">🍜 饮食</option>
       <option value="其他">📌 其他</option>
     </select>
-    <button onclick="addKnowledge()" style="flex:1;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:6px;font-size:.82rem;cursor:pointer;">💾 保存</button>
+    <button class="btn-primary" style="flex:1;" onclick="addKnowledge()">💾 保存</button>
   </div>
 </div>
 <div id="knowledge-list"></div>
 <div class="card">
   <h3>我认同的道理</h3>
-  <ul><li>低精力不是懒 · 完成比完美重要 · 休息是任务</li></ul>
+  <p style="font-size:.84rem;color:var(--text-secondary);">低精力不是懒 · 完成比完美重要 · 休息是任务</p>
 </div>
 `;
 
+// ========== 年度日记 ==========
 P.diary = `
-<div class="header"><h1>📖 年度日记</h1></div>
+<div class="page-header"><span class="ph-icon">📖</span><h1>年度日记</h1></div>
 <div class="card">
-  <p style="text-align:center;color:var(--muted);">每天最有趣或最重要的一件事<br>WorkBuddy根据你的碎碎念自动生成，不喜欢告诉我改。</p>
+  <p style="text-align:center;color:var(--muted);font-size:.84rem;">每天最有趣或最重要的一件事</p>
 </div>
 
 <h2>2026年7月</h2>
 
 <div class="card">
   <h3>7月28日</h3>
-  <p style="font-size:1rem;font-weight:600;color:var(--accent2);">第一次给自己搭了一套生活管理系统，虽然熬到12:20，但终于开始认真对待自己的生活了。</p>
+  <p style="font-size:.95rem;font-weight:600;color:var(--accent2);">第一次给自己搭了一套生活管理系统，虽然熬到12:20，但终于开始认真对待自己的生活了。</p>
 </div>
 
 <div class="card">
   <h3>7月29日</h3>
-  <p style="font-size:1rem;font-weight:600;color:var(--accent2);">早上去早餐店吃了半碗糯米饭配无糖豆浆，一个个体户来窗口办货运许可，学到了个体户与法人企业最本质的区别——有限责任 vs 无限责任。</p>
+  <p style="font-size:.95rem;font-weight:600;color:var(--accent2);">早上去早餐店吃了半碗糯米饭配无糖豆浆，一个个体户来窗口办货运许可，学到了个体户与法人企业最本质的区别——有限责任 vs 无限责任。</p>
 </div>
 
 <div class="card">
   <h3>7月30日</h3>
-  <p style="font-size:1rem;font-weight:600;color:var(--accent2);">沙发到了，和宝宝睡在摊开的沙发上。早上请假回家补觉到11:30，下午去拔罐刮痧——太久没有这么舒服过了，决定做一个疗程。精气神终于回来了。</p>
+  <p style="font-size:.95rem;font-weight:600;color:var(--accent2);">沙发到了，和宝宝睡在摊开的沙发上。早上请假回家补觉到11:30，下午去拔罐刮痧——太久没有这么舒服过了，决定做一个疗程。精气神终于回来了。</p>
 </div>
 `;
 
-// 宝宝日记
+// ========== 宝宝日记（自动生成版） ==========
 P['baby-diary'] = P['baby-growth'] + `
 <div class="card">
-  <div class="card-title"><span class="ico">📖</span>宝宝日记（WorkBuddy自动生成）</div>
-  <blockquote style="margin-bottom:10px;">根据你的碎碎念自动生成，不喜欢告诉我改。</blockquote>
+  <div class="card-title"><span class="ico">📖</span>宝宝日记（自动生成）</div>
+  <blockquote>根据你的碎碎念自动生成</blockquote>
   <h3>7月28日</h3>
   <blockquote>早上吃了5个小笼包和豆腐脑，去图书馆写作业状态不太好错了两道题。连续第三天说不想游泳，妈妈让请假去上了社区课。晚上吃了KFC黑糖珍珠圣代，和妈妈约定一周最多吃两次冰淇淋。睡前爸爸给洗了澡，看了10分钟iPad，读了两页宇宙天体的书。</blockquote>
   <h3>7月29日</h3>
   <blockquote>早上7:20被叫起床，还很困。早餐在店里吃了半碗糯米饭和豆腐脑，8:25才到学校——有点迟了。不过中午在学校还能睡一个半小时。</blockquote>
-  <h3>7月30日</h3>
-  <blockquote>新沙发到了！晚上和妈妈一起睡在摊开的沙发上，像露营一样好玩。早上妈妈送完学校后请假回家补觉了。</blockquote>
-</div>
 `;
+
+// ================================================================
+// 以下为数据定义和 JS 函数（保持不变）
+// ================================================================
 
 // ========== 每日记录数据 ==========
 const dailyRecords = {
@@ -2159,7 +1149,7 @@ const dailyRecords = {
       {text:'早上送宝宝去学校',done:false},
       {text:'上午AB岗坐窗口',done:false},
       {text:'宝宝游泳课最后一天（18:50-20:10）',done:false},
-      {text:'工作件扫描归档（积压件）',done:false},
+      {text:'归档1个案卷',done:false},
       {text:'午睡20分钟',done:false},
     ],
     habits: [
@@ -2244,7 +1234,7 @@ const dailyRecords = {
     oneLine: ''
   },
   '2026-07-28': {
-    tasks: [
+    core: [
       {text:'应急值班',done:true},
       {text:'处理大兴维修企业申请',done:true},
       {text:'护肤：美白面膜+熊果苷',done:true},
@@ -2255,6 +1245,7 @@ const dailyRecords = {
       {text:'宝宝街舞课',done:true},
       {text:'宝宝洗澡+作业+读书',done:true}
     ],
+    habits: [],
     sleep: {mom:'00:20→06:00 5h40m ❌',baby:'22:30→待确认'},
     food: '早3小笼包+豆浆；午苹果；下午土豆拌粉（吃撑）；dirty+果汁奶茶',
     rambles: [
@@ -2278,17 +1269,16 @@ function renderDailyList(){
     let rambleCount = r.rambles ? r.rambles.length : 0;
     html += `<div class="day-card" onclick="go('day-'+${JSON.stringify(d).replace(/"/g,'&quot;')})">
       <div class="day-date">📅 ${d}</div>
-      <div class="day-info">核心任务 ${doneCore}/${totalCore} · 碎碎念 ${rambleCount}条 · 复盘 ${r.review?'✅':'⬜'} · 日记 ${r.oneLine?'✅':'⬜'}</div>
+      <div class="day-info">核心 ${doneCore}/${totalCore} · 碎碎念 ${rambleCount}条 · 复盘 ${r.review?'✅':'⬜'}</div>
     </div>`;
   });
   document.getElementById('daily-list').innerHTML = html;
 }
 
-// 每日详情页动态生成
 function renderDayDetail(d){
   let r = dailyRecords[d];
   if(!r) return '<p>暂无记录</p>';
-  let html = `<div class="header"><h1>📅 ${d}</h1></div>`;
+  let html = `<div class="page-header"><span class="back" onclick="go('daily')">← 返回</span><h1>${d}</h1></div>`;
   
   html += '<div class="card"><div class="card-title"><span class="ico">✅</span>核心任务</div>';
   if(r.core){
@@ -2301,13 +1291,13 @@ function renderDayDetail(d){
   if(r.habits && r.habits.length){
     html += '<div class="card"><div class="card-title"><span class="ico">🔄</span>习惯打卡</div>';
     r.habits.forEach(t=>{
-      html += `<div class="todo-item${t.done?' done':''}" style="padding:3px 0;"><input type="checkbox" ${t.done?'checked':''} disabled><span style="font-size:.78rem;">${t.text}</span></div>`;
+      html += `<div class="todo-item${t.done?' done':''}" style="padding:6px 0;"><input type="checkbox" ${t.done?'checked':''} disabled><span style="font-size:.82rem;">${t.text}</span></div>`;
     });
     html += '</div>';
   }
   
-  html += '<div class="card"><div class="card-title"><span class="ico">💤</span>睡眠</div>';
-  html += `<p>👩 妈妈：${r.sleep.mom}</p><p>👶 宝宝：${r.sleep.baby}</p></div>`;
+  html += `<div class="card"><div class="card-title"><span class="ico">💤</span>睡眠</div>
+    <p>👩 妈妈：${r.sleep.mom}</p><p>👶 宝宝：${r.sleep.baby}</p></div>`;
   
   if(r.food && r.food !== '待记录'){
     html += `<div class="card"><div class="card-title"><span class="ico">🍽️</span>饮食</div><p>${r.food}</p></div>`;
@@ -2334,7 +1324,6 @@ function renderDayDetail(d){
 // ====== 页面切换 ======
 let currentPage = 'home';
 function go(page){
-  // 检查是否是每日详情页
   if(page.startsWith('day-')){
     let d = page.substring(4);
     document.getElementById('app').innerHTML = `<div class="back" onclick="go('daily')">← 返回日期列表</div>` + renderDayDetail(d);
@@ -2345,11 +1334,9 @@ function go(page){
   
   if(!P[page]) return;
   
-  // 添加返回按钮（首页和模块页不需要）
   let content = P[page];
   let noBack = ['home','modules','me','daily'];
   if(!noBack.includes(page)){
-    // 判断返回到哪个页面
     let backPage = 'home';
     if(page.startsWith('baby')) backPage = 'baby';
     else if(page.startsWith('work')) backPage = 'work';
@@ -2361,9 +1348,7 @@ function go(page){
   
   document.getElementById('app').innerHTML = content;
   
-  // 更新导航栏
   let navMap = {'home':'home','daily':'daily','modules':'modules','chat':'chat','me':'me'};
-  // 模块页和我的页下的子页面高亮对应导航
   if(page.startsWith('baby')||page.startsWith('work')||page.startsWith('health')||page.startsWith('items')||page.startsWith('hobby')||page.startsWith('period')||page.startsWith('housework')||page.startsWith('drink')||page.startsWith('weekly')||page.startsWith('cosmetics')||page.startsWith('sop')||page.startsWith('projects')) navMap[page] = 'home';
   if(page.startsWith('self')||page.startsWith('observe')||page.startsWith('social')||page.startsWith('knowledge')||page.startsWith('diary')) navMap[page] = 'me';
   
@@ -2395,23 +1380,26 @@ function go(page){
 function renderHome(){
   let d = new Date();
   let days = ['日','一','二','三','四','五','六'];
-  document.getElementById('home-date').textContent = `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日 · 星期${days[d.getDay()]}`;
+  document.getElementById('home-date').textContent = `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日 星期${days[d.getDay()]}`;
   
   let hour = d.getHours();
   let greeting = '';
-  if(hour < 6) greeting = '🌙 这么早醒了，注意休息';
-  else if(hour < 11) greeting = '🌅 早上好，今天也要加油';
-  else if(hour < 14) greeting = '☀️ 中午好，记得吃饭';
-  else if(hour < 18) greeting = '🌤️ 下午好，精力还够吗';
-  else if(hour < 22) greeting = '🌆 晚上好，辛苦了';
-  else greeting = '🌙 该准备睡觉了';
+  let energyHint = '';
+  if(hour < 6){ greeting = '🌙 这么早醒了'; energyHint = '早点休息吧'; }
+  else if(hour < 11){ greeting = '🌅 早上好'; energyHint = '新的一天开始了'; }
+  else if(hour < 14){ greeting = '☀️ 中午好'; energyHint = '记得吃饭'; }
+  else if(hour < 18){ greeting = '🌤️ 下午好'; energyHint = '坚持一下'; }
+  else if(hour < 22){ greeting = '🌆 晚上好'; energyHint = '辛苦了一天'; }
+  else{ greeting = '🌙 该准备睡觉了'; energyHint = '早点休息'; }
   document.getElementById('home-greeting').textContent = greeting;
+  let el = document.getElementById('energy-hint');
+  if(el) el.textContent = energyHint;
   
   // 渲染今日核心任务
   let today = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
   loadTaskStates(today);
   let r = dailyRecords[today];
-  let el = document.getElementById('home-todos');
+  let elTodos = document.getElementById('home-todos');
   if(r){
     let coreUndone = r.core.filter(t => !t.done);
     if(coreUndone.length > 0){
@@ -2420,29 +1408,23 @@ function renderHome(){
         let idx = r.core.indexOf(t);
         html += `<div class="todo-item"><input type="checkbox" onchange="toggleCoreTodo(${idx})"><span>${t.text}</span></div>`;
       });
-      el.innerHTML = html;
+      elTodos.innerHTML = html;
     } else {
-      el.innerHTML = '<p style="color:var(--muted);font-size:.82rem;text-align:center;padding:8px 0;">🎉 今天核心任务全部完成</p>';
+      elTodos.innerHTML = '<div class="empty-state" style="padding:16px 0;"><p>🎉 今天核心任务全部完成</p></div>';
     }
     let totalCore = r.core.length;
     let doneCore = r.core.filter(t => t.done).length;
     document.getElementById('task-count').textContent = doneCore+'/'+totalCore;
     document.getElementById('task-progress').style.width = (doneCore/totalCore*100)+'%';
   } else {
-    el.innerHTML = '<p style="color:var(--muted);font-size:.82rem;text-align:center;padding:8px 0;">📝 今天还没有核心任务<br><span style="font-size:.72rem;">跟我说"帮我安排今天的任务"</span></p>';
+    elTodos.innerHTML = '<div class="empty-state" style="padding:16px 0;"><p>📝 今天还没有核心任务</p><p style="font-size:.76rem;">跟我说"帮我安排今天的任务"</p></div>';
   }
   
-  // 渲染首页工作待办
   renderHomeWorkTodos();
-  // 渲染首页生活待办
   renderHomeLifeTodos();
-  // 渲染首页习惯打卡
   renderHomeHabits();
-  // 渲染宝宝今日日程
   renderBabyToday();
-  // 渲染经期提醒
   renderPeriodReminder();
-  // 渲染本周重要
   renderWeekImportant();
 }
 
@@ -2453,19 +1435,18 @@ function renderHomeWorkTodos(){
   loadTodoStates('work', workTodos);
   let active = workTodos.filter(t => !t.done);
   if(active.length === 0){
-    el.innerHTML = '<p style="color:var(--green);font-size:.82rem;">🎉 工作待办已全部完成</p>';
+    el.innerHTML = '<p style="color:var(--green);font-size:.84rem;">🎉 工作待办已全部完成</p>';
     return;
   }
   let html = '';
-  // 只显示前5个未完成的
   active.slice(0,5).forEach(t => {
-    html += `<div class="todo-item" style="padding:5px 0;display:flex;align-items:center;gap:6px;">
+    html += `<div class="todo-item" style="padding:6px 0;display:flex;align-items:center;gap:8px;">
       <input type="checkbox" style="flex-shrink:0;" onchange="toggleWorkTodoFromHome('work',${workTodos.indexOf(t)})">
-      <span class="tag ${priorityTag[t.priority]||'tag-yellow'}" style="flex-shrink:0;font-size:.65rem;">${t.priority}</span>
-      <span style="flex:1;font-size:.82rem;">${t.text}</span>
+      <span class="tag ${priorityTag[t.priority]||'tag-yellow'}" style="flex-shrink:0;font-size:.66rem;">${t.priority}</span>
+      <span style="flex:1;font-size:.84rem;">${t.text}</span>
     </div>`;
   });
-  if(active.length > 5) html += `<p style="font-size:.75rem;color:var(--muted);margin-top:4px;">还有 ${active.length-5} 项 → 点"查看全部"</p>`;
+  if(active.length > 5) html += `<p style="font-size:.76rem;color:var(--muted);margin-top:6px;">还有 ${active.length-5} 项 → 点"全部"</p>`;
   el.innerHTML = html;
 }
 
@@ -2476,18 +1457,18 @@ function renderHomeLifeTodos(){
   loadTodoStates('life', lifeTodos);
   let active = lifeTodos.filter(t => !t.done);
   if(active.length === 0){
-    el.innerHTML = '<p style="color:var(--green);font-size:.82rem;">🎉 生活待办已全部完成</p>';
+    el.innerHTML = '<p style="color:var(--green);font-size:.84rem;">🎉 生活待办已全部完成</p>';
     return;
   }
   let html = '';
   active.slice(0,5).forEach(t => {
-    html += `<div class="todo-item" style="padding:5px 0;display:flex;align-items:center;gap:6px;">
+    html += `<div class="todo-item" style="padding:6px 0;display:flex;align-items:center;gap:8px;">
       <input type="checkbox" style="flex-shrink:0;" onchange="toggleWorkTodoFromHome('life',${lifeTodos.indexOf(t)})">
-      <span class="tag ${priorityTag[t.priority]||'tag-yellow'}" style="flex-shrink:0;font-size:.65rem;">${t.priority}</span>
-      <span style="flex:1;font-size:.82rem;">${t.text}</span>
+      <span class="tag ${priorityTag[t.priority]||'tag-yellow'}" style="flex-shrink:0;font-size:.66rem;">${t.priority}</span>
+      <span style="flex:1;font-size:.84rem;">${t.text}</span>
     </div>`;
   });
-  if(active.length > 5) html += `<p style="font-size:.75rem;color:var(--muted);margin-top:4px;">还有 ${active.length-5} 项 → 点"查看全部"</p>`;
+  if(active.length > 5) html += `<p style="font-size:.76rem;color:var(--muted);margin-top:6px;">还有 ${active.length-5} 项 → 点"全部"</p>`;
   el.innerHTML = html;
 }
 
@@ -2512,14 +1493,13 @@ function renderHomeHabits(){
   let countEl = document.getElementById('habit-count');
   if(!el) return;
   
-  let {date, habits, record} = getTodayHabits();
+  let {date, habits} = getTodayHabits();
   loadTaskStates(date);
   
-  // 过滤掉已归档的
   let active = habits.filter(h => !h.archived);
   
   if(active.length === 0){
-    el.innerHTML = '<p style="color:var(--muted);font-size:.82rem;text-align:center;padding:8px 0;">📝 还没有习惯<br><span style="font-size:.72rem;">跟我说"帮我添加习惯"</span></p>';
+    el.innerHTML = '<div class="empty-state" style="padding:14px 0;"><p>📝 还没有习惯</p><p style="font-size:.74rem;">跟我说"帮我添加习惯"</p></div>';
     if(countEl) countEl.textContent = '';
     return;
   }
@@ -2530,10 +1510,10 @@ function renderHomeHabits(){
   let html = '';
   active.forEach((h, i) => {
     let realIdx = habits.indexOf(h);
-    html += `<div class="todo-item${h.done?' done':''}" style="padding:6px 0;display:flex;align-items:center;gap:8px;">
+    html += `<div class="todo-item${h.done?' done':''}" style="padding:8px 0;display:flex;align-items:center;gap:8px;">
       <input type="checkbox" ${h.done?'checked':''} style="flex-shrink:0;" onchange="toggleHabit(${realIdx})">
-      <span style="flex:1;font-size:.84rem;${h.done?'color:var(--muted);':''}">${h.text}</span>
-      <button onclick="archiveHabit(${realIdx})" title="删除此习惯" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:.9rem;padding:2px 4px;flex-shrink:0;opacity:.5;">✕</button>
+      <span style="flex:1;font-size:.86rem;${h.done?'color:var(--muted);':''}">${h.text}</span>
+      <button onclick="archiveHabit(${realIdx})" title="删除此习惯" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:.9rem;padding:2px 4px;flex-shrink:0;opacity:.45;">✕</button>
     </div>`;
   });
   el.innerHTML = html;
@@ -2561,41 +1541,32 @@ function renderBabyToday(){
   let el = document.getElementById('baby-today-content');
   if(!el) return;
   let d = new Date();
-  let dow = d.getDay(); // 0=周日,1=周一...
+  let dow = d.getDay();
   let today = d.getDate();
   let month = d.getMonth() + 1;
   
   let items = [];
-  // 暑假班 周一-周五
   if(dow >= 1 && dow <= 5) items.push({time:'早上',text:'🎒 暑假班',tag:'日常'});
-  // 游泳 7/16-7/31 每天
   if(month === 7 && today >= 16 && today <= 31) {
     let remain = 31 - today;
-    items.push({time:'18:50-20:10',text:'🏊 游泳课（剩'+remain+'天）',tag:'运动'});
+    items.push({time:'18:50-20:10',text:`🏊 游泳课（剩${remain}天）`,tag:'运动'});
   }
-  // 周一画画 18:30-20:00（目前跟游泳冲突请假中，下周恢复）
-  if(dow === 1) items.push({time:'18:30-20:00',text:'🎨 画画课（⚠️跟游泳冲突请假中，下周恢复）',tag:'兴趣'});
-  // 周二写字 18:30-19:30 + 街舞 19:30-20:30
+  if(dow === 1) items.push({time:'18:30-20:00',text:'🎨 画画课（⚠️跟游泳冲突请假中）',tag:'兴趣'});
   if(dow === 2) {
     items.push({time:'18:30-19:30',text:'✏️ 写字课',tag:'学业'});
     items.push({time:'19:30-20:30',text:'🕺 街舞课',tag:'运动'});
-    items.push({text:'⚠️ 今晚写字+街舞连着，时间紧凑',tag:'提醒'});
   }
-  // 日常
   items.push({time:'每天早上',text:'💊 优甲乐',tag:'用药'});
   items.push({time:'晚上',text:'📱 iPad 10分钟 → 📖 读2页书 → 😴 约22:30睡',tag:'睡前'});
   
   let html = '';
   items.forEach(it => {
-    html += `<div style="display:flex;align-items:center;gap:8px;padding:4px 0;font-size:.82rem;">
-      <span class="tag ${it.tag==='提醒'?'tag-red':it.tag==='运动'?'tag-blue':it.tag==='用药'?'tag-green':'tag-yellow'}" style="font-size:.65rem;flex-shrink:0;">${it.time||it.tag}</span>
-      <span>${it.text}</span>
+    html += `<div style="display:flex;align-items:center;gap:8px;padding:5px 0;font-size:.84rem;">
+      <span class="tag ${it.tag==='运动'?'tag-blue':it.tag==='学业'?'tag-green':it.tag==='兴趣'?'tag-yellow':it.tag==='用药'?'tag-red':'tag-muted'}" style="font-size:.66rem;">${it.tag}</span>
+      <span>${it.time?it.time+' · ':''}${it.text}</span>
     </div>`;
   });
   el.innerHTML = html;
-  
-  // 控制整张卡片显隐（没有内容的极端情况）
-  document.getElementById('baby-today-card').style.display = 'block';
 }
 
 // ====== 经期提醒 ======
@@ -2603,137 +1574,64 @@ function renderPeriodReminder(){
   let card = document.getElementById('period-reminder-card');
   let content = document.getElementById('period-reminder-content');
   if(!card || !content) return;
-  
-  // 从 localStorage 读取经期数据
-  let lastStart = null;
-  try { lastStart = localStorage.getItem('period_last_start'); } catch(e){}
-  
-  if(!lastStart){
-    card.style.display = 'none';
-    return;
-  }
-  
-  let startDate = new Date(lastStart);
-  let today = new Date();
-  let daysSince = Math.floor((today - startDate) / (1000*60*60*24));
-  let cycleDays = 26;
-  let daysUntilNext = cycleDays - daysSince;
-  
-  if(daysUntilNext <= 0) daysUntilNext += cycleDays;
-  
-  // 提前5天提醒，以及经期刚结束也显示
-  if(daysUntilNext > 5 && daysUntilNext < 22){
-    card.style.display = 'none';
-    return;
-  }
-  
-  card.style.display = 'block';
-  let nextDate = new Date(today);
-  nextDate.setDate(today.getDate() + daysUntilNext);
-  let nextStr = `${nextDate.getMonth()+1}月${nextDate.getDate()}日`;
-  
-  let msg = '';
-  if(daysUntilNext <= 0){
-    msg = `<p style="color:var(--accent2);font-weight:600;">🌸 经期可能已到或延迟，请注意观察</p>`;
-  } else if(daysSince >= 0 && daysSince <= 6){
-    // 刚来过或在经期中
-    msg = `<p style="color:var(--muted);font-size:.82rem;">经期刚过（或正在），注意保暖。下次预计 ${nextStr}。</p>`;
-  } else if(daysUntilNext <= 5){
-    msg = `<p style="color:var(--accent2);font-weight:600;">⚠️ 预计 ${daysUntilNext} 天后（${nextStr}）来经期</p>
-    <ul style="font-size:.8rem;color:var(--text);margin-top:6px;">
-      <li>❌ 少冰少辣少咖啡</li>
-      <li>✅ 温水、红枣姜茶</li>
-      <li>🌙 早睡30分钟</li>
-      <li>📦 检查卫生巾库存</li>
-    </ul>`;
+  let last = localStorage.getItem('period_last_start') || '2026-07-10';
+  let lastDate = new Date(last);
+  let nextDate = new Date(lastDate.getTime() + 26 * 24 * 60 * 60 * 1000);
+  let now = new Date();
+  let daysUntil = Math.ceil((nextDate - now) / (24*60*60*1000));
+  if(daysUntil <= 5 && daysUntil >= 0){
+    card.style.display = '';
+    content.innerHTML = `<p style="font-size:.86rem;">预计 <b>${nextDate.getMonth()+1}/${nextDate.getDate()}</b> 来姨妈（还有${daysUntil}天）</p>
+      <p style="font-size:.78rem;color:var(--muted);margin-top:4px;">提前准备：少冰少辣、检查卫生巾库存、早睡30分钟</p>`;
   } else {
-    msg = `<p style="color:var(--muted);font-size:.82rem;">下次预计 ${nextStr}。</p>`;
+    card.style.display = 'none';
   }
-  
-  content.innerHTML = msg;
+}
+
+function updatePeriodDisplay(){
+  let last = localStorage.getItem('period_last_start') || '2026-07-10';
+  let el = document.getElementById('period-last-display');
+  if(el) el.textContent = last;
+  let nextEl = document.getElementById('period-next-display');
+  if(nextEl){
+    let d = new Date(last);
+    let next = new Date(d.getTime() + 26 * 24 * 60 * 60 * 1000);
+    nextEl.textContent = `${next.getFullYear()}-${String(next.getMonth()+1).padStart(2,'0')}-${String(next.getDate()).padStart(2,'0')}（预计）`;
+  }
+  let input = document.getElementById('period-date-input');
+  if(input) input.value = last;
+}
+
+function savePeriodDate(){
+  let input = document.getElementById('period-date-input');
+  if(input && input.value){
+    localStorage.setItem('period_last_start', input.value);
+    updatePeriodDisplay();
+    showToast('已保存 ✓');
+  }
 }
 
 // ====== 本周重要 ======
 function renderWeekImportant(){
   let el = document.getElementById('week-important');
   if(!el) return;
-  
-  let html = `
-    <div style="display:flex;align-items:center;gap:8px;padding:4px 0;font-size:.82rem;">
-      <span class="tag tag-yellow" style="font-size:.65rem;">工作</span>
-      <span>确认驾培新规 + 梳理法条思维导图</span>
-    </div>
-    <div style="display:flex;align-items:center;gap:8px;padding:4px 0;font-size:.82rem;">
-      <span class="tag tag-blue" style="font-size:.65rem;">宝宝</span>
-      <span>游泳班7/31结束（剩${31-new Date().getDate()}天）；8月起恢复画画课</span>
-    </div>
-    <div style="display:flex;align-items:center;gap:8px;padding:4px 0;font-size:.82rem;">
-      <span class="tag tag-green" style="font-size:.65rem;">生活</span>
-      <span>本周学梳头 · 理县农产品卡充值 · 余利宝还款</span>
-    </div>
-    <div style="display:flex;align-items:center;gap:8px;padding:4px 0;font-size:.82rem;">
-      <span class="tag tag-muted" style="font-size:.65rem;background:#e0e0e0;">习惯</span>
-      <span>穿塑腿袜 · 滚泡沫轴 · 记录饮食 · 便签管理 · 戴眼罩</span>
-    </div>
-  `;
+  let html = '';
+  html += `<div style="display:flex;align-items:center;gap:8px;padding:4px 0;font-size:.84rem;">
+    <span class="tag tag-blue" style="font-size:.66rem;">宝宝</span>
+    <span>游泳班7/31结束；8月起恢复画画课</span>
+  </div>`;
+  html += `<div style="display:flex;align-items:center;gap:8px;padding:4px 0;font-size:.84rem;">
+    <span class="tag tag-green" style="font-size:.66rem;">生活</span>
+    <span>本周学梳头 · 理县农产品卡充值</span>
+  </div>`;
+  html += `<div style="display:flex;align-items:center;gap:8px;padding:4px 0;font-size:.84rem;">
+    <span class="tag tag-muted" style="font-size:.66rem;background:#e0e0e0;">习惯</span>
+    <span>穿塑腿袜 · 滚泡沫轴 · 记录饮食 · 戴眼罩</span>
+  </div>`;
   el.innerHTML = html;
 }
 
-// ====== 经期日期保存 ======
-function savePeriodDate(){
-  let input = document.getElementById('period-date-input');
-  let val = input ? input.value : '';
-  if(!val){ alert('请选择一个日期'); return; }
-  localStorage.setItem('period_last_start', val);
-  alert('已保存！下次来经期前5天，首页会自动提醒你。');
-  updatePeriodDisplay();
-}
-function updatePeriodDisplay(){
-  let last = localStorage.getItem('period_last_start');
-  let lastEl = document.getElementById('period-last-display');
-  let nextEl = document.getElementById('period-next-display');
-  if(!lastEl || !nextEl) return;
-  if(!last){ lastEl.textContent = '待记录'; nextEl.textContent = '待计算'; return; }
-  lastEl.textContent = last;
-  let start = new Date(last);
-  let next = new Date(start);
-  next.setDate(start.getDate() + 26);
-  nextEl.textContent = `${next.getMonth()+1}月${next.getDate()}日（预计）`;
-}
-
-function toggleCoreTodo(i){
-  let d = new Date();
-  let today = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-  let r = dailyRecords[today];
-  if(r){
-    r.core[i].done = !r.core[i].done;
-    saveTaskStates(today);
-    renderHome();
-  }
-}
-
-// 从 localStorage 加载/保存任务完成状态
-function loadTaskStates(date){
-  try {
-    let saved = JSON.parse(localStorage.getItem('task_states_'+date));
-    if(saved && dailyRecords[date]){
-      if(saved.core) saved.core.forEach((done, i) => { if(dailyRecords[date].core[i]) dailyRecords[date].core[i].done = done; });
-      if(saved.habits) saved.habits.forEach((done, i) => { if(dailyRecords[date].habits[i]) dailyRecords[date].habits[i].done = done; });
-    }
-  } catch(e){}
-}
-function saveTaskStates(date){
-  if(dailyRecords[date]){
-    let states = {
-      core: dailyRecords[date].core.map(t => t.done),
-      habits: dailyRecords[date].habits.map(t => t.done)
-    };
-    localStorage.setItem('task_states_'+date, JSON.stringify(states));
-  }
-}
-
-// ====== 工作/生活待办系统 ======
-// 待办数据：分工作、生活两类，每个待办有 id, text, priority, done
+// ====== 待办列表渲染 ======
 const workTodos = [
   {id:'w1',text:'确认驾培新规：教练员职业技能等级评定（自己学习）',priority:'复习',done:false},
   {id:'w2',text:'货运站场材料清单增加人员清单',priority:'紧急',done:true},
@@ -2754,20 +1652,13 @@ const lifeTodos = [
 ];
 
 const priorityTag = {
-  '紧急':'tag-red',
-  '本周':'tag-yellow',
-  '复习':'tag-blue',
-  '信息':'tag-muted',
-  '习惯':'tag-green',
-  '日常':'tag-blue',
+  '紧急':'tag-red','本周':'tag-yellow','复习':'tag-blue','信息':'tag-muted','习惯':'tag-green','日常':'tag-blue',
 };
 
 function loadTodoStates(key, list){
   try {
     let saved = JSON.parse(localStorage.getItem('todo_'+key));
-    if(saved){
-      saved.forEach((done, i) => { if(list[i]) list[i].done = done; });
-    }
+    if(saved) saved.forEach((done, i) => { if(list[i]) list[i].done = done; });
   } catch(e){}
 }
 function saveTodoStates(key, list){
@@ -2778,72 +1669,761 @@ function renderTodoList(containerId, list, storageKey){
   let container = document.getElementById(containerId);
   if(!container) return;
   loadTodoStates(storageKey, list);
-  
   let active = list.filter(t => !t.done);
   let done = list.filter(t => t.done);
-  
   let html = '';
-  // 未完成
   active.forEach((t, i) => {
-    html += `<div class="todo-item" style="padding:8px 0;display:flex;align-items:flex-start;gap:8px;">
+    html += `<div class="todo-item" style="padding:10px 0;display:flex;align-items:flex-start;gap:10px;">
       <input type="checkbox" style="margin-top:4px;flex-shrink:0;" onchange="toggleWorkTodo('${storageKey}',${list.indexOf(t)})">
       <span class="tag ${priorityTag[t.priority]||'tag-yellow'}" style="flex-shrink:0;font-size:.7rem;">${t.priority}</span>
-      <span style="flex:1;">${t.text}</span>
+      <span style="flex:1;font-size:.86rem;">${t.text}</span>
     </div>`;
   });
-  if(active.length === 0) html += '<p style="color:var(--green);font-size:.85rem;">🎉 全部完成！</p>';
-  
-  // 已完成
   if(done.length > 0){
-    html += '<div style="margin-top:12px;padding-top:8px;border-top:1px dashed var(--border);">';
-    html += '<p style="font-size:.75rem;color:var(--muted);margin-bottom:4px;">✅ 已完成</p>';
-    done.forEach((t, i) => {
-      html += `<div class="todo-item done" style="padding:6px 0;display:flex;align-items:flex-start;gap:8px;">
-        <input type="checkbox" checked style="margin-top:4px;flex-shrink:0;" onchange="toggleWorkTodo('${storageKey}',${list.indexOf(t)})">
-        <span style="flex:1;color:var(--muted);text-decoration:line-through;">${t.text}</span>
-      </div>`;
+    html += '<div style="margin-top:10px;padding-top:10px;border-top:1px dashed var(--border);"><p style="font-size:.72rem;color:var(--muted);margin-bottom:6px;">✅ 已完成</p>';
+    done.forEach(t => {
+      html += `<div class="todo-item done" style="padding:6px 0;"><input type="checkbox" checked disabled><span>${t.text}</span></div>`;
     });
-    html += '</div>';
   }
-  
   container.innerHTML = html;
+}
+
+function renderWorkTodos(){
+  renderTodoList('work-todo-list', workTodos, 'work');
 }
 
 function toggleWorkTodo(key, idx){
   let list = (key === 'work') ? workTodos : lifeTodos;
   list[idx].done = !list[idx].done;
   saveTodoStates(key, list);
-  let cid = (key === 'work') ? 'work-todo-list' : 'life-todo-list';
-  renderTodoList(cid, list, key);
+  if(key === 'work') renderWorkTodos();
+  else renderHome();
 }
 
-function renderWorkTodos(){
-  renderTodoList('work-todo-list', workTodos, 'work');
-  renderTodoList('life-todo-list', lifeTodos, 'life');
-  // 渲染物品提醒
-  renderItemsAlert();
-}
-
-// ====== 物品提醒 ======
-function renderItemsAlert(){
-  let el = document.getElementById('items-alert');
-  if(!el) return;
-  let now = new Date();
-  let alerts = [];
-  // 茶叶临期
-  let teaExp = new Date('2026-09-08');
-  let teaDays = Math.floor((teaExp - now) / (1000*60*60*24));
-  if(teaDays <= 60){
-    alerts.push(`🍵 2款养生茶 <b>${teaDays}天后到期</b>（9月8日），建议轮流消耗`);
+function toggleCoreTodo(i){
+  let d = new Date();
+  let today = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  let r = dailyRecords[today];
+  if(r){
+    r.core[i].done = !r.core[i].done;
+    saveTaskStates(today);
+    renderHome();
   }
-  // 护手霜
-  alerts.push('🧴 护手霜已开封的话记得12个月内用完');
-  // 照片
-  alerts.push('📸 照片积压中，本周挑1张宝宝照片吧');
-  // 记账
+}
+
+function loadTaskStates(date){
+  try {
+    let saved = JSON.parse(localStorage.getItem('task_states_'+date));
+    if(saved && dailyRecords[date]){
+      if(saved.core) saved.core.forEach((done, i) => { if(dailyRecords[date].core[i]) dailyRecords[date].core[i].done = done; });
+      if(saved.habits) saved.habits.forEach((done, i) => { if(dailyRecords[date].habits[i]) dailyRecords[date].habits[i].done = done; });
+    }
+  } catch(e){}
+}
+function saveTaskStates(date){
+  if(dailyRecords[date]){
+    let states = {
+      core: dailyRecords[date].core.map(t => t.done),
+      habits: dailyRecords[date].habits.map(t => t.done)
+    };
+    localStorage.setItem('task_states_'+date, JSON.stringify(states));
+  }
+}
+
+// ====== 物品管理警告 ======
+function renderItemsAlert(){
+  let el = document.getElementById('items-alert-container');
+  if(!el) return;
+  let alerts = [];
   alerts.push('💰 快半年没记账了——今天只记3笔就好');
+  alerts.push('📸 照片积压严重——每周挑1张最好的存起来');
+  alerts.push('👗 换季了——该整理换季衣物');
+  el.innerHTML = '<div class="card"><div class="card-title"><span class="ico">⚠️</span>提醒</div>' +
+    alerts.map(a => `<div style="padding:4px 0;font-size:.84rem;">${a}</div>`).join('') + '</div>';
+}
+
+// ====== 记事本功能 ======
+function getNotepad(){ return localStorage.getItem('my_notepad')||''; }
+function setNotepad(v){ localStorage.setItem('my_notepad',v); }
+function renderNotepad(){
+  let ta=document.getElementById('notepad');
+  if(ta) ta.value=getNotepad();
+  let s=document.getElementById('notepad-status');
+  if(s){ let t=getNotepad(); s.textContent=t?'已保存 '+t.length+' 字':''; }
+}
+function saveNotepad(){
+  let ta=document.getElementById('notepad');
+  if(!ta) return;
+  setNotepad(ta.value);
+  let s=document.getElementById('notepad-status');
+  if(s) s.textContent='已保存 '+ta.value.length+' 字 · '+new Date().toTimeString().slice(0,5);
+}
+function appendNotepad(text){
+  let ta=document.getElementById('notepad');
+  if(!ta) return;
+  ta.value+=text;
+  ta.focus();
+  ta.scrollTop=ta.scrollHeight;
+  saveNotepad();
+}
+function copyNotepad(){
+  let text=getNotepad();
+  if(!text){ showToast('记事本是空的'); return; }
+  let full='请帮我记录以下今天的内容：\n\n'+text;
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(full).then(()=>showToast('已复制！粘贴到对话框发给我')).catch(()=>fallbackCopy(full));
+  } else { fallbackCopy(full); }
+}
+function clearNotepad(){
+  if(!confirm('确定清空记事本吗？')) return;
+  localStorage.removeItem('my_notepad');
+  renderNotepad();
+  showToast('已清空');
+}
+function fallbackCopy(text){
+  let ta=document.createElement('textarea');
+  ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+  document.body.removeChild(ta);
+  showToast('已复制！');
+}
+function showToast(msg){
+  let t=document.getElementById('copy-toast');
+  if(!t) return;
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2000);
+}
+
+// ====== 宝宝成长笔记 ======
+function getBabyNotes(){
+  try {
+    let raw = localStorage.getItem('baby_notes_v1');
+    if(!raw){
+      let defaults = [
+        {date:'7/30',text:'游泳课最后一天！游完跟我说"妈妈我今天游了1000米"。我说我不信，25×20明明是500米。他说不是，是游了20圈。我在群里问老师，老师说泳池25米，一圈50米，20圈真的是1000米。我去跟朋友炫耀——他才6岁，比我还能游！🏊',type:'运动',ts:1},
+        {date:'7/29',text:'7:20起床，还很困。早餐吃糯米饭半碗+豆腐脑，8:25到校（稍迟）。',type:'日常',ts:2},
+        {date:'7/28',text:'早上5个小笼包+豆腐脑+脆角',type:'日常',ts:3},
+        {date:'7/28',text:'图书馆写作业，思维作业错2题（粗心）',type:'学业',ts:4},
+        {date:'7/28',text:'第3天不想游泳，请假去上社区课',type:'情绪',ts:5},
+        {date:'7/28',text:'KFC圣代，约定一周最多2次冰淇淋',type:'日常',ts:6},
+        {date:'7/28',text:'爸爸洗澡+监督作业+iPad10分钟+读2页书',type:'日常',ts:7},
+      ];
+      localStorage.setItem('baby_notes_v1', JSON.stringify(defaults));
+      return defaults;
+    }
+    return JSON.parse(raw);
+  } catch(e){ return []; }
+}
+function saveBabyNotes(notes){ localStorage.setItem('baby_notes_v1', JSON.stringify(notes)); }
+function addBabyNote(){
+  let textEl = document.getElementById('new-baby-note');
+  let typeEl = document.getElementById('baby-note-type');
+  if(!textEl || !textEl.value.trim()) return;
+  let notes = getBabyNotes();
+  let d = new Date();
+  notes.unshift({
+    date: `${d.getMonth()+1}/${d.getDate()}`,
+    text: textEl.value.trim(),
+    type: typeEl ? typeEl.value : '趣事',
+    ts: Date.now()
+  });
+  saveBabyNotes(notes);
+  textEl.value = '';
+  renderBabyNotes();
+}
+function deleteBabyNote(ts){
+  if(!confirm('删除这条记录？')) return;
+  let notes = getBabyNotes().filter(n => n.ts !== ts);
+  saveBabyNotes(notes);
+  renderBabyNotes();
+}
+function renderBabyNotes(){
+  let container = document.getElementById('baby-notes-list');
+  if(!container) return;
+  let notes = getBabyNotes();
+  if(notes.length === 0){
+    container.innerHTML = '<div class="card"><div class="empty-state"><p>📝 还没有记录</p><p style="font-size:.76rem;">在上面输入宝宝的趣事吧～</p></div></div>';
+    return;
+  }
+  let typeIcons = {'趣事':'😆','成长':'🌱','学业':'📚','运动':'🏊','感动':'💕','其他':'📌'};
+  let html = '';
+  notes.forEach(n => {
+    html += `<div class="card" style="padding:14px 16px;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+        <span style="font-size:.76rem;color:var(--muted);">${n.date}</span>
+        <span class="tag tag-blue" style="font-size:.66rem;">${typeIcons[n.type]||'📌'} ${n.type}</span>
+      </div>
+      <p style="font-size:.86rem;line-height:1.7;">${n.text}</p>
+      <button onclick="deleteBabyNote(${n.ts})" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:.72rem;padding:2px 0;opacity:.4;">🗑️ 删除</button>
+    </div>`;
+  });
+  container.innerHTML = html;
+}
+
+// ====== 知识迭代 ======
+function getKnowledge(){
+  try {
+    let raw = localStorage.getItem('knowledge_v1');
+    if(!raw){
+      let defaults = [
+        {date:'7/28',text:'白云山熊果苷乳霜(蓝)=早，烟酰胺凝胶(红)=晚',cat:'护肤',ts:1},
+        {date:'7/28',text:'熊果苷白天用必须防晒',cat:'护肤',ts:2},
+        {date:'7/28',text:'扎头发：分区扎+发抓辅助',cat:'生活',ts:3},
+        {date:'7/28',text:'钩针伤手：设30分钟上限+拉伸',cat:'健康',ts:4},
+        {date:'7/29',text:'个体户≠法人企业：无限责任 vs 有限责任',cat:'工作',ts:5},
+        {date:'7/29',text:'时间书APP：小屏时间记录软件',cat:'工具',ts:6},
+        {date:'7/29',text:'红果/番茄小说依赖：上厕所改看备忘录',cat:'习惯',ts:7},
+        {date:'7/30',text:'睡好觉=重要项目：补觉3h+拔罐推拿后精气神恢复',cat:'健康',ts:8},
+        {date:'7/30',text:'麻辣烫吃撑：下次不加满份油条或只加半条',cat:'饮食',ts:9},
+        {date:'7/30',text:'厚涂椰子油护肤：洗澡时厚涂全身，洗完洗掉（小红书学的）',cat:'护肤',ts:10},
+      ];
+      localStorage.setItem('knowledge_v1', JSON.stringify(defaults));
+      return defaults;
+    }
+    let list = JSON.parse(raw);
+    if(!list.some(k => k.text.includes('椰子油'))){
+      list.unshift({date:'7/30',text:'厚涂椰子油护肤：洗澡时厚涂全身，洗完洗掉（小红书学的）。不每天做，偷懒跳过也OK',cat:'护肤',ts:Date.now()});
+      saveKnowledge(list);
+    }
+    return list;
+  } catch(e){ return []; }
+}
+function saveKnowledge(list){ localStorage.setItem('knowledge_v1', JSON.stringify(list)); }
+function addKnowledge(){
+  let textEl = document.getElementById('new-knowledge');
+  let catEl = document.getElementById('knowledge-cat');
+  if(!textEl || !textEl.value.trim()) return;
+  let list = getKnowledge();
+  let d = new Date();
+  list.unshift({
+    date: `${d.getMonth()+1}/${d.getDate()}`,
+    text: textEl.value.trim(),
+    cat: catEl ? catEl.value : '其他',
+    ts: Date.now()
+  });
+  saveKnowledge(list);
+  textEl.value = '';
+  renderKnowledge();
+}
+function deleteKnowledge(ts){
+  if(!confirm('删除这条知识？')) return;
+  saveKnowledge(getKnowledge().filter(k => k.ts !== ts));
+  renderKnowledge();
+}
+function renderKnowledge(){
+  let container = document.getElementById('knowledge-list');
+  if(!container) return;
+  let list = getKnowledge();
+  if(list.length === 0){
+    container.innerHTML = '<div class="card"><div class="empty-state"><p>📝 还没有知识记录</p></div></div>';
+    return;
+  }
+  let catIcons = {'工作':'💼','护肤':'🧴','健康':'💪','生活':'🏠','工具':'🛠️','习惯':'🔄','饮食':'🍜','其他':'📌'};
+  let html = '';
+  list.forEach(k => {
+    html += `<div class="card" style="padding:14px 16px;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+        <span style="font-size:.76rem;color:var(--muted);">${k.date}</span>
+        <span class="tag tag-blue" style="font-size:.66rem;">${catIcons[k.cat]||'📌'} ${k.cat}</span>
+      </div>
+      <p style="font-size:.86rem;line-height:1.7;">${k.text}</p>
+      <button onclick="deleteKnowledge(${k.ts})" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:.72rem;padding:2px 0;opacity:.4;">🗑️ 删除</button>
+    </div>`;
+  });
+  container.innerHTML = html;
+}
+
+// ====== 小红书文案 ======
+function renderXHSContent(){
+  let el = document.getElementById('xhs-text-yueshen');
+  if(!el) return;
+  let d = new Date();
+  let dateStr = `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`;
+  el.textContent = `🌟 月神小吊带 · 编织日记
+
+📅 ${dateStr}
+
+进度更新：
+✅ 前片 — 完成
+🧵 后片（后背片）— 进行中 🔥
+⏳ 连接前后片
+⏳ 身体部分
+⏳ 底边
+⏳ 领边
+⏳ 吊带
+
+目前完成了 1/7，正在努力织后片～
+
+每完成一个部分就来打卡！
+等我做完一定要拍上身照 📸
+
+#手工编织 #钩针 #月神小吊带 #手作日常 #编织打卡 #毛线 #手工diy`;
+}
+
+function copyXHS(elId){
+  let el = document.getElementById(elId);
+  if(!el) return;
+  navigator.clipboard.writeText(el.textContent).then(() => {
+    alert('✅ 已复制到剪贴板！去小红书粘贴吧～');
+  }).catch(() => {
+    let ta = document.createElement('textarea');
+    ta.value = el.textContent;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    alert('✅ 已复制到剪贴板！去小红书粘贴吧～');
+  });
+}
+
+// ====== 宠物系统 ======
+let petState = {};
+function loadPetState(){
+  try{ petState = JSON.parse(localStorage.getItem('pet_state_v2')); }catch(e){}
+  if(!petState || !petState.happiness){
+    petState = {happiness:50,level:1,exp:0,lastFeed:0,name:'小蓝'};
+    savePetState();
+  }
+}
+function savePetState(){ localStorage.setItem('pet_state_v2', JSON.stringify(petState)); }
+function renderPet(){
+  loadPetState();
+  let moodText = '', moodEmoji = '';
+  if(petState.happiness >= 80){moodText='超级开心';moodEmoji='🥰';}
+  else if(petState.happiness >= 60){moodText='很开心';moodEmoji='😊';}
+  else if(petState.happiness >= 40){moodText='还不错';moodEmoji='😀';}
+  else if(petState.happiness >= 20){moodText='有点饿';moodEmoji='😐';}
+  else {moodText='快饿扁了';moodEmoji='😢';}
   
-  el.innerHTML = alerts.map(a => `<div style="padding:3px 0;font-size:.82rem;">${a}</div>`).join('');
+  let nameEl = document.getElementById('pet-name');
+  let moodEl = document.getElementById('pet-mood');
+  let levelEl = document.getElementById('pet-level');
+  if(nameEl) nameEl.textContent = petState.name + '（卡皮巴拉）';
+  if(moodEl) moodEl.textContent = moodEmoji + ' 状态：' + moodText;
+  if(levelEl) levelEl.textContent = `Level ${petState.level} · 喂养进度 ${petState.exp}/10⭐`;
+}
+function feedPet(food){
+  let costs = {apple:2,cake:5,bath:3,snack:1,salad:2,love:0};
+  let gains = {apple:8,cake:15,bath:10,snack:5,salad:8,love:5};
+  let cost = costs[food] || 1;
+  let gain = gains[food] || 5;
+  
+  petState.happiness = Math.min(100, petState.happiness + gain);
+  petState.exp++;
+  petState.lastFeed = Date.now();
+  
+  if(petState.exp >= 10){
+    petState.level++;
+    petState.exp = 0;
+  }
+  savePetState();
+  renderPet();
+  showToast(`小蓝吃得很开心！❤️ +${gain}心情`);
+}
+
+// ====== SOP 系统 ======
+const builtinSwimItems = [
+  {text:'确认游泳装备齐全（泳衣、泳帽、泳镜、浴巾）', tag:'⭐'},
+  {text:'出发前上好厕所', tag:'⭐'},
+  {text:'到达游泳馆，更衣室换泳衣', tag:'⭐'},
+  {text:'戴好泳帽和泳镜，做简单热身（手臂绕环+肩部转动）', tag:'⭐'},
+  {text:'下水前淋浴（适应水温）', tag:'⭐'},
+  {text:'进入泳池，开始上课', tag:'⭐'},
+  {text:'认真听教练指导动作要领', tag:'⭐'},
+  {text:'自由练习时注意安全，不逞强', tag:'🔶'},
+  {text:'课后淋浴冲洗身体', tag:'⭐'},
+  {text:'吹干头发（尤其耳朵！）', tag:'⭐'},
+  {text:'穿好衣服，整理装备', tag:'⭐'},
+  {text:'离开游泳馆', tag:'⭐'},
+  {text:'到家后记录今天游了多少米/学了什么新动作', tag:'🔶'},
+  {text:'补充水分和能量（游泳后容易饿）', tag:'⭐'},
+];
+
+function defaultDynamicSOPs(){
+  return {
+    'sop_morning_move': {
+      name: '早上床上拉伸',
+      icon: '💪',
+      items: [
+        {text:'猫趴式（猫牛式）3分钟', tag:'⭐'},
+        {text:'人面狮身式 2分钟', tag:'⭐'},
+        {text:'下犬式 1分钟', tag:'⭐'},
+        {text:'天鹅式拉伸-左 1分钟', tag:'⭐'},
+        {text:'天鹅式拉伸-右 1分钟', tag:'⭐'},
+        {text:'平板支撑 1分钟', tag:'⭐'},
+      ]
+    },
+    'sop_office': {
+      name: '到办公室安顿SOP',
+      icon: '💼',
+      items: [
+        {text:'出门前：从冰箱拿冻了半天的矿泉水瓶（或常温水+塞茶包）', tag:'⭐'},
+        {text:'到办公室先不坐，去茶水间/饮水机倒一杯热水', tag:'⭐'},
+        {text:'从茶叶罐挑一个快过期的，抓一点放进热水里', tag:'⭐'},
+        {text:'回到座位，把包放到椅子/旁边固定位置', tag:'⭐'},
+        {text:'外套挂到椅背或衣架', tag:'⭐'},
+        {text:'手机连上充电线', tag:'⭐'},
+        {text:'把桌面上所有东西（文件/杯子/杂物）全部挪到旁边', tag:'⭐'},
+        {text:'抽一张纸巾，桌面从左到右擦一遍，边角也擦', tag:'⭐'},
+        {text:'擦完把纸巾丢进垃圾桶', tag:'⭐'},
+        {text:'东西按"常用在上、不常用在下"放回', tag:'⭐'},
+        {text:'把昨天留下的杯子洗干净/归位', tag:'⭐'},
+        {text:'坐下，喝一口茶', tag:'⭐'},
+        {text:'有早饭→先吃；没早饭→拿出毛线开始织', tag:'⭐'},
+        {text:'织 10-15 分钟或吃完早饭，再开电脑/叫号系统开始工作', tag:'🔶'},
+      ]
+    }
+  };
+}
+
+function getDynamicSOPs(){
+  try {
+    let raw = localStorage.getItem('all_sops_v2');
+    let seeded = localStorage.getItem('sop_v2_seeded');
+    if(!raw){
+      let d = defaultDynamicSOPs();
+      localStorage.setItem('all_sops_v2', JSON.stringify(d));
+      localStorage.setItem('sop_v2_seeded','1');
+      return d;
+    }
+    let parsed = JSON.parse(raw);
+    if(!seeded){
+      let merged = Object.assign({}, defaultDynamicSOPs(), parsed);
+      localStorage.setItem('all_sops_v2', JSON.stringify(merged));
+      localStorage.setItem('sop_v2_seeded','1');
+      return merged;
+    }
+    return parsed;
+  } catch(e){ return {}; }
+}
+function saveDynamicSOPs(sops){ localStorage.setItem('all_sops_v2', JSON.stringify(sops)); }
+
+function renderBuiltinSwim(){
+  let c = document.getElementById('builtin-swim-container');
+  if(!c) return;
+  let states = [];
+  try{ states = JSON.parse(localStorage.getItem('sop_states_builtin-swim')||'[]'); }catch(e){}
+  let html = '';
+  builtinSwimItems.forEach((item,i)=>{
+    let checked = states[i]||false;
+    let tagStyle = item.tag==='⭐'?'background:#e8f5e9;color:#388e3c;padding:2px 8px;border-radius:6px;font-size:.66rem;cursor:pointer;':
+                  item.tag==='🔶'?'background:#fff3e0;color:#e65100;padding:2px 8px;border-radius:6px;font-size:.66rem;cursor:pointer;':
+                  'background:#f0eeea;color:#bbb;padding:2px 8px;border-radius:6px;font-size:.66rem;cursor:pointer;';
+    html += `<div class="todo-item${checked?' done':''}" style="padding:5px 0;">
+      <input type="checkbox" ${checked?'checked':''} onchange="toggleBuiltinSwimItem(${i})">
+      <span style="${tagStyle}" onclick="event.stopPropagation();toggleBuiltinSwimTag(${i})">${item.tag} ${item.tag==='⭐'?'必做':item.tag==='🔶'?'偶尔':'标记'}</span>
+      <span style="flex:1;font-size:.82rem;">${item.text}</span>
+    </div>`;
+  });
+  c.innerHTML = html;
+}
+function toggleBuiltinSwimItem(i){
+  let s=[]; try{s=JSON.parse(localStorage.getItem('sop_states_builtin-swim')||'[]');}catch(e){}
+  s[i]=!s[i]; localStorage.setItem('sop_states_builtin-swim',JSON.stringify(s));
+  renderBuiltinSwim();
+}
+function toggleBuiltinSwimTag(i){
+  let item = builtinSwimItems[i];
+  if(item.tag==='⭐') item.tag='🔶';
+  else if(item.tag==='🔶') item.tag='';
+  else item.tag='⭐';
+  builtinSwimItems[i]=item;
+  renderBuiltinSwim();
+}
+
+function renderAllSOPs(){
+  renderBuiltinSwim();
+  renderDynamicSOPs();
+}
+
+function renderDynamicSOPs(){
+  let container = document.getElementById('sop-list-container');
+  if(!container) return;
+  let sops = getDynamicSOPs();
+  let expanded = {};
+  try { expanded = JSON.parse(localStorage.getItem('sop_expanded')||'{}'); }catch(e){}
+  
+  let html = '';
+  Object.keys(sops).forEach(key => {
+    let sop = sops[key];
+    let isOpen = expanded[key] !== false;
+    html += `<div class="card" style="padding:14px 16px;">
+      <div class="card-title" style="margin-bottom:${isOpen?'12px':'0'};cursor:pointer;" onclick="toggleSOPExpand('${key}')">
+        <span class="ico">${sop.icon}</span>${sop.name}
+        <span style="margin-left:auto;font-size:.9rem;color:var(--muted);">${isOpen?'▾':'▸'}</span>
+      </div>
+      <div style="display:${isOpen?'block':'none'};">
+        <div id="sop-dyn-${key}"></div>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+          <input type="text" id="add-dyn-step-${key}" placeholder="添加步骤..." style="flex:1;min-width:80px;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:8px;font-size:.78rem;">
+          <button class="btn-primary" style="padding:8px 12px;font-size:.75rem;" onclick="addDynSOPStep('${key}')">➕</button>
+          <button class="btn-secondary" style="padding:8px 10px;font-size:.75rem;" onclick="resetDynSOP('${key}')">🔄</button>
+          <button class="btn-danger" style="padding:8px 10px;font-size:.75rem;" onclick="deleteDynSOP('${key}')">🗑️</button>
+        </div>
+      </div>
+    </div>`;
+  });
+  container.innerHTML = html;
+  Object.keys(sops).forEach(key => renderDynSOP(key));
+}
+
+function renderDynSOP(key){
+  let el = document.getElementById('sop-dyn-'+key);
+  if(!el) return;
+  let sops = getDynamicSOPs();
+  let sop = sops[key];
+  if(!sop) return;
+  let states = [];
+  try{ states = JSON.parse(localStorage.getItem('sop_states_dyn_'+key)||'[]'); }catch(e){}
+  
+  let html = '';
+  sop.items.forEach((item, i) => {
+    let checked = states[i]||false;
+    let tagHtml = item.tag==='⭐'?'<span style="font-size:.62rem;background:#e8f5e9;color:#388e3c;padding:2px 6px;border-radius:5px;cursor:pointer;" onclick="event.stopPropagation();toggleDynTag(\''+key+'\','+i+')">⭐必做</span>':
+                 item.tag==='🔶'?'<span style="font-size:.62rem;background:#fff3e0;color:#e65100;padding:2px 6px;border-radius:5px;cursor:pointer;" onclick="event.stopPropagation();toggleDynTag(\''+key+'\','+i+')">🔶偶尔</span>':
+                 '<span style="font-size:.62rem;background:#f0eeea;color:#bbb;padding:2px 6px;border-radius:5px;cursor:pointer;" onclick="event.stopPropagation();toggleDynTag(\''+key+'\','+i+')">标记</span>';
+    
+    html += `<div class="todo-item${checked?' done':''}" style="padding:5px 0;">
+      <input type="checkbox" ${checked?'checked':''} style="flex-shrink:0;" onchange="toggleDynSOPItem('${key}',${i})">
+      ${tagHtml}
+      <span style="flex:1;font-size:.8rem;">${item.text}</span>
+      <span style="font-size:.68rem;color:var(--muted);cursor:pointer;flex-shrink:0;" onclick="deleteDynSOPStep('${key}',${i})">✕</span>
+    </div>`;
+  });
+  el.innerHTML = html || '<p style="font-size:.8rem;color:var(--muted);">还没有步骤</p>';
+}
+
+function toggleDynTag(key, idx){
+  let sops = getDynamicSOPs();
+  if(!sops[key] || !sops[key].items[idx]) return;
+  let item = sops[key].items[idx];
+  if(!item.tag || item.tag === '') item.tag = '⭐';
+  else if(item.tag === '⭐') item.tag = '🔶';
+  else item.tag = '';
+  saveDynamicSOPs(sops);
+  renderDynSOP(key);
+}
+
+function toggleDynSOPItem(key, idx){
+  let states = [];
+  try{ states = JSON.parse(localStorage.getItem('sop_states_dyn_'+key)||'[]'); }catch(e){}
+  states[idx] = !states[idx];
+  localStorage.setItem('sop_states_dyn_'+key, JSON.stringify(states));
+  renderDynSOP(key);
+}
+
+function resetDynSOP(key){
+  localStorage.removeItem('sop_states_dyn_'+key);
+  renderDynSOP(key);
+}
+
+function addNewSOP(){
+  let nameEl = document.getElementById('new-sop-name');
+  if(!nameEl || !nameEl.value.trim()){ alert('请输入SOP名称'); return; }
+  let name = nameEl.value.trim();
+  let sops = getDynamicSOPs();
+  let key = 'dyn_' + Date.now();
+  let icons = ['🍳','🧹','🚗','💼','🌙','📝','🛒','💪','📚','🎨','💊','✈️','🐾','📱','🧶','📦','🏠'];
+  sops[key] = {name:name, icon:icons[Math.floor(Math.random()*icons.length)], items:[]};
+  saveDynamicSOPs(sops);
+  nameEl.value = '';
+  renderDynamicSOPs();
+}
+
+function addDynSOPStep(key){
+  let input = document.getElementById('add-dyn-step-'+key);
+  if(!input || !input.value.trim()) return;
+  let sops = getDynamicSOPs();
+  if(!sops[key]) return;
+  sops[key].items.push({text:input.value.trim(),tag:''});
+  saveDynamicSOPs(sops);
+  input.value = '';
+  renderDynSOP(key);
+}
+
+function deleteDynSOPStep(key, idx){
+  if(!confirm('删除这一步？')) return;
+  let sops = getDynamicSOPs();
+  if(!sops[key]) return;
+  sops[key].items.splice(idx, 1);
+  saveDynamicSOPs(sops);
+  let states = [];
+  try{ states = JSON.parse(localStorage.getItem('sop_states_dyn_'+key)||'[]'); }catch(e){}
+  states.splice(idx, 1);
+  localStorage.setItem('sop_states_dyn_'+key, JSON.stringify(states));
+  renderDynSOP(key);
+}
+
+function deleteDynSOP(key){
+  if(!confirm('删除整个SOP？')) return;
+  let sops = getDynamicSOPs();
+  delete sops[key];
+  saveDynamicSOPs(sops);
+  localStorage.removeItem('sop_states_dyn_'+key);
+  renderDynamicSOPs();
+}
+
+function toggleSOPExpand(key){
+  let expanded = {};
+  try{ expanded = JSON.parse(localStorage.getItem('sop_expanded')||'{}'); }catch(e){}
+  expanded[key] = !(expanded[key] !== false);
+  localStorage.setItem('sop_expanded', JSON.stringify(expanded));
+  renderDynamicSOPs();
+}
+
+// ====== 项目推进 ======
+const defaultProjects = {
+  guasha: {
+    name: '拔罐刮痧疗程',
+    icon: '💆',
+    status: '进行中',
+    steps: [
+      {text:'第一次拔罐+刮痧（7/30已完成）', done:true},
+      {text:'第二次拔罐+刮痧（预计8/9前后，隔10天）', done:false},
+      {text:'第三次拔罐+刮痧（预计8/19前后）', done:false},
+      {text:'第四次拔罐+刮痧（预计8/29前后）', done:false},
+      {text:'第五次拔罐+刮痧（预计9/8前后）', done:false},
+      {text:'疗程总结：记录感受变化和身体改善', done:false},
+    ],
+    nextAction: '下次拔罐约8/9（10天间隔），提前1-2天预约。',
+    note: '7/30第一次，感觉很舒服，精气神恢复很多。10天一次，一个疗程约5次。',
+  },
+  sleep: {
+    name: '睡好觉项目',
+    icon: '🌙',
+    status: '进行中',
+    steps: [
+      {text:'记录睡眠数据3天找规律', done:false},
+      {text:'确定固定睡觉时间', done:false},
+      {text:'确定固定起床时间', done:false},
+      {text:'睡前环境优化（眼罩/沙发/温度）', done:false},
+      {text:'连续3天达标', done:false},
+      {text:'连续7天达标', done:false},
+    ],
+    nextAction: '先记录3天睡眠数据，看看到底几点睡几点醒，找规律。',
+    note: '7/30感悟：太久没睡好觉了。补觉3h后状态恢复很多。沙发摊开睡surprisingly舒服。',
+  },
+  sofaSkincare: {
+    name: '沙发旁护肤站',
+    icon: '🧴',
+    status: '进行中',
+    steps: [
+      {text:'整理出沙发旁的小空间', done:false},
+      {text:'放基础护肤品（乳霜+护手霜+润唇膏）', done:false},
+      {text:'连续3天晚上在沙发旁护肤', done:false},
+      {text:'养成习惯（连续7天）', done:false},
+    ],
+    nextAction: '今晚在沙发旁找一个位置，把基础护肤品放过去。',
+    note: '晚上简单护肤，不用走到卫生间，降低门槛。',
+  },
+};
+
+function getAllProjects(){
+  try {
+    let raw = localStorage.getItem('projects_v1');
+    if(!raw){
+      localStorage.setItem('projects_v1', JSON.stringify(defaultProjects));
+      return JSON.parse(JSON.stringify(defaultProjects));
+    }
+    return JSON.parse(raw);
+  } catch(e){
+    localStorage.setItem('projects_v1', JSON.stringify(defaultProjects));
+    return JSON.parse(JSON.stringify(defaultProjects));
+  }
+}
+function saveProjects(projects){ localStorage.setItem('projects_v1', JSON.stringify(projects)); }
+
+function renderProjects(){
+  let container = document.getElementById('project-list');
+  if(!container) return;
+  let projects = getAllProjects();
+  let html = '';
+  
+  Object.keys(projects).forEach(key => {
+    let p = projects[key];
+    let done = p.steps.filter(s => s.done).length;
+    let total = p.steps.length;
+    let pct = Math.round(done/total*100);
+    let nextStep = p.steps.find(s => !s.done);
+    
+    html += `<div class="card">
+      <div class="card-title">
+        <span class="ico">${p.icon}</span>${p.name}
+        <span class="tag ${p.status==='进行中'?'tag-yellow':'tag-green'}" style="font-size:.66rem;margin-left:auto;">${p.status}</span>
+      </div>
+      <div class="progress" style="margin:8px 0 10px;"><div class="fill" style="width:${pct}%;"></div></div>
+      <p style="font-size:.76rem;color:var(--muted);margin-bottom:10px;">${done}/${total} 步完成 · ${pct}%</p>
+      
+      ${nextStep ? `<div style="background:var(--yellow-light);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:10px;">
+        <p style="font-size:.74rem;color:var(--accent);font-weight:600;">📌 下一步</p>
+        <p style="font-size:.84rem;">${nextStep.text}</p>
+        ${p.nextAction ? `<p style="font-size:.76rem;color:var(--muted);margin-top:4px;">💡 ${p.nextAction}</p>` : ''}
+      </div>` : '<p style="color:var(--green);font-size:.84rem;">🎉 全部完成！</p>'}
+      
+      <div style="margin-top:10px;">`;
+    
+    p.steps.forEach((s, i) => {
+      html += `<div class="todo-item${s.done?' done':''}" style="padding:5px 0;display:flex;align-items:center;gap:8px;">
+        <input type="checkbox" ${s.done?'checked':''} style="flex-shrink:0;" onchange="toggleProjectStep('${key}',${i})">
+        <span style="font-size:.82rem;${s.done?'color:var(--muted);':''}">${s.text}</span>
+      </div>`;
+    });
+    
+    html += `</div>
+      ${p.note ? `<blockquote style="font-size:.76rem;margin-top:8px;">${p.note}</blockquote>` : ''}
+      <div style="display:flex;gap:8px;margin-top:8px;">
+        <input type="text" id="add-proj-step-${key}" placeholder="添加步骤..." style="flex:1;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:8px;font-size:.78rem;">
+        <button class="btn-primary" style="padding:8px 10px;font-size:.75rem;" onclick="addProjectStep('${key}')">➕</button>
+        <button class="btn-danger" style="padding:8px 10px;font-size:.75rem;" onclick="deleteProject('${key}')">🗑️</button>
+      </div>
+    </div>`;
+  });
+  
+  container.innerHTML = html;
+}
+
+function toggleProjectStep(key, idx){
+  let projects = getAllProjects();
+  if(!projects[key]) return;
+  projects[key].steps[idx].done = !projects[key].steps[idx].done;
+  saveProjects(projects);
+  renderProjects();
+}
+
+function addProject(){
+  let nameEl = document.getElementById('new-project-name');
+  if(!nameEl || !nameEl.value.trim()){ alert('请输入项目名称'); return; }
+  let projects = getAllProjects();
+  let key = 'proj_' + Date.now();
+  let icons = ['🎯','💪','📚','🎨','🧶','💰','🌙','💆','🛒','📝'];
+  projects[key] = {
+    name: nameEl.value.trim(),
+    icon: icons[Math.floor(Math.random()*icons.length)],
+    status: '进行中',
+    steps: [], nextAction: '', note: '',
+  };
+  saveProjects(projects);
+  nameEl.value = '';
+  renderProjects();
+}
+
+function addProjectStep(key){
+  let input = document.getElementById('add-proj-step-'+key);
+  if(!input || !input.value.trim()) return;
+  let projects = getAllProjects();
+  if(!projects[key]) return;
+  projects[key].steps.push({text:input.value.trim(), done:false});
+  saveProjects(projects);
+  input.value = '';
+  renderProjects();
+}
+
+function deleteProject(key){
+  if(!confirm('删除这个项目？')) return;
+  let projects = getAllProjects();
+  delete projects[key];
+  saveProjects(projects);
+  renderProjects();
 }
 
 // ====== 数据备份 ======
@@ -2860,6 +2440,7 @@ function backupData(){
   a.download = `生活手帐备份_${new Date().toISOString().slice(0,10)}.json`;
   a.click();
   URL.revokeObjectURL(url);
+  showToast('备份已下载 ✓');
 }
 
 // ====== 启动 ======
